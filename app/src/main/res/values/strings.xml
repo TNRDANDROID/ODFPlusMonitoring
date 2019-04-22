@@ -1,0 +1,45 @@
+<resources>
+    <string name="app_name">ODF Plus Monitoring</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_username">UserName</string>
+    <string name="btn_login">Login</string>
+    <string name="font_normal">Avenir-Roman.ttf</string>
+    <string name="font_bold">Avenir-Black.ttf</string>
+    <string name="font_heavy">Avenir_heavy.ttf</string>
+    <string name="font_medium">Avenir-MediumOblique-webfont.ttf</string>
+    <string name="font_demi_bold">Avenir_Next_Demi_Bold.ttf</string>
+    <string name="font_avenir_medium">Avenir_Next_Medium.ttf</string>
+    <string name="font_italic">AvenirNextMediumItalic.ttf</string>
+    <string name="no_internet">Your internet seems to be offline!</string>
+    <string name="view_image">View Inspected Image</string>
+    <string name="take_action">Take Action</string>
+    <string name="view_action">View Action</string>
+    <string name="action_taken_tv">Action Taken Against Inspection Report for High Value Project</string>
+    <string name="init_vector">2SN22SkJGDyOAXUU</string>
+    <string name="click_to_download_your_inspecting_block">Click to Download your Inspecting Block</string>
+    <string name="click_to_download_your_inspecting_financial_year">Click to Download your Inspecting Financial Year</string>
+    <string name="click_to_download_your_inspecting_scheme">Click to Download your Inspecting Scheme</string>
+    <string name="select_scheme">Select Scheme</string>
+    <string name="select_village">Select Village</string>
+    <string name="select_block">Select Block</string>
+    <string name="financial_year">Financial Year</string>
+    <string name="finyear_dialog_title">Select Financial year</string>
+    <string name="block_dialog_title">Select Block</string>
+    <string name="village_dialog_title">Select Village</string>
+    <string name="scheme_dialog_title">Select Scheme</string>
+    <string name="ok_label">OK</string>
+    <string name="dismiss_label">Dismiss</string>
+    <string name="clear_all_label">Clear all</string>
+
+
+    <string name="RememberMe">Remember Me</string>
+    <string name="Login">Login</string>
+    <string name="Register">Register</string>
+    <string name="Logo">Logo</string>
+    <string name="FirstName">FirstName</string>
+    <string name="LastName">LastName</string>
+    <string name="Email">Email</string>
+    <string name="ConfirmEmailAddress">Confirm Email Address</string>
+    <string name="SignUp">Sign Up</string>
+    <string name="registrationPage">Registration Page</string>
+</resources>

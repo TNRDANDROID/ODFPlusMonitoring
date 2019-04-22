@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:customfontdemo="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary">
+
+        <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+            android:id="@+id/tv_dialog_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="@dimen/margin"
+            android:text="Road Assets Tracking Monitoring"
+            android:textAllCaps="true"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/menu_title_size"
+            customfontdemo:fontName="@string/font_medium" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:src="@drawable/warning" />
+
+        <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/edit_text_padding"
+            android:gravity="center"
+            android:lineSpacingExtra="5dp"
+            android:padding="@dimen/padding"
+            android:text="You need to update Road Assets Tracking Monitoring"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            customfontdemo:fontName="@string/font_medium" />
+
+        <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+            android:id="@+id/tv_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:lineSpacingExtra="5dp"
+            android:padding="@dimen/padding"
+            android:text="This version of Road Assets Tracking Monitoring is no longer supported. Please go to Official Site and install new version"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            customfontdemo:fontName="@string/font_normal" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+                android:id="@+id/btn_cancel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="@dimen/padding"
+                android:text="Cancel"
+                android:textColor="@android:color/black"
+                android:visibility="gone"
+                customfontdemo:fontName="@string/font_normal" />
+
+            <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+                android:id="@+id/btn_ok"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/margin"
+                android:layout_weight="1"
+                android:background="@drawable/add_button"
+                android:gravity="center"
+                android:padding="@dimen/padding"
+                android:text="UPDATE"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/menu_title_size"
+                customfontdemo:fontName="@string/font_medium" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
