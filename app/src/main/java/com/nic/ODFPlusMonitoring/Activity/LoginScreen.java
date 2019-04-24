@@ -207,6 +207,9 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         params.put(AppConstant.KEY_USER_PASSWORD, sha256);
 
 
+
+
+
         Log.d("user", "" + userName.getText().toString().trim());
 
 
