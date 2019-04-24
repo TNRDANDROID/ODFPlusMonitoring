@@ -26,6 +26,8 @@ public class AppVersionActivity extends AppCompatActivity implements View.OnClic
     public void intializeUI(){
         btnSave = (MyCustomTextView)findViewById(R.id.btn_ok);
         btnSave.setOnClickListener(this);
+
+
     }
     @Override
     public void onClick(View v) {
