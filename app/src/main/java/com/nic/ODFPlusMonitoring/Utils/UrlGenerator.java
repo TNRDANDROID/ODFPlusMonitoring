@@ -6,6 +6,8 @@ package com.nic.ODFPlusMonitoring.Utils;
  */
 public class UrlGenerator {
 
+
+
     public static String getLoginUrl() {
         return "https://www.tnrd.gov.in/project/webservices_forms/login_service/login_services.php";
     }
@@ -18,7 +20,15 @@ public class UrlGenerator {
         return "https://www.tnrd.gov.in/project/webservices_forms/inspection/inspection_services.php";
     }
 
+//    public static String getTnrdHostName() {
+//        return "www.tnrd.gov.in";
+//    }
+
     public static String getTnrdHostName() {
-        return "www.tnrd.gov.in";
+        return "10.163.19.140";
+    }
+
+    public static String getOpenUrl() {
+        return "http://10.163.19.140:81/rdweb/project/webservices_forms/open_services/open_services.php";
     }
 }

@@ -22,6 +22,7 @@ import com.nic.ODFPlusMonitoring.Api.Api;
 import com.nic.ODFPlusMonitoring.Api.ApiService;
 import com.nic.ODFPlusMonitoring.Api.ServerResponse;
 import com.nic.ODFPlusMonitoring.Constant.AppConstant;
+import com.nic.ODFPlusMonitoring.DataBase.DBHelper;
 import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
 import com.nic.ODFPlusMonitoring.Support.ProgressHUD;
@@ -38,12 +39,11 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
  * Created by AchanthiSundar on 28-12-2018.
  */
 
-public class LoginScreen extends AppCompatActivity implements View.OnClickListener, Api.ServerResponseListener {
+public class RegisterScreen extends AppCompatActivity implements View.OnClickListener, Api.ServerResponseListener {
 
     private Button login_btn,signUp_btn,register_btn;
     private String name, pass, randString;
@@ -58,28 +58,30 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     public static SQLiteDatabase db;
     JSONObject jsonObject;
 
+    private ProgressHUD progressHUD;
+
     String sb;
     private PrefManager prefManager;
-    private ProgressHUD progressHUD;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-        setContentView(R.layout.login_screen);
+        setContentView(R.layout.register);
         try {
             dbHelper = new DBHelper(this);
             db = dbHelper.getWritableDatabase();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        intializeUI();
-        getVillageList();
+        getBankNameList();
+        getBankBranchList();
+       // intializeUI();
     }
 
     public void intializeUI() {
         prefManager = new PrefManager(this);
-        login_btn = (Button) findViewById(R.id.login);
+
         signUp_btn = (Button) findViewById(R.id.signUp);
         userName = (EditText) findViewById(R.id.username);
         password = findViewById(R.id.password);
@@ -88,146 +90,17 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         txtInLayoutPassword = findViewById(R.id.txtInLayoutPassword);
         rememberMe = findViewById(R.id.rememberMe);
 
-//        passwordEditText = (ShowHidePasswordEditText) findViewById(R.id.password);
-
-
-        login_btn.setOnClickListener(this);
         signUp_btn.setOnClickListener(this);
-
-//        passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-//        inputLayoutEmail.setTypeface(FontCache.getInstance(this).getFont(FontCache.Font.REGULAR));
-//        inputLayoutPassword.setTypeface(FontCache.getInstance(this).getFont(FontCache.Font.REGULAR));
         login_btn.setTypeface(FontCache.getInstance(this).getFont(FontCache.Font.MEDIUM));
-//        inputLayoutEmail.setHintTextAppearance(R.style.InActive);
-//        inputLayoutPassword.setHintTextAppearance(R.style.InActive);
-
-//        passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-//            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-//                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-//                    checkLoginScreen();
-//                }
-//                return false;
-//            }
-//        });
-//        passwordEditText.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Avenir-Roman.ttf"));
-        randString = Utils.randomChar();
-
-        try {
-            db.delete(DBHelper.DISTRICT_TABLE_NAME, null, null);
-            db.delete(DBHelper.BLOCK_TABLE_NAME, null, null);
-            db.delete(DBHelper.VILLAGE_TABLE_NAME, null, null);
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.login:
-                checkLoginScreen();
-                break;
             case R.id.signUp:
                 ClickSignUp();
                 break;
         }
-    }
-
-    public boolean validate() {
-        boolean valid = true;
-        String username = userName.getText().toString().trim();
-        prefManager.setUserName(username);
-        String password = passwordEditText.getText().toString().trim();
-
-
-        if (username.isEmpty()) {
-            valid = false;
-            Utils.showAlert(this, "Please enter the username");
-        } else if (password.isEmpty()) {
-            valid = false;
-            Utils.showAlert(this, "Please enter the password");
-        }
-        return valid;
-    }
-
-    private void checkLoginScreen() {
-
-        final String username = userName.getText().toString().trim();
-        final String password = passwordEditText.getText().toString().trim();
-        prefManager.setUserPassword(password);
-
-        if (Utils.isOnline()) {
-            if (!validate())
-                return;
-            else if (prefManager.getUserName().length() > 0 && password.length() > 0) {
-                new ApiService(this).makeRequest("LoginScreen", Api.Method.POST, UrlGenerator.getLoginUrl(), loginParams(), "not cache", this);
-            } else {
-                Utils.showAlert(this, "Please enter your username and password!");
-            }
-        } else {
-            //Utils.showAlert(this, getResources().getString(R.string.no_internet));
-            AlertDialog.Builder ab = new AlertDialog.Builder(
-                    LoginScreen.this);
-            ab.setMessage("Internet Connection is not avaliable..Please Turn ON Network Connection OR Continue With Off-line Mode..");
-            ab.setPositiveButton("Settings",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog,
-                                            int whichButton) {
-                            Intent I = new Intent(
-                                    android.provider.Settings.ACTION_WIRELESS_SETTINGS);
-                            startActivity(I);
-                        }
-                    });
-            ab.setNegativeButton("Continue With Off-Line",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog,
-                                            int whichButton) {
-                            offline_mode(username, password);
-                        }
-                    });
-            ab.show();
-        }
-    }
-
-
-    public Map<String, String> loginParams() {
-        Map<String, String> params = new HashMap<>();
-        params.put(AppConstant.KEY_SERVICE_ID, "login");
-
-
-        String random = Utils.randomChar();
-
-        params.put(AppConstant.USER_LOGIN_KEY, random);
-        Log.d("randchar", "" + random);
-
-        params.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
-        Log.d("user", "" + userName.getText().toString().trim());
-
-        String encryptUserPass = Utils.md5(passwordEditText.getText().toString().trim());
-        prefManager.setEncryptPass(encryptUserPass);
-        Log.d("md5", "" + encryptUserPass);
-
-        String userPass = encryptUserPass.concat(random);
-        Log.d("userpass", "" + userPass);
-        String sha256 = Utils.getSHA(userPass);
-        Log.d("sha", "" + sha256);
-
-        params.put(AppConstant.KEY_USER_PASSWORD, sha256);
-
-
-
-
-
-        Log.d("user", "" + userName.getText().toString().trim());
-
-
-        return params;
-    }
-
-    //The method for opening the registration page and another processes or checks for registering
-    private void ClickSignUp() {
-        Intent intent  = new Intent(LoginScreen.this,RegisterScreen.class);
-        startActivity(intent);
     }
 
     public void getDistrictList() {
@@ -254,6 +127,21 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         }
     }
 
+    public void getBankNameList() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("BankNameList", Api.Method.POST, UrlGenerator.getOpenUrl(), bankNameListJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getBankBranchList() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("BankBranchList", Api.Method.POST, UrlGenerator.getOpenUrl(), bankbranchNameListJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
     public JSONObject districtListJsonParams() throws JSONException {
         JSONObject dataSet = new JSONObject();
@@ -276,7 +164,25 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         return dataSet;
     }
 
+    public JSONObject bankNameListJsonParams() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID,AppConstant.KEY_BANK_NAME_LIST);
+        Log.d("object", "" + dataSet);
+        return dataSet;
+    }
 
+    public JSONObject bankbranchNameListJsonParams() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID,AppConstant.KEY_BANK_BRANCH_NAME_LIST);
+        Log.d("object", "" + dataSet);
+        return dataSet;
+    }
+
+
+    //The method for opening the registration page and another processes or checks for registering
+    private void ClickSignUp() {
+
+    }
 
     @Override
     public void OnMyResponse(ServerResponse serverResponse) {
@@ -285,57 +191,23 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             String urlType = serverResponse.getApi();
             String status = responseObj.getString(AppConstant.KEY_STATUS);
             String response = responseObj.getString(AppConstant.KEY_RESPONSE);
-         //   String message = responseObj.getString(AppConstant.KEY_MESSAGE);
-            if ("LoginScreen".equals(urlType)) {
-                if (status.equalsIgnoreCase("OK")) {
-                    if (response.equals("LOGIN_SUCCESS")) {
-                        String key = responseObj.getString(AppConstant.KEY_USER);
-                        String user_data = responseObj.getString(AppConstant.USER_DATA);
-                        String decryptedKey = Utils.decrypt(prefManager.getEncryptPass(), key);
-                        String userDataDecrypt = Utils.decrypt(prefManager.getEncryptPass(), user_data);
-                        Log.d("userdatadecry", "" + userDataDecrypt);
-                        jsonObject = new JSONObject(userDataDecrypt);
-
-                        Log.d("userdata", "" + prefManager.getDistrictCode() + prefManager.getBlockCode() + prefManager.getPvCode() + prefManager.getDistrictName() + prefManager.getBlockName() + prefManager.getPvName() + prefManager.getLevels());
-                        prefManager.setUserPassKey(decryptedKey);
-                        showHomeScreen();
-                    } else {
-                        if (response.equals("LOGIN_FAILED")) {
-                            Utils.showAlert(this, "Invalid UserName Or Password");
-                        }
-                    }
-                }
-
-            }
-
-            if ("DistrictList".equals(urlType) && responseObj != null) {
-                if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
-                    loadDistrictList(responseObj.getJSONArray(AppConstant.JSON_DATA));
-                } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("NO_RECORD")) {
-                    Log.d("Record", responseObj.getString(AppConstant.KEY_MESSAGE));
-                }
-                Log.d("DistrictList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
-            }
-
-            if ("BlockList".equals(urlType) && responseObj != null) {
-                if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
-                    loadBlockList(responseObj.getJSONArray(AppConstant.JSON_DATA));
-                } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("NO_RECORD")) {
-                    Log.d("Record", responseObj.getString(AppConstant.KEY_MESSAGE));
-                }
-                Log.d("BlockList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
-            }
-
-            if ("VillageList".equals(urlType) && responseObj != null) {
+            if ("BankNameList".equals(urlType) && responseObj != null) {
                 if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
                     loadVillageList(responseObj.getJSONArray(AppConstant.JSON_DATA));
                 } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("NO_RECORD")) {
                     Log.d("Record", responseObj.getString(AppConstant.KEY_MESSAGE));
                 }
-                Log.d("VillageList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
+                Log.d("BankNameList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
             }
 
-
+            if ("BankBranchList".equals(urlType) && responseObj != null) {
+                if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
+                    loadVillageList(responseObj.getJSONArray(AppConstant.JSON_DATA));
+                } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("NO_RECORD")) {
+                    Log.d("Record", responseObj.getString(AppConstant.KEY_MESSAGE));
+                }
+                Log.d("BankBranchList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -428,31 +300,8 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public void OnError(VolleyError volleyError) {
+        volleyError.printStackTrace();
         Utils.showAlert(this, "Login Again");
-    }
-
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        showHomeScreen();
-//    }
-
-    private void showHomeScreen() {
-        Intent intent = new Intent(LoginScreen.this,AppVersionActivity.class);
-
-        startActivity(intent);
-        finish();
-        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-    }
-
-    public void offline_mode(String name, String pass) {
-        String userName = prefManager.getUserName();
-        String password = prefManager.getUserPassword();
-        if (name.equals(userName) && pass.equals(password)) {
-            showHomeScreen();
-        } else {
-            Utils.showAlert(this, "No data available for offline. Please Turn On Your Network");
-        }
     }
 
 }

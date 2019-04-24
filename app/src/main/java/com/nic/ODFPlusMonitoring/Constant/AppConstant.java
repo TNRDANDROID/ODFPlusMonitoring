@@ -9,13 +9,16 @@ public class AppConstant {
     public static String KEY_APP_CODE = "appcode";
     public static String KEY_ARGUMENTS = "arguments";
     public static String KEY_SERVICE_LIST = "service_list";
-    public static String KEY_INSPECTION_LIST = "inspection_list";
-    public static String KEY_WORK_LIST_BLOCK_WISE = "work_list_block_wise";
-    public static String KEY_WORK_LIST_DISTRICT_FINYEAR_WISE = "work_list_district_finyear_wise";
+    public static String JSON_DATA = "JSON_DATA";
+    public static String KEY_VERSION_CHECK= "version_check";
+
     public static String KEY_DISTRICT_LIST_ALL = "district_list_all";
     public static String KEY_BLOCK_LIST_ALL = "block_list_all";
-    public static String KEY_BLOCK_LIST_DISTRICT_WISE = "block_list_district_wise";
     public static String KEY_VILLAGE_LIST_ALL = "village_list_all";
+    public static String KEY_BANK_NAME_LIST = "Generate_bank_name_json";
+    public static String KEY_BANK_BRANCH_NAME_LIST = "Generate_branch_name_bank_wise_json";
+
+    public static String KEY_BLOCK_LIST_DISTRICT_WISE = "block_list_district_wise";
     public static String KEY_VILLAGE_LIST_DISTRICT_WISE = "village_list_district_wise";
     public static String KEY_VILLAGE_LIST_DISTRICT_BLOCK_WISE = "village_list_district_block_wise";
     public static String KEY_HABITATION_LIST_DISTRICT_WISE = "habitation_list_district_wise";
@@ -52,67 +55,5 @@ public class AppConstant {
 
     public static String SCHEME_NAME = "scheme_name";
     public static String FINANCIAL_YEAR = "fin_year";
-    public static String JSON_DATA = "JSON_DATA";
 
-    public static String SCHEME_ID = "scheme_id";
-    public static String WORK_GROUP_ID = "work_group_id";
-    public static String WORK_TYPE_ID = "work_type_id";
-    public static String WORK_ID = "work_id";
-    public static String WORK_NAME = "work_name";
-    public static String AS_AMOUNT = "as_value";
-    public static String TS_AMOUNT = "ts_value";
-    public static String IS_HIGH_VALUE_PROJECT = "is_high_value";
-    public static String WORK_STAGE_CODE = "work_stage_code";
-    public static String WORK_STAGE_ORDER = "work_stage_order";
-    public static String WORK_SATGE_NAME = "work_stage_name";
-
-    public static String STAGE_LIST = "work_type_stage_link";
-    public static String CURRENT_STAGE = "current_stage_of_work";
-    public static String KEY_OBSERVATION = "master_high_value_project_observation";
-
-    //CAPTURED PHOTO
-    public static String DESCRIPTION = "description";
-    public static String IMAGE = "image";
-    public static String LATITUDE = "latitude";
-    public static String LONGITUDE = "longitude";
-    public static String INSPECTION_ID = "inspection_id";
-    public static String IMAGE_ID = "id";
-
-    //INSPECTION TABLE
-
-    public static String STAGE_OF_WORK_ON_INSPECTION = "stage_of_work_on_inspection";
-    public static String STAGE_OF_WORK_ON_INSPECTION_NAME = "stage_of_work_on_inspection_name";
-    public static String DATE_OF_INSPECTION = "date_of_inspection";
-    public static String INSPECTED_BY = "inspected_by";
-    public static String OBSERVATION = "observation";
-    public static String INSPECTION_REMARK = "inspection_remark";
-    public static String CREATED_DATE = "created_date";
-    public static String CREATED_IMEI_NO = "imei_no";
-    public static String CREATED_USER_NAME = "created_username";
-
-    //Inspection table
-
-    public static String KEY_INSPECTION_LIST_DISTRICT_WISE = "high_value_project_inspection_block_wise";
-    public static String KEY_INSPECTION_LIST_BLOCK_WISE_ACTION = "action_high_value_project_inspection_block_wise";
-    public static String KEY_HIGH_VALUE_PROJECT_INSPECTION_SAVE= "high_value_project_inspection_save";
-    public static String KEY_INSPECTION_LIST_DISTRICT_WISE_IMAGE = "high_value_project_inspection_images_block_wise";
-    public static String KEY_INSPECTION_LIST_DISTRICT_WISE_ACTION = "high_value_project_action_block_wise";
-    public static String KEY_INSPECTION_LIST_BLOCK_WISE_IMAGE_ACTION = "action_high_value_project_inspection_images_block_wise";
-
-    //Observation Table
-
-    public static String OBSERVATION_ID = "id";
-    public static String OBSERVATION_NAME = "observation";
-
-    //Inspection Action Table
-
-    public static String DISTRICT_ACTION = "dist_action";
-    public static String STATE_ACTION = "state_action";
-    public static String SUB_DIV_ACTION = "sub_div_action";
-    public static String DATE_OF_ACTION = "date_of_action";
-    public static String ACTION_TAKEN = "action_taken";
-    public static String ACTION_REMARK = "action_remark";
-    public static String DELETE_FLAG = "delete_flag";
-    public static String KEY_HIGH_VALUE_PROJECT_ACTION_SAVE= "high_value_project_action_save";
-    public static String KEY_VERSION_CHECK= "version_check";
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">www.tnrd.gov.in</domain>
+        <domain includeSubdomains="true">10.163.19.140</domain>
     </domain-config>
 </network-security-config>
