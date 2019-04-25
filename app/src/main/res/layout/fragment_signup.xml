@@ -440,7 +440,7 @@ android:id="@+id/motivator_mobile_no"
                     android:orientation="vertical"
                     android:visibility="visible">
 
-                    <com.nic.ODFPlusMonitoring.Support.MyEditTextView
+                    <android.support.v7.widget.AppCompatAutoCompleteTextView
                         android:id="@+id/motivator_account_tv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -488,7 +488,7 @@ android:id="@+id/motivator_mobile_no"
                     android:orientation="vertical"
                     android:visibility="visible">
 
-                    <com.nic.ODFPlusMonitoring.Support.MyEditTextView
+                    <android.support.v7.widget.AppCompatAutoCompleteTextView
                         android:id="@+id/motivator_bank_tv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -536,7 +536,7 @@ android:id="@+id/motivator_mobile_no"
                     android:orientation="vertical"
                     android:visibility="visible">
 
-                    <com.nic.ODFPlusMonitoring.Support.MyEditTextView
+                    <android.support.v7.widget.AppCompatAutoCompleteTextView
                         android:id="@+id/motivator_branch_tv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -584,7 +584,7 @@ android:id="@+id/motivator_mobile_no"
                     android:orientation="vertical"
                     android:visibility="visible">
 
-                    <com.nic.ODFPlusMonitoring.Support.MyEditTextView
+                    <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
                         android:id="@+id/motivator_ifsc_tv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

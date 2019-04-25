@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -52,11 +53,8 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     private String name, pass, randString;
 
     private MyEditTextView userName;
-    private ShowHidePasswordEditText password;
-
-    TextInputLayout txtInLayoutUsername, txtInLayoutPassword, txtInLayoutRegPassword;
+    private ShowHidePasswordEditText showHidePasswordEditText;
     CheckBox rememberMe;
-    private ShowHidePasswordEditText passwordEditText;
     public static DBHelper dbHelper;
     public static SQLiteDatabase db;
     JSONObject jsonObject;
@@ -77,11 +75,15 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             e.printStackTrace();
         }
         intializeUI();
-        getDistrictList();
-        getBlockList();
-        getVillageList();
-        getBankNameList();
-        getBankBranchList();
+        if (Utils.isOnline()) {
+            // to avoid insertion of data while back
+            Cursor toCheck = getRawEvents("SELECT * FROM " + DBHelper.BANKLIST_TABLE_NAME, null);
+            toCheck.moveToFirst();
+            if (toCheck.getCount() < 1) {
+                fetchAllResponseFromApi();
+            }
+        }
+
     }
 
     public void intializeUI() {
@@ -89,18 +91,18 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         userName = (MyEditTextView) findViewById(R.id.user_name);
         btn_sign_in = (Button) findViewById(R.id.btn_sign_in);
         btn_sign_up = (Button) findViewById(R.id.btn_sign_up);
-        password = (ShowHidePasswordEditText) findViewById(R.id.password);
+        showHidePasswordEditText = (ShowHidePasswordEditText) findViewById(R.id.password);
 
         btn_sign_in.setOnClickListener(this);
         btn_sign_up.setOnClickListener(this);
 
-        password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        userName.setTypeface(FontCache.getInstance(this).getFont(FontCache.Font.REGULAR));
-        password.setTypeface(FontCache.getInstance(this).getFont(FontCache.Font.REGULAR));
-        btn_sign_in.setTypeface(FontCache.getInstance(this).getFont(FontCache.Font.MEDIUM));
-        btn_sign_up.setTypeface(FontCache.getInstance(this).getFont(FontCache.Font.MEDIUM));
+        showHidePasswordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+//        userName.setTypeface(FontCache.getInstance(this).getFont(FontCache.Font.REGULAR));
+//        showHidePasswordEditText.setTypeface(FontCache.getInstance(this).getFont(FontCache.Font.REGULAR));
+//        btn_sign_in.setTypeface(FontCache.getInstance(this).getFont(FontCache.Font.MEDIUM));
+//        btn_sign_up.setTypeface(FontCache.getInstance(this).getFont(FontCache.Font.MEDIUM));
 
-        password.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        showHidePasswordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
                     checkLoginScreen();
@@ -108,7 +110,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                 return false;
             }
         });
-        password.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Avenir-Roman.ttf"));
+        showHidePasswordEditText.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Avenir-Roman.ttf"));
         randString = Utils.randomChar();
 
         try {
@@ -120,6 +122,14 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         }catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void fetchAllResponseFromApi(){
+        getDistrictList();
+        getBlockList();
+        getVillageList();
+        getBankNameList();
+        getBankBranchList();
     }
 
     @Override
@@ -138,7 +148,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         boolean valid = true;
         String username = userName.getText().toString().trim();
         prefManager.setUserName(username);
-        String password = passwordEditText.getText().toString().trim();
+        String password = showHidePasswordEditText.getText().toString().trim();
 
 
         if (username.isEmpty()) {
@@ -154,7 +164,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     private void checkLoginScreen() {
 
         final String username = userName.getText().toString().trim();
-        final String password = passwordEditText.getText().toString().trim();
+        final String password = showHidePasswordEditText.getText().toString().trim();
         prefManager.setUserPassword(password);
 
         if (Utils.isOnline()) {
@@ -204,7 +214,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         params.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         Log.d("user", "" + userName.getText().toString().trim());
 
-        String encryptUserPass = Utils.md5(passwordEditText.getText().toString().trim());
+        String encryptUserPass = Utils.md5(showHidePasswordEditText.getText().toString().trim());
         prefManager.setEncryptPass(encryptUserPass);
         Log.d("md5", "" + encryptUserPass);
 
@@ -557,5 +567,11 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             Utils.showAlert(this, "No data available for offline. Please Turn On Your Network");
         }
     }
+
+    public Cursor getRawEvents(String sql, String string) {
+        Cursor cursor = db.rawQuery(sql, null);
+        return cursor;
+    }
+
 
 }
