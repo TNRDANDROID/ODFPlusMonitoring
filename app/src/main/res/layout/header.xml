@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:customfontdemo="http://schemas.android.com/apk/res-auto">
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="@dimen/_68sdp"
+        android:layout_height="@dimen/_68sdp"
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:background="@mipmap/tamilnadu_logo"
+        android:scaleType="centerCrop" />
+
+    <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+        android:id="@+id/rural"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_below="@+id/imageView1"
+        android:layout_centerInParent="true"
+        android:padding="3dp"
+        android:text="Rural Development"
+        android:textColor="#FFFFFF"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        customfontdemo:fontName="@string/font_medium" />
+
+    <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+        android:id="@+id/amp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rural"
+        android:layout_centerInParent="true"
+        android:padding="3dp"
+        android:text=" &amp;"
+        android:textColor="#FFFFFF"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        customfontdemo:fontName="@string/font_medium" />
+
+    <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+        android:id="@+id/dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/amp"
+        android:layout_centerInParent="true"
+        android:padding="3dp"
+        android:text="Panchayat Raj Department"
+        android:textColor="#FFFFFF"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        customfontdemo:fontName="@string/font_medium" />
+</RelativeLayout>

@@ -5,30 +5,33 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.util.Log;
-import android.view.LayoutInflater;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
+import android.widget.TextView;
 
 import com.android.volley.VolleyError;
-
 import com.nic.ODFPlusMonitoring.Api.Api;
 import com.nic.ODFPlusMonitoring.Api.ApiService;
 import com.nic.ODFPlusMonitoring.Api.ServerResponse;
 import com.nic.ODFPlusMonitoring.Constant.AppConstant;
+import com.nic.ODFPlusMonitoring.DataBase.DBHelper;
 import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
+import com.nic.ODFPlusMonitoring.Support.MyEditTextView;
 import com.nic.ODFPlusMonitoring.Support.ProgressHUD;
 import com.nic.ODFPlusMonitoring.Utils.FontCache;
 import com.nic.ODFPlusMonitoring.Utils.UrlGenerator;
 import com.nic.ODFPlusMonitoring.Utils.Utils;
-import com.nic.ODFPlusMonitoring.DataBase.DBHelper;
 import com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText;
 
 import org.json.JSONArray;
@@ -45,11 +48,11 @@ import java.util.Map;
 
 public class LoginScreen extends AppCompatActivity implements View.OnClickListener, Api.ServerResponseListener {
 
-    private Button login_btn,signUp_btn,register_btn;
+    private Button btn_sign_in,btn_sign_up;
     private String name, pass, randString;
 
-    EditText userName, password, reg_username, reg_password,
-            reg_firstName, reg_lastName, reg_email, reg_confirmemail;
+    private MyEditTextView userName;
+    private ShowHidePasswordEditText password;
 
     TextInputLayout txtInLayoutUsername, txtInLayoutPassword, txtInLayoutRegPassword;
     CheckBox rememberMe;
@@ -83,37 +86,29 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
     public void intializeUI() {
         prefManager = new PrefManager(this);
-        login_btn = (Button) findViewById(R.id.login);
-        signUp_btn = (Button) findViewById(R.id.signUp);
-        userName = (EditText) findViewById(R.id.username);
-        password = findViewById(R.id.password);
+        userName = (MyEditTextView) findViewById(R.id.user_name);
+        btn_sign_in = (Button) findViewById(R.id.btn_sign_in);
+        btn_sign_up = (Button) findViewById(R.id.btn_sign_up);
+        password = (ShowHidePasswordEditText) findViewById(R.id.password);
 
-        txtInLayoutUsername = findViewById(R.id.txtInLayoutUsername);
-        txtInLayoutPassword = findViewById(R.id.txtInLayoutPassword);
-        rememberMe = findViewById(R.id.rememberMe);
+        btn_sign_in.setOnClickListener(this);
+        btn_sign_up.setOnClickListener(this);
 
-//        passwordEditText = (ShowHidePasswordEditText) findViewById(R.id.password);
+        password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        userName.setTypeface(FontCache.getInstance(this).getFont(FontCache.Font.REGULAR));
+        password.setTypeface(FontCache.getInstance(this).getFont(FontCache.Font.REGULAR));
+        btn_sign_in.setTypeface(FontCache.getInstance(this).getFont(FontCache.Font.MEDIUM));
+        btn_sign_up.setTypeface(FontCache.getInstance(this).getFont(FontCache.Font.MEDIUM));
 
-
-        login_btn.setOnClickListener(this);
-        signUp_btn.setOnClickListener(this);
-
-//        passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-//        inputLayoutEmail.setTypeface(FontCache.getInstance(this).getFont(FontCache.Font.REGULAR));
-//        inputLayoutPassword.setTypeface(FontCache.getInstance(this).getFont(FontCache.Font.REGULAR));
-        login_btn.setTypeface(FontCache.getInstance(this).getFont(FontCache.Font.MEDIUM));
-//        inputLayoutEmail.setHintTextAppearance(R.style.InActive);
-//        inputLayoutPassword.setHintTextAppearance(R.style.InActive);
-
-//        passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-//            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-//                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-//                    checkLoginScreen();
-//                }
-//                return false;
-//            }
-//        });
-//        passwordEditText.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Avenir-Roman.ttf"));
+        password.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    checkLoginScreen();
+                }
+                return false;
+            }
+        });
+        password.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Avenir-Roman.ttf"));
         randString = Utils.randomChar();
 
         try {
@@ -130,10 +125,10 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.login:
+            case R.id.btn_sign_in:
                 checkLoginScreen();
                 break;
-            case R.id.signUp:
+            case R.id.btn_sign_up:
                 ClickSignUp();
                 break;
         }
