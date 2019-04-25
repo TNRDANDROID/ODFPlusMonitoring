@@ -22,6 +22,16 @@ public class ODFMonitoringListValue {
     private String OMC_Name;
     private int Branch_Id;
     private String Branch_Name;
+
+    public String getBank_Name() {
+        return Bank_Name;
+    }
+
+    public void setBank_Name(String bank_Name) {
+        Bank_Name = bank_Name;
+    }
+
+    private String Bank_Name;
     private String IFSC_Code;
 
     public int getBranch_Id() {

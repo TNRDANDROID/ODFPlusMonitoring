@@ -39,6 +39,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
+        android:hardwareAccelerated="true"
         android:networkSecurityConfig="@xml/network_security_config">
 
         <uses-library

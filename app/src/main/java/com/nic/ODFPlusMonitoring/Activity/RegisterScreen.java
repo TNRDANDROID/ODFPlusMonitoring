@@ -10,29 +10,32 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 
 import com.android.volley.VolleyError;
 import com.nic.ODFPlusMonitoring.Adapter.AutoSuggestAdapter;
 import com.nic.ODFPlusMonitoring.Api.Api;
-import com.nic.ODFPlusMonitoring.Api.ApiService;
 import com.nic.ODFPlusMonitoring.Api.ServerResponse;
 import com.nic.ODFPlusMonitoring.Constant.AppConstant;
 import com.nic.ODFPlusMonitoring.DataBase.DBHelper;
-
 import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
 import com.nic.ODFPlusMonitoring.Support.MyCustomTextView;
 import com.nic.ODFPlusMonitoring.Support.MyEditTextView;
 import com.nic.ODFPlusMonitoring.Support.ProgressHUD;
-import com.nic.ODFPlusMonitoring.Utils.UrlGenerator;
 import com.nic.ODFPlusMonitoring.Utils.Utils;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -63,13 +66,16 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
     private List<ODFMonitoringListValue> BankDetails = new ArrayList<>();
     private ProgressHUD progressHUD;
     private AutoSuggestAdapter autoSuggestAdapter;
+    private ImageView arrowImage,arrowImageUp;
+    private ScrollView  scrollView;
 
     String pref_Block,pref_district, pref_Village;
     public static DBHelper dbHelper;
     public static SQLiteDatabase db;
     JSONObject jsonObject;
     List<String> array = new ArrayList<String>();
-
+    private Animation animation;
+private LinearLayout childlayout;
 
 
     @Override
@@ -97,8 +103,35 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         motivator_bank_tv = (AppCompatAutoCompleteTextView) findViewById(R.id.motivator_bank_tv);
         motivator_branch_tv = (AppCompatAutoCompleteTextView) findViewById(R.id.motivator_branch_tv);
         motivator_ifsc_tv = (MyCustomTextView) findViewById(R.id.motivator_ifsc_tv);
-
+        scrollView = (ScrollView)findViewById(R.id.scroll_view) ;
+        arrowImage = (ImageView) findViewById(R.id.arrow_image) ;
+        arrowImageUp = (ImageView)findViewById(R.id.arrow_image_up) ;
+        childlayout = (LinearLayout)findViewById(R.id.child_view);
+        arrowImage.setOnClickListener(this);
+        arrowImageUp.setOnClickListener(this);
+        if (childlayout.getMeasuredHeight() > scrollView.getMeasuredHeight()) {
+            showArrowImage();
+        }
+        scrollView.fullScroll(ScrollView.FOCUS_UP);
         btn_register.setOnClickListener(this);
+        scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                View view = (View) scrollView.getChildAt(scrollView.getChildCount() - 1);
+                int diffBottom = (view.getBottom() - (scrollView.getHeight() + scrollView.getScrollY()));
+
+                if (diffBottom == 0) {
+                    arrowImage.setVisibility(View.GONE);
+                    arrowImage.clearAnimation();
+                } else if (scrollView.getScrollY() == 0) {
+                    arrowImageUp.setVisibility(View.GONE);
+                    arrowImageUp.clearAnimation();
+                } else {
+                    showArrowImage();
+                    showUpArrowImage();
+                }
+            }
+        });
 //        getBankNameList();
 //        getBankBranchList();
         autoCompleteApiBranch();
@@ -109,6 +142,12 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         switch (v.getId()) {
             case R.id.btn_register:
                 validateMotivatorDetails();
+                break;
+            case R.id.arrow_image:
+                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                break;
+            case R.id.arrow_image_up:
+                scrollView.fullScroll(ScrollView.FOCUS_UP);
                 break;
         }
     }
@@ -123,7 +162,8 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view,
                                             int position, long id) {
-                        motivator_bank_tv.setText(autoSuggestAdapter.getObject(position));
+                        prefManager.setKeyAutocompleteSelectedBankName(motivator_bank_tv.getText().toString());
+                       Log.d("ODF",""+(motivator_bank_tv.getText().toString()));
                     }
                 });
 
@@ -185,6 +225,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                     String bank_name = BankList.getString(BankList.getColumnIndexOrThrow(AppConstant.BANK_NAME));
                     odfMonitoringListValue.setBank_Id(bank_id);
                     odfMonitoringListValue.setOMC_Name(omc_name);
+                    odfMonitoringListValue.setBank_Name(bank_name);
                     array.add(bank_name);
                     BankDetails.add(odfMonitoringListValue);
                 } while (BankList.moveToNext());
@@ -200,6 +241,25 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         return cursor;
     }
 
+    public void showArrowImage() {
+        arrowImage.setVisibility(View.VISIBLE);
+        animation = new AlphaAnimation((float) 0.5, 0); // Change alpha from fully visible to invisible
+        animation.setDuration(500); // duration - half a second
+        animation.setInterpolator(new LinearInterpolator()); // do not alter
+        animation.setRepeatCount(Animation.INFINITE); // Repeat animation
+        animation.setRepeatMode(Animation.REVERSE); // Reverse animation at the
+        arrowImage.startAnimation(animation);
+    }
+
+    public void showUpArrowImage() {
+        arrowImageUp.setVisibility(View.VISIBLE);
+        animation = new AlphaAnimation((float) 0.5, 0); // Change alpha from fully visible to invisible
+        animation.setDuration(500); // duration - half a second
+        animation.setInterpolator(new LinearInterpolator()); // do not alter
+        animation.setRepeatCount(Animation.INFINITE); // Repeat animation
+        animation.setRepeatMode(Animation.REVERSE); // Reverse animation at the
+        arrowImageUp.startAnimation(animation);
+    }
 
 
     @Override
