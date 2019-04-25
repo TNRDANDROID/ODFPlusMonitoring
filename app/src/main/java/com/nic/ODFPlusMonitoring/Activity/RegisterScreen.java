@@ -106,7 +106,8 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
     public void getDistrictList() {
         try {
             new ApiService(this).makeJSONObjectRequest("DistrictList", Api.Method.POST, UrlGenerator.getOpenUrl(), districtListJsonParams(), "not cache", this);
-        } catch (JSONException e) {
+        } catch (JSONException e)
+        {
             e.printStackTrace();
         }
     }
