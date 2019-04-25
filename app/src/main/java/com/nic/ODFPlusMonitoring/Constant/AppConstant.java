@@ -52,6 +52,18 @@ public class AppConstant {
     public static String LEVELS = "levels";
     public static String SCHEME_SEQUENTIAL_ID = "scheme_seq_id";
 
+    /******** BANK NAME TABLE *****/
+
+    public static String BANK_ID = "bank_id";
+    public static String OMC_NAME = "omc_name";
+    public static String BANK_NAME = "bank_name";
+
+    /******* BANK BRANCH TABLE ****/
+
+    public static String BRANCH_ID = "branch_id";
+    public static String BRANCH_NAME = "branch";
+    public static String IFSC_CODE = "ifsc";
+
 
     public static String SCHEME_NAME = "scheme_name";
     public static String FINANCIAL_YEAR = "fin_year";

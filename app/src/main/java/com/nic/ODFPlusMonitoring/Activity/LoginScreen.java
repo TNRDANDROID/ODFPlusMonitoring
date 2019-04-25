@@ -74,7 +74,11 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             e.printStackTrace();
         }
         intializeUI();
+        getDistrictList();
+        getBlockList();
         getVillageList();
+        getBankNameList();
+        getBankBranchList();
     }
 
     public void intializeUI() {
@@ -116,6 +120,8 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             db.delete(DBHelper.DISTRICT_TABLE_NAME, null, null);
             db.delete(DBHelper.BLOCK_TABLE_NAME, null, null);
             db.delete(DBHelper.VILLAGE_TABLE_NAME, null, null);
+            db.delete(DBHelper.BANKLIST_TABLE_NAME, null, null);
+            db.delete(DBHelper.BANKLIST_BRANCH_TABLE_NAME, null, null);
         }catch (Exception e) {
             e.printStackTrace();
         }
@@ -254,6 +260,22 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         }
     }
 
+    public void getBankNameList() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("BankNameList", Api.Method.POST, UrlGenerator.getOpenUrl(), bankNameListJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getBankBranchList() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("BankBranchList", Api.Method.POST, UrlGenerator.getOpenUrl(), bankbranchNameListJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public JSONObject districtListJsonParams() throws JSONException {
         JSONObject dataSet = new JSONObject();
@@ -276,8 +298,19 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         return dataSet;
     }
 
+    public JSONObject bankNameListJsonParams() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID,AppConstant.KEY_BANK_NAME_LIST);
+        Log.d("object", "" + dataSet);
+        return dataSet;
+    }
 
-
+    public JSONObject bankbranchNameListJsonParams() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID,AppConstant.KEY_BANK_BRANCH_NAME_LIST);
+        Log.d("object", "" + dataSet);
+        return dataSet;
+    }
     @Override
     public void OnMyResponse(ServerResponse serverResponse) {
         try {
@@ -335,6 +368,23 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                 Log.d("VillageList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
             }
 
+            if ("BankNameList".equals(urlType) && responseObj != null) {
+                if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
+                    loadBankNameList(responseObj.getJSONArray(AppConstant.JSON_DATA));
+                } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("NO_RECORD")) {
+                    Log.d("Record", responseObj.getString(AppConstant.KEY_MESSAGE));
+                }
+                Log.d("BankNameList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
+            }
+
+            if ("BankBranchList".equals(urlType) && responseObj != null) {
+                if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
+                    loadBankbranchList(responseObj.getJSONArray(AppConstant.JSON_DATA));
+                } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("NO_RECORD")) {
+                    Log.d("Record", responseObj.getString(AppConstant.KEY_MESSAGE));
+                }
+                Log.d("BankBranchList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
+            }
 
 
         } catch (JSONException e) {
@@ -425,6 +475,64 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         }
     }
 
+    private void loadBankNameList(JSONArray jsonArray) {
+        progressHUD = ProgressHUD.show(this, "Loading...", true, false, null);
+        try {
+            for (int i = 0; i < jsonArray.length(); i++) {
+                Integer bank_id = jsonArray.getJSONObject(i).getInt(AppConstant.BANK_ID);
+                String omc_name = jsonArray.getJSONObject(i).getString(AppConstant.OMC_NAME);
+                String bank_name = jsonArray.getJSONObject(i).getString(AppConstant.BANK_NAME);
+
+                ContentValues bankListValues = new ContentValues();
+                bankListValues.put(AppConstant.BANK_ID, bank_id);
+                bankListValues.put(AppConstant.OMC_NAME, omc_name);
+                bankListValues.put(AppConstant.BANK_NAME, bank_name);
+
+                LoginScreen.db.insert(DBHelper.BANKLIST_TABLE_NAME, null, bankListValues);
+                Log.d("LocalDBBankList", "" + bankListValues);
+
+            }
+
+        } catch (JSONException j) {
+            j.printStackTrace();
+        } catch (ArrayIndexOutOfBoundsException a) {
+            a.printStackTrace();
+        }
+        if (progressHUD != null) {
+            progressHUD.cancel();
+        }
+    }
+
+    private void loadBankbranchList(JSONArray jsonArray) {
+        progressHUD = ProgressHUD.show(this, "Loading...", true, false, null);
+        try {
+            for (int i = 0; i < jsonArray.length(); i++) {
+                Integer bank_id = jsonArray.getJSONObject(i).getInt(AppConstant.BANK_ID);
+                Integer branch_id = jsonArray.getJSONObject(i).getInt(AppConstant.BRANCH_ID);
+                String branch = jsonArray.getJSONObject(i).getString(AppConstant.BRANCH_NAME);
+                String ifsc = jsonArray.getJSONObject(i).getString(AppConstant.IFSC_CODE);
+
+                ContentValues branchListValues = new ContentValues();
+                branchListValues.put(AppConstant.BANK_ID, bank_id);
+                branchListValues.put(AppConstant.BRANCH_ID, branch_id);
+                branchListValues.put(AppConstant.BRANCH_NAME, branch);
+                branchListValues.put(AppConstant.IFSC_CODE, ifsc);
+
+
+                LoginScreen.db.insert(DBHelper.BANKLIST_BRANCH_TABLE_NAME, null, branchListValues);
+                Log.d("LocalDBBranchList", "" + branchListValues);
+
+            }
+
+        } catch (JSONException j) {
+            j.printStackTrace();
+        } catch (ArrayIndexOutOfBoundsException a) {
+            a.printStackTrace();
+        }
+        if (progressHUD != null) {
+            progressHUD.cancel();
+        }
+    }
 
     @Override
     public void OnError(VolleyError volleyError) {

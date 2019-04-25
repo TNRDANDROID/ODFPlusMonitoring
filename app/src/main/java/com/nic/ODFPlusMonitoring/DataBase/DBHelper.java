@@ -13,6 +13,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String BLOCK_TABLE_NAME = "ODF_BlockTable";
     public static final String VILLAGE_TABLE_NAME = "ODF_villageTable";
     public static final String BANKLIST_TABLE_NAME = "ODF_BankName";
+    public static final String BANKLIST_BRANCH_TABLE_NAME = "ODF_BankName_Branch";
 
     private Context context;
 
@@ -44,6 +45,12 @@ public class DBHelper extends SQLiteOpenHelper {
                 + "bank_id INTEGER," +
                 "omc_name TEXT," +
                 "bank_name TEXT)");
+
+        db.execSQL("CREATE TABLE " + BANKLIST_BRANCH_TABLE_NAME  + " ("
+                + "bank_id INTEGER," +
+                "branch_id INTEGER," +
+                "branch TEXT," +
+                "ifsc TEXT)");
     }
 
     @Override
