@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +27,8 @@ import com.nic.ODFPlusMonitoring.Api.ApiService;
 import com.nic.ODFPlusMonitoring.Api.ServerResponse;
 import com.nic.ODFPlusMonitoring.Constant.AppConstant;
 import com.nic.ODFPlusMonitoring.DataBase.DBHelper;
+import com.nic.ODFPlusMonitoring.DataBase.dbData;
+import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
 import com.nic.ODFPlusMonitoring.Support.MyEditTextView;
@@ -39,6 +42,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,26 +66,22 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     String sb;
     private PrefManager prefManager;
     private ProgressHUD progressHUD;
+    public dbData dbData = new dbData(this);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         setContentView(R.layout.login_screen);
-        try {
-            dbHelper = new DBHelper(this);
-            db = dbHelper.getWritableDatabase();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         intializeUI();
         if (Utils.isOnline()) {
+            fetchAllResponseFromApi();
             // to avoid insertion of data while back
-            Cursor toCheck = getRawEvents("SELECT * FROM " + DBHelper.BANKLIST_TABLE_NAME, null);
-            toCheck.moveToFirst();
-            if (toCheck.getCount() < 1) {
-                fetchAllResponseFromApi();
-            }
+//            Cursor toCheck = getRawEvents("SELECT * FROM " + DBHelper.BANKLIST_TABLE_NAME, null);
+//            toCheck.moveToFirst();
+//            if (toCheck.getCount() < 1) {
+//                fetchAllResponseFromApi();
+//            }
         }
 
     }
@@ -348,7 +348,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
             if ("DistrictList".equals(urlType) && responseObj != null) {
                 if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
-                    loadDistrictList(responseObj.getJSONArray(AppConstant.JSON_DATA));
+                   new  InsertDistrictTask().execute(responseObj.getJSONArray(AppConstant.JSON_DATA));
                 } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("NO_RECORD")) {
                     Log.d("Record", responseObj.getString(AppConstant.KEY_MESSAGE));
                 }
@@ -357,7 +357,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
             if ("BlockList".equals(urlType) && responseObj != null) {
                 if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
-                    loadBlockList(responseObj.getJSONArray(AppConstant.JSON_DATA));
+                    new  InsertBlockTask().execute(responseObj.getJSONArray(AppConstant.JSON_DATA));
                 } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("NO_RECORD")) {
                     Log.d("Record", responseObj.getString(AppConstant.KEY_MESSAGE));
                 }
@@ -366,7 +366,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
             if ("VillageList".equals(urlType) && responseObj != null) {
                 if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
-                    loadVillageList(responseObj.getJSONArray(AppConstant.JSON_DATA));
+                    new  InsertVillageTask().execute(responseObj.getJSONArray(AppConstant.JSON_DATA));
                 } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("NO_RECORD")) {
                     Log.d("Record", responseObj.getString(AppConstant.KEY_MESSAGE));
                 }
@@ -375,7 +375,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
             if ("BankNameList".equals(urlType) && responseObj != null) {
                 if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
-                    loadBankNameList(responseObj.getJSONArray(AppConstant.JSON_DATA));
+                    new  InsertBankNameTask().execute(responseObj.getJSONArray(AppConstant.JSON_DATA));
                 } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("NO_RECORD")) {
                     Log.d("Record", responseObj.getString(AppConstant.KEY_MESSAGE));
                 }
@@ -384,7 +384,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
             if ("BankBranchList".equals(urlType) && responseObj != null) {
                 if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
-                    loadBankbranchList(responseObj.getJSONArray(AppConstant.JSON_DATA));
+                    new  InsertBankBranchTask().execute(responseObj.getJSONArray(AppConstant.JSON_DATA));
                 } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("NO_RECORD")) {
                     Log.d("Record", responseObj.getString(AppConstant.KEY_MESSAGE));
                 }
@@ -397,146 +397,160 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-    private void loadDistrictList(JSONArray jsonArray) {
-        progressHUD = ProgressHUD.show(this, "Loading...", true, false, null);
-        try {
-            for (int i = 0; i < jsonArray.length(); i++) {
-                String districtCode = jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE);
-                String districtName = jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_NAME);
+    public class InsertDistrictTask extends AsyncTask<JSONArray ,Void ,Void> {
 
-                ContentValues districtListValues = new ContentValues();
-                districtListValues.put(AppConstant.DISTRICT_CODE, districtCode);
-                districtListValues.put(AppConstant.DISTRICT_NAME, districtName);
+        @Override
+        protected Void doInBackground(JSONArray... params) {
+            dbData.open();
+            ArrayList<ODFMonitoringListValue> districtlist_count = dbData.getAll_District();
+            if (districtlist_count.size() <= 0) {
+                if (params.length > 0) {
+                    JSONArray jsonArray = new JSONArray();
+                    jsonArray = params[0];
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        ODFMonitoringListValue districtListValue = new ODFMonitoringListValue();
+                        try {
+                            districtListValue.setDistictCode(jsonArray.getJSONObject(i).getInt(AppConstant.DISTRICT_CODE));
+                            districtListValue.setDistrictName(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_NAME));
 
-                LoginScreen.db.insert(DBHelper.DISTRICT_TABLE_NAME, null, districtListValues);
-                Log.d("LocalDBdistrictList", "" + districtListValues);
+                            dbData.insertDistrict(districtListValue);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
 
             }
-        } catch (JSONException j) {
-            j.printStackTrace();
-        } catch (ArrayIndexOutOfBoundsException a) {
-            a.printStackTrace();
+            return null;
         }
-        if (progressHUD != null) {
-            progressHUD.cancel();
-        }
+
     }
 
-    private void loadBlockList(JSONArray jsonArray) {
-        progressHUD = ProgressHUD.show(this, "Loading...", true, false, null);
-        try {
-            for (int i = 0; i < jsonArray.length(); i++) {
-                String districtCode = jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE);
-                String blockCode = jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE);
-                String blockName = jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_NAME);
+    public class InsertBlockTask extends AsyncTask<JSONArray ,Void ,Void> {
 
-                ContentValues blockListValues = new ContentValues();
-                blockListValues.put(AppConstant.DISTRICT_CODE, districtCode);
-                blockListValues.put(AppConstant.BLOCK_CODE, blockCode);
-                blockListValues.put(AppConstant.BLOCK_NAME, blockName);
+        @Override
+        protected Void doInBackground(JSONArray... params) {
+            dbData.open();
+            ArrayList<ODFMonitoringListValue> blocklist_count = dbData.getAll_Block();
+            if (blocklist_count.size() <= 0) {
+                if (params.length > 0) {
+                    JSONArray jsonArray = new JSONArray();
+                    jsonArray = params[0];
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        ODFMonitoringListValue blocktListValue = new ODFMonitoringListValue();
+                        try {
+                            blocktListValue.setDistictCode(jsonArray.getJSONObject(i).getInt(AppConstant.DISTRICT_CODE));
+                            blocktListValue.setBlockCode(jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE));
+                            blocktListValue.setBlockName(jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_NAME));
 
-                LoginScreen.db.insert(DBHelper.BLOCK_TABLE_NAME, null, blockListValues);
-                Log.d("LocalDBblockList", "" + blockListValues);
+                            dbData.insertBlock(blocktListValue);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
 
             }
-        } catch (JSONException j) {
-            j.printStackTrace();
-        } catch (ArrayIndexOutOfBoundsException a) {
-            a.printStackTrace();
+            return null;
         }
-        if (progressHUD != null) {
-            progressHUD.cancel();
-        }
+
     }
 
-    private void loadVillageList(JSONArray jsonArray) {
-        progressHUD = ProgressHUD.show(this, "Loading...", true, false, null);
-        try {
-            for (int i = 0; i < jsonArray.length(); i++) {
-                String districtCode = jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE);
-                String blockCode = jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE);
-                String pvcode = jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE);
-                String pvname = jsonArray.getJSONObject(i).getString(AppConstant.PV_NAME);
+    public class InsertVillageTask extends AsyncTask<JSONArray ,Void ,Void> {
 
-                ContentValues villageListValues = new ContentValues();
-                villageListValues.put(AppConstant.DISTRICT_CODE, districtCode);
-                villageListValues.put(AppConstant.BLOCK_CODE, blockCode);
-                villageListValues.put(AppConstant.PV_CODE, pvcode);
-                villageListValues.put(AppConstant.PV_NAME, pvname);
+        @Override
+        protected Void doInBackground(JSONArray... params) {
+            dbData.open();
+            ArrayList<ODFMonitoringListValue> villagelist_count = dbData.getAll_Village();
+            if (villagelist_count.size() <= 0) {
+                if (params.length > 0) {
+                    JSONArray jsonArray = new JSONArray();
+                    jsonArray = params[0];
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        ODFMonitoringListValue villageListValue = new ODFMonitoringListValue();
+                        try {
+                            villageListValue.setDistictCode(jsonArray.getJSONObject(i).getInt(AppConstant.DISTRICT_CODE));
+                            villageListValue.setBlockCode(jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE));
+                            villageListValue.setPvCode(jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE));
+                            villageListValue.setPvName(jsonArray.getJSONObject(i).getString(AppConstant.PV_NAME));
 
+                            dbData.insertVillage(villageListValue);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
-                LoginScreen.db.insert(DBHelper.VILLAGE_TABLE_NAME, null, villageListValues);
-                Log.d("LocalDBVilageList", "" + villageListValues);
+                    }
+                }
 
             }
+            return null;
+        }
 
-        } catch (JSONException j) {
-            j.printStackTrace();
-        } catch (ArrayIndexOutOfBoundsException a) {
-            a.printStackTrace();
-        }
-        if (progressHUD != null) {
-            progressHUD.cancel();
-        }
     }
 
-    private void loadBankNameList(JSONArray jsonArray) {
-        progressHUD = ProgressHUD.show(this, "Loading...", true, false, null);
-        try {
-            for (int i = 0; i < jsonArray.length(); i++) {
-                Integer bank_id = jsonArray.getJSONObject(i).getInt(AppConstant.BANK_ID);
-                String omc_name = jsonArray.getJSONObject(i).getString(AppConstant.OMC_NAME);
-                String bank_name = jsonArray.getJSONObject(i).getString(AppConstant.BANK_NAME);
+    public class InsertBankNameTask extends AsyncTask<JSONArray ,Void ,Void> {
 
-                ContentValues bankListValues = new ContentValues();
-                bankListValues.put(AppConstant.BANK_ID, bank_id);
-                bankListValues.put(AppConstant.OMC_NAME, omc_name);
-                bankListValues.put(AppConstant.BANK_NAME, bank_name);
+        @Override
+        protected Void doInBackground(JSONArray... params) {
+            dbData.open();
+            ArrayList<ODFMonitoringListValue> banknamelist_count = dbData.getAll_BankName();
+            if (banknamelist_count.size() <= 0) {
+                if (params.length > 0) {
+                    JSONArray jsonArray = new JSONArray();
+                    jsonArray = params[0];
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        ODFMonitoringListValue bankListValue = new ODFMonitoringListValue();
+                        try {
+                            bankListValue.setBank_Id(jsonArray.getJSONObject(i).getInt(AppConstant.BANK_ID));
+                            bankListValue.setOMC_Name(jsonArray.getJSONObject(i).getString(AppConstant.OMC_NAME));
+                            bankListValue.setBank_Name(jsonArray.getJSONObject(i).getString(AppConstant.BANK_NAME));
 
-                LoginScreen.db.insert(DBHelper.BANKLIST_TABLE_NAME, null, bankListValues);
-                Log.d("LocalDBBankList", "" + bankListValues);
+                            dbData.insertBankName(bankListValue);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
 
             }
+            return null;
+        }
 
-        } catch (JSONException j) {
-            j.printStackTrace();
-        } catch (ArrayIndexOutOfBoundsException a) {
-            a.printStackTrace();
-        }
-        if (progressHUD != null) {
-            progressHUD.cancel();
-        }
     }
 
-    private void loadBankbranchList(JSONArray jsonArray) {
-        progressHUD = ProgressHUD.show(this, "Loading...", true, false, null);
-        try {
-            for (int i = 0; i < jsonArray.length(); i++) {
-                Integer bank_id = jsonArray.getJSONObject(i).getInt(AppConstant.BANK_ID);
-                Integer branch_id = jsonArray.getJSONObject(i).getInt(AppConstant.BRANCH_ID);
-                String branch = jsonArray.getJSONObject(i).getString(AppConstant.BRANCH_NAME);
-                String ifsc = jsonArray.getJSONObject(i).getString(AppConstant.IFSC_CODE);
+    public class InsertBankBranchTask extends AsyncTask<JSONArray ,Void ,Void> {
 
-                ContentValues branchListValues = new ContentValues();
-                branchListValues.put(AppConstant.BANK_ID, bank_id);
-                branchListValues.put(AppConstant.BRANCH_ID, branch_id);
-                branchListValues.put(AppConstant.BRANCH_NAME, branch);
-                branchListValues.put(AppConstant.IFSC_CODE, ifsc);
+        @Override
+        protected Void doInBackground(JSONArray... params) {
+            dbData.open();
+            ArrayList<ODFMonitoringListValue> branchnamelist_count = dbData.getAll_BranchName();
+            if (branchnamelist_count.size() <= 0) {
+                if (params.length > 0) {
+                    JSONArray jsonArray = new JSONArray();
+                    jsonArray = params[0];
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        ODFMonitoringListValue branchListValue = new ODFMonitoringListValue();
+                        try {
+                            branchListValue.setBank_Id(jsonArray.getJSONObject(i).getInt(AppConstant.BANK_ID));
+                            branchListValue.setBranch_Id(jsonArray.getJSONObject(i).getInt(AppConstant.BRANCH_ID));
+                            branchListValue.setBranch_Name(jsonArray.getJSONObject(i).getString(AppConstant.BRANCH_NAME));
+                            branchListValue.setIFSC_Code(jsonArray.getJSONObject(i).getString(AppConstant.IFSC_CODE));
 
+                            dbData.insertBranchName(branchListValue);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
-                LoginScreen.db.insert(DBHelper.BANKLIST_BRANCH_TABLE_NAME, null, branchListValues);
-                Log.d("LocalDBBranchList", "" + branchListValues);
+                    }
+                }
 
             }
+            return null;
+        }
 
-        } catch (JSONException j) {
-            j.printStackTrace();
-        } catch (ArrayIndexOutOfBoundsException a) {
-            a.printStackTrace();
-        }
-        if (progressHUD != null) {
-            progressHUD.cancel();
-        }
     }
 
     @Override

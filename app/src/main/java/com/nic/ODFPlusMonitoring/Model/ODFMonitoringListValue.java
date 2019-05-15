@@ -8,7 +8,9 @@ import android.graphics.Bitmap;
 
 public class ODFMonitoringListValue {
 
-    private String distictCode;
+    private int distictCode;
+    private String districtName;
+
     private String blockCode;
     private String VillageListDistrictCode;
     private String VillageListBlockCode;
@@ -16,12 +18,29 @@ public class ODFMonitoringListValue {
     private String Latitude;
     private String selectedBlockCode;
 
-
-
     private int Bank_Id;
     private String OMC_Name;
     private int Branch_Id;
     private String Branch_Name;
+    private String PvCode;
+    private String PvName;
+
+    private String blockName;
+
+
+
+    private String Bank_Name;
+    private String IFSC_Code;
+
+    private String Name;
+
+    public String getPvName() {
+        return PvName;
+    }
+
+    public void setPvName(String pvName) {
+        PvName = pvName;
+    }
 
     public String getBank_Name() {
         return Bank_Name;
@@ -31,8 +50,6 @@ public class ODFMonitoringListValue {
         Bank_Name = bank_Name;
     }
 
-    private String Bank_Name;
-    private String IFSC_Code;
 
     public int getBranch_Id() {
         return Branch_Id;
@@ -58,15 +75,6 @@ public class ODFMonitoringListValue {
         this.IFSC_Code = IFSC_Code;
     }
 
-    private String VillageListPvCode;
-    private String VillageListPvName;
-
-
-    private String pvCode;
-    private String blockName;
-
-    private String districtName;
-
     public String getDistrictName() {
         return districtName;
     }
@@ -84,14 +92,12 @@ public class ODFMonitoringListValue {
         Name = name;
     }
 
-    private String Name;
 
-
-    public String getDistictCode() {
+    public int getDistictCode() {
         return distictCode;
     }
 
-    public void setDistictCode(String distictCode) {
+    public void setDistictCode(int distictCode) {
         this.distictCode = distictCode;
     }
 
@@ -174,28 +180,12 @@ public class ODFMonitoringListValue {
         VillageListBlockCode = villageListBlockCode;
     }
 
-    public String getVillageListPvCode() {
-        return VillageListPvCode;
-    }
-
-    public void setVillageListPvCode(String villageListPvCode) {
-        VillageListPvCode = villageListPvCode;
-    }
-
-    public String getVillageListPvName() {
-        return VillageListPvName;
-    }
-
-    public void setVillageListPvName(String villageListPvName) {
-        VillageListPvName = villageListPvName;
-    }
-
     public String getPvCode() {
-        return pvCode;
+        return PvCode;
     }
 
     public void setPvCode(String pvCode) {
-        this.pvCode = pvCode;
+        this.PvCode = pvCode;
     }
 
     public String getOMC_Name() {

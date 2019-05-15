@@ -122,7 +122,7 @@
                     android:background="@drawable/add_button"
                     android:text="Sign in"
                     android:textAllCaps="false"
-                    android:textColor="@android:color/holo_red_dark"
+                    android:textColor="@android:color/white"
                     android:textSize="@dimen/menu_title_size" />
 
                 <Button
@@ -132,10 +132,10 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginLeft="@dimen/margin"
                     android:layout_marginRight="@dimen/margin"
-                    android:background="@drawable/add_button"
+                    android:background="@drawable/add_button_new"
                     android:text="Sign up"
                     android:textAllCaps="false"
-                    android:textColor="@android:color/holo_red_dark"
+                    android:textColor="@android:color/white"
                     android:textSize="@dimen/menu_title_size" />
 
 
@@ -167,7 +167,7 @@
         android:padding="@dimen/_13sdp"
         android:text="Sofware Designed &amp; Developed by NIC"
         android:textAlignment="center"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
         android:textSize="@dimen/_15sdp"
         android:textStyle="bold" />
 

@@ -44,9 +44,10 @@ public class AppConstant {
     public static String IMAGE_GROUP_ID = "image_group_id";
 
     public static String DISTRICT_CODE = "dcode";
+    public static String DISTRICT_NAME = "dname";
+
     public static String BLOCK_CODE = "bcode";
     public static String PV_CODE = "pvcode";
-    public static String DISTRICT_NAME = "dname";
     public static String BLOCK_NAME = "bname";
     public static String PV_NAME = "pvname";
     public static String LEVELS = "levels";

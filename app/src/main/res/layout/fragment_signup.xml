@@ -392,7 +392,7 @@
                     android:visibility="visible">
 
                     <com.nic.ODFPlusMonitoring.Support.MyEditTextView
-android:id="@+id/motivator_mobile_no"
+                        android:id="@+id/motivator_mobile_no"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"

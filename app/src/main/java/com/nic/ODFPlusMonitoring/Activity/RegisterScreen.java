@@ -164,6 +164,18 @@ private LinearLayout childlayout;
                                             int position, long id) {
                         prefManager.setKeyAutocompleteSelectedBankName(motivator_bank_tv.getText().toString());
                        Log.d("ODF",""+(motivator_bank_tv.getText().toString()));
+                  //     Log.d("BANK_ID",""+BankDetails.get(position).getBank_Id());
+
+                        String selection = (String) parent.getItemAtPosition(position);
+                        int pos = -1;
+
+                        for (int i = 0; i < array.size(); i++) {
+                            if (array.get(i).equals(selection)) {
+                                pos = i;
+                                break;
+                            }
+                        }
+                        System.out.println("Position " + pos); //check it now in Logcat
                     }
                 });
 
@@ -235,11 +247,11 @@ private LinearLayout childlayout;
         autoSuggestAdapter.notifyDataSetChanged();
     }
 
-
     public Cursor getRawEvents(String sql, String string) {
         Cursor cursor = db.rawQuery(sql, null);
         return cursor;
     }
+
 
     public void showArrowImage() {
         arrowImage.setVisibility(View.VISIBLE);

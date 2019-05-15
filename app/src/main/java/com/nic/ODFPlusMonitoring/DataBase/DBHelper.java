@@ -60,6 +60,8 @@ public class DBHelper extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + DISTRICT_TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + BLOCK_TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + VILLAGE_TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + BANKLIST_TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + BANKLIST_BRANCH_TABLE_NAME);
             onCreate(db);
         }
     }
