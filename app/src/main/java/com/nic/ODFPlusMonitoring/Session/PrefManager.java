@@ -42,6 +42,7 @@ public class PrefManager {
     private static final String KEY_SPINNER_SELECTED_BLOCKCODE = "spinner_selected_block_code";
     private static final String KEY_SPINNER_SELECTED_PVCODE = "spinner_selected_pv_code";
     private static final String KEY_AUTOCOMPLETE_SELECTED_BANK_NAME = "autocomplete_selected_bank_name";
+    private static final String KEY_AUTOCOMPLETE_SELECTED_BANK_ID = "autocomplete_selected_bank_id";
     private static final String KEY_SPINNER_SELECTED_FINYEAR = "spinner_selected_finyear";
     private static final String KEY_BLOCK_CODE_JSON = "block_code_json";
     private static final String KEY_VILLAGE_CODE_JSON = "village_code_json";
@@ -217,6 +218,17 @@ public class PrefManager {
 
     public String getKeyAutocompleteSelectedBankName() {
         return pref.getString(KEY_AUTOCOMPLETE_SELECTED_BANK_NAME, null);
+    }
+
+
+    public Integer setKeyAutocompleteSelectedBankID(Integer userName) {
+        editor.putInt(KEY_AUTOCOMPLETE_SELECTED_BANK_ID, userName);
+        editor.commit();
+        return userName;
+    }
+
+    public Integer getKeyAutocompleteSelectedBankID() {
+        return pref.getInt(KEY_AUTOCOMPLETE_SELECTED_BANK_ID, 0);
     }
 
     public void setKeySpinnerSelectedFinyear(String userName) {

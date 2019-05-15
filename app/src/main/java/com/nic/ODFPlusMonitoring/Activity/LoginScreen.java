@@ -1,7 +1,7 @@
 package com.nic.ODFPlusMonitoring.Activity;
 
 import android.app.AlertDialog;
-import android.content.ContentValues;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -9,7 +9,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
@@ -33,7 +32,6 @@ import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
 import com.nic.ODFPlusMonitoring.Support.MyEditTextView;
 import com.nic.ODFPlusMonitoring.Support.ProgressHUD;
-import com.nic.ODFPlusMonitoring.Utils.FontCache;
 import com.nic.ODFPlusMonitoring.Utils.UrlGenerator;
 import com.nic.ODFPlusMonitoring.Utils.Utils;
 import com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText;
@@ -113,15 +111,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         showHidePasswordEditText.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Avenir-Roman.ttf"));
         randString = Utils.randomChar();
 
-        try {
-            db.delete(DBHelper.DISTRICT_TABLE_NAME, null, null);
-            db.delete(DBHelper.BLOCK_TABLE_NAME, null, null);
-            db.delete(DBHelper.VILLAGE_TABLE_NAME, null, null);
-            db.delete(DBHelper.BANKLIST_TABLE_NAME, null, null);
-            db.delete(DBHelper.BANKLIST_BRANCH_TABLE_NAME, null, null);
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
+
     }
 
     public void fetchAllResponseFromApi(){
@@ -549,6 +539,21 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
             }
             return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressHUD = ProgressHUD.show(LoginScreen.this, "Downloading", true, false, null);
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if(progressHUD!=null){
+                progressHUD.cancel();
+            }
+
         }
 
     }

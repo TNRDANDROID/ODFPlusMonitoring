@@ -42,6 +42,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.nic.ODFPlusMonitoring.DataBase.DBHelper.BANKLIST_BRANCH_TABLE_NAME;
 import static com.nic.ODFPlusMonitoring.DataBase.DBHelper.BANKLIST_TABLE_NAME;
 
 /**
@@ -64,6 +65,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
     private List<ODFMonitoringListValue> District = new ArrayList<>();
     private List<ODFMonitoringListValue> Village = new ArrayList<>();
     private List<ODFMonitoringListValue> BankDetails = new ArrayList<>();
+    private List<ODFMonitoringListValue> BranchDetails = new ArrayList<>();
     private ProgressHUD progressHUD;
     private AutoSuggestAdapter autoSuggestAdapter;
     private ImageView arrowImage,arrowImageUp;
@@ -74,6 +76,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
     public static SQLiteDatabase db;
     JSONObject jsonObject;
     List<String> array = new ArrayList<String>();
+    List<String> brancharray = new ArrayList<String>();
     private Animation animation;
 private LinearLayout childlayout;
 
@@ -134,7 +137,8 @@ private LinearLayout childlayout;
         });
 //        getBankNameList();
 //        getBankBranchList();
-        autoCompleteApiBranch();
+        autoCompleteApiBankName();
+
     }
 
     @Override
@@ -152,7 +156,7 @@ private LinearLayout childlayout;
         }
     }
 
-    public void autoCompleteApiBranch() {
+    public void autoCompleteApiBankName() {
         autoSuggestAdapter = new AutoSuggestAdapter(this,
                 android.R.layout.simple_dropdown_item_1line);
         motivator_bank_tv.setThreshold(1);
@@ -161,21 +165,22 @@ private LinearLayout childlayout;
                 new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view,
-                                            int position, long id) {
+                                            final int position, long id) {
                         prefManager.setKeyAutocompleteSelectedBankName(motivator_bank_tv.getText().toString());
+                        getId(BankDetails.get(position).getBank_Id());
                        Log.d("ODF",""+(motivator_bank_tv.getText().toString()));
                   //     Log.d("BANK_ID",""+BankDetails.get(position).getBank_Id());
 
-                        String selection = (String) parent.getItemAtPosition(position);
-                        int pos = -1;
-
-                        for (int i = 0; i < array.size(); i++) {
-                            if (array.get(i).equals(selection)) {
-                                pos = i;
-                                break;
-                            }
-                        }
-                        System.out.println("Position " + pos); //check it now in Logcat
+//                        String selection = (String) parent.getItemAtPosition(position);
+//                        int pos = -1;
+//
+//                        for (int i = 0; i < array.size(); i++) {
+//                            if (array.get(i).equals(selection)) {
+//                                pos = i;
+//                                break;
+//                            }
+//                        }
+//                        System.out.println("Position " + pos); //check it now in Logcat
                     }
                 });
 
@@ -198,6 +203,57 @@ private LinearLayout childlayout;
             @Override
             public void afterTextChanged(Editable s) {
              }
+        });
+    }
+    public void getId(int id){
+        Log.d("branch_id",""+id);
+        prefManager.setKeyAutocompleteSelectedBankID(id);
+        autoCompleteApiBankBranchName();
+    }
+
+    public void autoCompleteApiBankBranchName() {
+        autoSuggestAdapter = new AutoSuggestAdapter(this,
+                android.R.layout.simple_dropdown_item_1line);
+        motivator_branch_tv.setThreshold(1);
+        motivator_branch_tv.setAdapter(autoSuggestAdapter);
+        motivator_branch_tv.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view,
+                                            int position, long id) {
+
+//                        String selection = (String) parent.getItemAtPosition(position);
+//                        int pos = -1;
+//
+//                        for (int i = 0; i < array.size(); i++) {
+//                            if (array.get(i).equals(selection)) {
+//                                pos = i;
+//                                break;
+//                            }
+//                        }
+//                        System.out.println("Position " + pos); //check it now in Logcat
+                    }
+                });
+
+        motivator_branch_tv.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int
+                    count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+                loadBankBranchName(motivator_branch_tv.getText().toString());
+//            handler.removeMessages(TRIGGER_AUTO_COMPLETE);
+//            handler.sendEmptyMessageDelayed(TRIGGER_AUTO_COMPLETE,
+//                    AUTO_COMPLETE_DELAY);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
         });
     }
 
@@ -244,6 +300,38 @@ private LinearLayout childlayout;
             }
         }
         autoSuggestAdapter.setData(array);
+        autoSuggestAdapter.notifyDataSetChanged();
+    }
+
+    public void loadBankBranchName(String text) {
+        Integer  selectedBank_id = prefManager.getKeyAutocompleteSelectedBankID();
+        String like_query = "SELECT * FROM " + BANKLIST_BRANCH_TABLE_NAME + " where bank_id = "+selectedBank_id+" and branch LIKE '" + text + "%'";
+        Log.d("AutoSearchId", "" + like_query);
+        Cursor BankList = getRawEvents(like_query, null);
+        brancharray.clear();
+        BranchDetails.clear();
+        if (BankList.getCount() > 0) {
+            if (BankList.moveToFirst()) {
+                do {
+                    ODFMonitoringListValue odfMonitoringListValue = new ODFMonitoringListValue();
+                    Integer bank_id  = BankList.getInt(BankList
+                            .getColumnIndexOrThrow(AppConstant.BANK_ID));
+                    Integer branch_id  =BankList.getInt(BankList
+                            .getColumnIndexOrThrow(AppConstant.BRANCH_ID));
+                    String branch_name  =   BankList.getString(BankList
+                            .getColumnIndexOrThrow(AppConstant.BRANCH_NAME));
+                    String ifsc_code =   BankList.getString(BankList
+                            .getColumnIndexOrThrow(AppConstant.IFSC_CODE));
+                    odfMonitoringListValue.setBank_Id(bank_id);
+                    odfMonitoringListValue.setBranch_Id(branch_id);
+                    odfMonitoringListValue.setBranch_Name(branch_name);
+                    odfMonitoringListValue.setIFSC_Code(ifsc_code);
+                    brancharray.add(branch_name);
+                    BranchDetails.add(odfMonitoringListValue);
+                } while (BankList.moveToNext());
+            }
+        }
+        autoSuggestAdapter.setData(brancharray);
         autoSuggestAdapter.notifyDataSetChanged();
     }
 
