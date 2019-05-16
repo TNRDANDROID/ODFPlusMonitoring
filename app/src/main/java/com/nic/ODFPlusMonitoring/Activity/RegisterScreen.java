@@ -76,6 +76,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
     public static SQLiteDatabase db;
     JSONObject jsonObject;
     List<String> array = new ArrayList<String>();
+    List<Integer> banK_id_array = new ArrayList<Integer>();
     List<String> brancharray = new ArrayList<String>();
     private Animation animation;
 private LinearLayout childlayout;
@@ -160,27 +161,27 @@ private LinearLayout childlayout;
         autoSuggestAdapter = new AutoSuggestAdapter(this,
                 android.R.layout.simple_dropdown_item_1line);
         motivator_bank_tv.setThreshold(1);
-        motivator_bank_tv.setAdapter(autoSuggestAdapter);
         motivator_bank_tv.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view,
                                             final int position, long id) {
-                        prefManager.setKeyAutocompleteSelectedBankName(motivator_bank_tv.getText().toString());
-                        getId(BankDetails.get(position).getBank_Id());
+                        String input = motivator_bank_tv.getText().toString();
+                        prefManager.setKeyAutocompleteSelectedBankName(input);
                        Log.d("ODF",""+(motivator_bank_tv.getText().toString()));
                   //     Log.d("BANK_ID",""+BankDetails.get(position).getBank_Id());
 
 //                        String selection = (String) parent.getItemAtPosition(position);
 //                        int pos = -1;
-//
-//                        for (int i = 0; i < array.size(); i++) {
-//                            if (array.get(i).equals(selection)) {
-//                                pos = i;
-//                                break;
-//                            }
-//                        }
-//                        System.out.println("Position " + pos); //check it now in Logcat
+
+                        for (int i = 0; i < array.size(); i++) {
+                            Log.d("array",String.valueOf(array.get(i)));
+                            Log.d("arraysize",String.valueOf(array.size()));
+                            Log.d("arraylrngth",String.valueOf(BankDetails.size()));
+                            Log.d("arraylrngth",String.valueOf(BankDetails.get(i).getBank_Name()));
+                            getId(BankDetails.get(i).getBank_Id());
+                                break;
+                        }
                     }
                 });
 
@@ -194,7 +195,10 @@ private LinearLayout childlayout;
             @Override
             public void onTextChanged(CharSequence s, int start, int before,
                                       int count) {
+                brancharray.clear();
+                motivator_branch_tv.setText("");
                 loadBankName(motivator_bank_tv.getText().toString());
+
 //            handler.removeMessages(TRIGGER_AUTO_COMPLETE);
 //            handler.sendEmptyMessageDelayed(TRIGGER_AUTO_COMPLETE,
 //                    AUTO_COMPLETE_DELAY);
@@ -215,23 +219,17 @@ private LinearLayout childlayout;
         autoSuggestAdapter = new AutoSuggestAdapter(this,
                 android.R.layout.simple_dropdown_item_1line);
         motivator_branch_tv.setThreshold(1);
-        motivator_branch_tv.setAdapter(autoSuggestAdapter);
         motivator_branch_tv.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view,
                                             int position, long id) {
 
-//                        String selection = (String) parent.getItemAtPosition(position);
-//                        int pos = -1;
-//
-//                        for (int i = 0; i < array.size(); i++) {
-//                            if (array.get(i).equals(selection)) {
-//                                pos = i;
-//                                break;
-//                            }
-//                        }
-//                        System.out.println("Position " + pos); //check it now in Logcat
+                        for (int i = 0; i < brancharray.size(); i++) {
+                            Log.d("arraylrngth",String.valueOf(BranchDetails.get(i).getIFSC_Code()));
+                            motivator_ifsc_tv.setText(BranchDetails.get(i).getIFSC_Code());
+                                break;
+                        }
                     }
                 });
 
@@ -245,6 +243,8 @@ private LinearLayout childlayout;
             @Override
             public void onTextChanged(CharSequence s, int start, int before,
                                       int count) {
+                brancharray.clear();
+                motivator_ifsc_tv.setText("");
                 loadBankBranchName(motivator_branch_tv.getText().toString());
 //            handler.removeMessages(TRIGGER_AUTO_COMPLETE);
 //            handler.sendEmptyMessageDelayed(TRIGGER_AUTO_COMPLETE,
@@ -279,10 +279,10 @@ private LinearLayout childlayout;
     }
 
     public void loadBankName(String text) {
+        array.clear();
         String like_query = "SELECT * FROM " + BANKLIST_TABLE_NAME + " where bank_name LIKE '" + text + "%'";
         Log.d("AutoSearchQuery", "" + like_query);
         Cursor BankList = getRawEvents(like_query, null);
-        array.clear();
         BankDetails.clear();
         if (BankList.getCount() > 0) {
             if (BankList.moveToFirst()) {
@@ -301,6 +301,7 @@ private LinearLayout childlayout;
         }
         autoSuggestAdapter.setData(array);
         autoSuggestAdapter.notifyDataSetChanged();
+        motivator_bank_tv.setAdapter(autoSuggestAdapter);
     }
 
     public void loadBankBranchName(String text) {
@@ -333,6 +334,7 @@ private LinearLayout childlayout;
         }
         autoSuggestAdapter.setData(brancharray);
         autoSuggestAdapter.notifyDataSetChanged();
+        motivator_branch_tv.setAdapter(autoSuggestAdapter);
     }
 
     public Cursor getRawEvents(String sql, String string) {
