@@ -1,9 +1,12 @@
 package com.nic.ODFPlusMonitoring.Activity;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.text.Editable;
@@ -17,13 +20,16 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 
 import com.android.volley.VolleyError;
 import com.nic.ODFPlusMonitoring.Adapter.AutoSuggestAdapter;
+import com.nic.ODFPlusMonitoring.Adapter.CommonAdapter;
 import com.nic.ODFPlusMonitoring.Api.Api;
 import com.nic.ODFPlusMonitoring.Api.ServerResponse;
 import com.nic.ODFPlusMonitoring.Constant.AppConstant;
@@ -40,10 +46,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import static com.nic.ODFPlusMonitoring.DataBase.DBHelper.BANKLIST_BRANCH_TABLE_NAME;
 import static com.nic.ODFPlusMonitoring.DataBase.DBHelper.BANKLIST_TABLE_NAME;
+import static com.nic.ODFPlusMonitoring.DataBase.DBHelper.BLOCK_TABLE_NAME;
+import static com.nic.ODFPlusMonitoring.DataBase.DBHelper.DISTRICT_TABLE_NAME;
+import static com.nic.ODFPlusMonitoring.DataBase.DBHelper.VILLAGE_TABLE_NAME;
 
 /**
  * Created by AchanthiSundar on 28-12-2018.
@@ -58,7 +68,8 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
     private MyEditTextView motivator_name, motivator_address, motivator_mobileNO;
     private AppCompatAutoCompleteTextView motivator_bank_tv, motivator_account_tv, motivator_branch_tv;
     private MyCustomTextView motivator_ifsc_tv;
-
+    private static MyCustomTextView motivator_dob_tv;
+    private RelativeLayout dob_layout;
     private Spinner sp_block,sp_district, sp_village;
     private PrefManager prefManager;
     private List<ODFMonitoringListValue> Block = new ArrayList<>();
@@ -79,7 +90,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
     List<Integer> banK_id_array = new ArrayList<Integer>();
     List<String> brancharray = new ArrayList<String>();
     private Animation animation;
-private LinearLayout childlayout;
+    private LinearLayout childlayout;
 
 
     @Override
@@ -101,18 +112,24 @@ private LinearLayout childlayout;
         prefManager = new PrefManager(this);
         btn_register = (Button) findViewById(R.id.btn_register);
         motivator_name = (MyEditTextView) findViewById(R.id.motivator_name);
+        sp_block = (Spinner) findViewById(R.id.block);
+        sp_district = (Spinner) findViewById(R.id.district);
+        sp_village = (Spinner) findViewById(R.id.village);
         motivator_address = (MyEditTextView) findViewById(R.id.motivator_address);
         motivator_mobileNO = (MyEditTextView) findViewById(R.id.motivator_mobile_no);
         motivator_account_tv = (AppCompatAutoCompleteTextView) findViewById(R.id.motivator_account_tv);
         motivator_bank_tv = (AppCompatAutoCompleteTextView) findViewById(R.id.motivator_bank_tv);
         motivator_branch_tv = (AppCompatAutoCompleteTextView) findViewById(R.id.motivator_branch_tv);
         motivator_ifsc_tv = (MyCustomTextView) findViewById(R.id.motivator_ifsc_tv);
+        motivator_dob_tv = (MyCustomTextView) findViewById(R.id.motivator_dob_tv);
         scrollView = (ScrollView)findViewById(R.id.scroll_view) ;
         arrowImage = (ImageView) findViewById(R.id.arrow_image) ;
         arrowImageUp = (ImageView)findViewById(R.id.arrow_image_up) ;
         childlayout = (LinearLayout)findViewById(R.id.child_view);
+        dob_layout = (RelativeLayout) findViewById(R.id.dob_layout);
         arrowImage.setOnClickListener(this);
         arrowImageUp.setOnClickListener(this);
+        dob_layout.setOnClickListener(this);
         if (childlayout.getMeasuredHeight() > scrollView.getMeasuredHeight()) {
             showArrowImage();
         }
@@ -139,7 +156,136 @@ private LinearLayout childlayout;
 //        getBankNameList();
 //        getBankBranchList();
         autoCompleteApiBankName();
+        sp_district.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
+
+                pref_district = District.get(position).getDistrictName();
+                prefManager.setDistrictName(pref_district);
+                blockFilterSpinner((District.get(position).getDistictCode()));
+                prefManager.setDistrictCode(District.get(position).getDistictCode());
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        sp_block.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+
+                pref_Block = Block.get(position).getBlockName();
+                prefManager.setBlockName(pref_Block);
+                villageFilterSpinner(Block.get(position).getBlockCode());
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        sp_village.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                pref_Village = Village.get(position).getVillageListPvName();
+                prefManager.setVillageListPvName(pref_Village);
+//                    prefManager.setKeySpinnerSelectedPvcode(Village.get(position).getVillageListPvCode());
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        loadOfflineDistrictListDBValues();
+
+    }
+
+    public void loadOfflineDistrictListDBValues() {
+        Cursor DistrictList = getRawEvents("Select * from " + DISTRICT_TABLE_NAME, null);
+        District.clear();
+        ODFMonitoringListValue ODFMonitoringListValue = new ODFMonitoringListValue();
+        ODFMonitoringListValue.setDistrictName("Select District");
+        District.add(ODFMonitoringListValue);
+        if (DistrictList.getCount() > 0) {
+            if (DistrictList.moveToFirst()) {
+                do {
+                    ODFMonitoringListValue districtList = new ODFMonitoringListValue();
+                    String districtCode = DistrictList.getString(DistrictList.getColumnIndexOrThrow(AppConstant.DISTRICT_CODE));
+                    String districtName = DistrictList.getString(DistrictList.getColumnIndexOrThrow(AppConstant.DISTRICT_NAME));
+                    districtList.setDistictCode(Integer.parseInt(districtCode));
+                    districtList.setDistrictName(districtName);
+                    District.add(districtList);
+                } while (DistrictList.moveToNext());
+            }
+        }
+        sp_district.setAdapter(new CommonAdapter(this, District, "DistrictList"));
+    }
+
+    public void blockFilterSpinner(int filterBlock) {
+
+        String blocksql = "SELECT * FROM " + BLOCK_TABLE_NAME + " WHERE dcode = " + filterBlock;
+        Log.d("blocksql", blocksql);
+        Cursor BlockList = getRawEvents(blocksql, null);
+        Block.clear();
+        ODFMonitoringListValue blockListValue = new ODFMonitoringListValue();
+        blockListValue.setBlockName("Select Block");
+        Block.add(blockListValue);
+        if (BlockList.getCount() > 0) {
+            if (BlockList.moveToFirst()) {
+                do {
+                    ODFMonitoringListValue blockList = new ODFMonitoringListValue();
+                    String districtCode = BlockList.getString(BlockList.getColumnIndexOrThrow(AppConstant.DISTRICT_CODE));
+                    String blockCode = BlockList.getString(BlockList.getColumnIndexOrThrow(AppConstant.BLOCK_CODE));
+                    String blockName = BlockList.getString(BlockList.getColumnIndexOrThrow(AppConstant.BLOCK_NAME));
+                    blockList.setDistictCode(Integer.parseInt(districtCode));
+                    blockList.setBlockCode(blockCode);
+                    blockList.setBlockName(blockName);
+                    Block.add(blockList);
+                } while (BlockList.moveToNext());
+            }
+        }
+        sp_block.setAdapter(new CommonAdapter(this, Block, "BlockList"));
+    }
+
+    public void villageFilterSpinner(String filterVillage) {
+        String villageSql = "SELECT * FROM " + VILLAGE_TABLE_NAME + " WHERE dcode = " + prefManager.getDistrictCode() + " and bcode = " + filterVillage;
+        Log.d("villageSql", "" + villageSql);
+        Cursor VillageList = getRawEvents(villageSql, null);
+        Village.clear();
+        ODFMonitoringListValue villageListValue = new ODFMonitoringListValue();
+        villageListValue.setVillageListPvName("Select Village");
+        Village.add(villageListValue);
+        if (VillageList.getCount() > 0) {
+            if (VillageList.moveToFirst()) {
+                do {
+                    ODFMonitoringListValue villageList = new ODFMonitoringListValue();
+                    String districtCode = VillageList.getString(VillageList.getColumnIndexOrThrow(AppConstant.DISTRICT_CODE));
+                    String blockCode = VillageList.getString(VillageList.getColumnIndexOrThrow(AppConstant.BLOCK_CODE));
+                    String pvCode = VillageList.getString(VillageList.getColumnIndexOrThrow(AppConstant.PV_CODE));
+                    String pvname = VillageList.getString(VillageList.getColumnIndexOrThrow(AppConstant.PV_NAME));
+
+                    villageList.setVillageListDistrictCode(districtCode);
+                    villageList.setVillageListBlockCode(blockCode);
+                    villageList.setVillageListPvCode(pvCode);
+                    villageList.setVillageListPvName(pvname);
+
+                    Village.add(villageList);
+                    Log.d("spinnersize", "" + Village.size());
+                } while (VillageList.moveToNext());
+            }
+        }
+        sp_village.setAdapter(new CommonAdapter(this, Village, "VillageList"));
     }
 
     @Override
@@ -153,6 +299,9 @@ private LinearLayout childlayout;
                 break;
             case R.id.arrow_image_up:
                 scrollView.fullScroll(ScrollView.FOCUS_UP);
+                break;
+            case R.id.dob_layout:
+                showStartDatePickerDialog();
                 break;
         }
     }
@@ -368,6 +517,43 @@ private LinearLayout childlayout;
     public void OnError(VolleyError volleyError) {
         volleyError.printStackTrace();
         Utils.showAlert(this, "Login Again");
+    }
+
+    public void showStartDatePickerDialog() {
+        DialogFragment newFragment = new fromDatePickerFragment();
+        newFragment.show(getSupportFragmentManager(), "datePicker");
+
+    }
+
+    public static class fromDatePickerFragment extends DialogFragment implements
+            DatePickerDialog.OnDateSetListener {
+        static Calendar cldr = Calendar.getInstance();
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current date as the default date in the picker
+
+            int day = cldr.get(Calendar.DAY_OF_MONTH);
+            int month = cldr.get(Calendar.MONTH);
+            int year = cldr.get(Calendar.YEAR);
+            DatePickerDialog datePickerDialog;
+            datePickerDialog = new DatePickerDialog(getActivity(), this, year,
+                    month, day);
+            cldr.set(year, month, day);
+            datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+            return datePickerDialog;
+        }
+
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+            // Do something with the date chosen by the user
+            motivator_dob_tv.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+            String start_date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
+            cldr.set(Calendar.YEAR, year);
+            cldr.set(Calendar.MONTH, (monthOfYear));
+            cldr.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            Log.d("startdate", "" + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+        }
+
     }
 
 }

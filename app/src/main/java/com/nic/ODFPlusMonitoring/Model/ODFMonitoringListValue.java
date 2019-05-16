@@ -33,6 +33,8 @@ public class ODFMonitoringListValue {
     private String IFSC_Code;
 
     private String Name;
+    private String VillageListPvName;
+    private String VillageListPvCode;
 
     public String getPvName() {
         return PvName;
@@ -202,5 +204,21 @@ public class ODFMonitoringListValue {
 
     public void setBank_Id(int bank_Id) {
         Bank_Id = bank_Id;
+    }
+
+    public String getVillageListPvName() {
+        return VillageListPvName;
+    }
+
+    public void setVillageListPvName(String villageListPvName) {
+        VillageListPvName = villageListPvName;
+    }
+
+    public String getVillageListPvCode() {
+        return VillageListPvCode;
+    }
+
+    public void setVillageListPvCode(String villageListPvCode) {
+        VillageListPvCode = villageListPvCode;
     }
 }
