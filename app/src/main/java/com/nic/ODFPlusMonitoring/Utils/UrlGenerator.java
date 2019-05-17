@@ -31,4 +31,8 @@ public class UrlGenerator {
     public static String getOpenUrl() {
         return "http://10.163.19.140:81/rdweb/project/webservices_forms/open_services/open_services.php";
     }
+
+    public static String getMotivatorCategory() {
+        return "http://10.163.19.140:81/rdweb/project/webservices_forms/odf/odf_open_services.php";
+    }
 }

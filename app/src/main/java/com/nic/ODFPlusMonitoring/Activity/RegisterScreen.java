@@ -1,12 +1,20 @@
 package com.nic.ODFPlusMonitoring.Activity;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.text.Editable;
@@ -26,8 +34,14 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.nic.ODFPlusMonitoring.Adapter.AutoSuggestAdapter;
 import com.nic.ODFPlusMonitoring.Adapter.CommonAdapter;
 import com.nic.ODFPlusMonitoring.Api.Api;
@@ -40,14 +54,18 @@ import com.nic.ODFPlusMonitoring.Session.PrefManager;
 import com.nic.ODFPlusMonitoring.Support.MyCustomTextView;
 import com.nic.ODFPlusMonitoring.Support.MyEditTextView;
 import com.nic.ODFPlusMonitoring.Support.ProgressHUD;
+import com.nic.ODFPlusMonitoring.Utils.CameraUtils;
 import com.nic.ODFPlusMonitoring.Utils.Utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.nic.ODFPlusMonitoring.DataBase.DBHelper.BANKLIST_BRANCH_TABLE_NAME;
 import static com.nic.ODFPlusMonitoring.DataBase.DBHelper.BANKLIST_TABLE_NAME;
@@ -62,15 +80,13 @@ import static com.nic.ODFPlusMonitoring.DataBase.DBHelper.VILLAGE_TABLE_NAME;
 public class RegisterScreen extends AppCompatActivity implements View.OnClickListener, Api.ServerResponseListener {
 
     private Button btn_register;
-    private static final int TRIGGER_AUTO_COMPLETE = 100;
-    private static final long AUTO_COMPLETE_DELAY = 300;
     private Handler handler;
-    private MyEditTextView motivator_name, motivator_address, motivator_mobileNO;
+    private MyEditTextView motivator_name, motivator_address, motivator_mobileNO, motivator_state_level_tv;
     private AppCompatAutoCompleteTextView motivator_bank_tv, motivator_account_tv, motivator_branch_tv;
     private MyCustomTextView motivator_ifsc_tv;
     private static MyCustomTextView motivator_dob_tv;
-    private RelativeLayout dob_layout;
-    private Spinner sp_block,sp_district, sp_village;
+    private RelativeLayout dob_layout, edit_image;
+    private Spinner sp_block, sp_district, sp_village, sp_category;
     private PrefManager prefManager;
     private List<ODFMonitoringListValue> Block = new ArrayList<>();
     private List<ODFMonitoringListValue> District = new ArrayList<>();
@@ -81,16 +97,23 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
     private AutoSuggestAdapter autoSuggestAdapter;
     private ImageView arrowImage,arrowImageUp;
     private ScrollView  scrollView;
-
+    private CircleImageView profile_image,profile_image_preview;
     String pref_Block,pref_district, pref_Village;
     public static DBHelper dbHelper;
     public static SQLiteDatabase db;
-    JSONObject jsonObject;
     List<String> array = new ArrayList<String>();
-    List<Integer> banK_id_array = new ArrayList<Integer>();
     List<String> brancharray = new ArrayList<String>();
     private Animation animation;
     private LinearLayout childlayout;
+    public static final String GALLERY_DIRECTORY_NAME = "Hello Camera";
+    public static final int MEDIA_TYPE_IMAGE = 1;
+    public static final int MEDIA_TYPE_VIDEO = 2;
+
+    private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 2500;
+    private static final int CAMERA_CAPTURE_VIDEO_REQUEST_CODE = 200;
+    private static final int PERMISSION_REQUEST_CODE = 200;
+    private static String imageStoragePath;
+    public static final int BITMAP_SAMPLE_SIZE = 8;
 
 
     @Override
@@ -115,8 +138,10 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         sp_block = (Spinner) findViewById(R.id.block);
         sp_district = (Spinner) findViewById(R.id.district);
         sp_village = (Spinner) findViewById(R.id.village);
+        sp_category = (Spinner) findViewById(R.id.category);
         motivator_address = (MyEditTextView) findViewById(R.id.motivator_address);
         motivator_mobileNO = (MyEditTextView) findViewById(R.id.motivator_mobile_no);
+        motivator_state_level_tv = (MyEditTextView) findViewById(R.id.motivator_state_level_tv);
         motivator_account_tv = (AppCompatAutoCompleteTextView) findViewById(R.id.motivator_account_tv);
         motivator_bank_tv = (AppCompatAutoCompleteTextView) findViewById(R.id.motivator_bank_tv);
         motivator_branch_tv = (AppCompatAutoCompleteTextView) findViewById(R.id.motivator_branch_tv);
@@ -127,9 +152,14 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         arrowImageUp = (ImageView)findViewById(R.id.arrow_image_up) ;
         childlayout = (LinearLayout)findViewById(R.id.child_view);
         dob_layout = (RelativeLayout) findViewById(R.id.dob_layout);
+        edit_image = (RelativeLayout) findViewById(R.id.edit_image);
+        profile_image = (CircleImageView) findViewById(R.id.profile_image);
+        profile_image_preview = (CircleImageView) findViewById(R.id.profile_image_preview);
         arrowImage.setOnClickListener(this);
         arrowImageUp.setOnClickListener(this);
         dob_layout.setOnClickListener(this);
+        edit_image.setOnClickListener(this);
+
         if (childlayout.getMeasuredHeight() > scrollView.getMeasuredHeight()) {
             showArrowImage();
         }
@@ -159,10 +189,16 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         sp_district.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-
+                if (position == 0) {
+                    sp_block.setClickable(false);
+                    sp_block.setVisibility(View.GONE);
+                } else {
+                    sp_block.setClickable(true);
+                    sp_block.setVisibility(View.VISIBLE);
+                }
                 pref_district = District.get(position).getDistrictName();
                 prefManager.setDistrictName(pref_district);
+
                 blockFilterSpinner((District.get(position).getDistictCode()));
                 prefManager.setDistrictCode(District.get(position).getDistictCode());
 
@@ -177,10 +213,16 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         sp_block.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-
+                if (position == 0) {
+                    sp_village.setClickable(false);
+                    sp_village.setVisibility(View.GONE);
+                } else {
+                    sp_village.setClickable(true);
+                    sp_village.setVisibility(View.VISIBLE);
+                }
                 pref_Block = Block.get(position).getBlockName();
                 prefManager.setBlockName(pref_Block);
+
                 villageFilterSpinner(Block.get(position).getBlockCode());
 
 
@@ -199,6 +241,17 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                 pref_Village = Village.get(position).getVillageListPvName();
                 prefManager.setVillageListPvName(pref_Village);
 //                    prefManager.setKeySpinnerSelectedPvcode(Village.get(position).getVillageListPvCode());
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        sp_category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
             }
 
@@ -302,6 +355,9 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                 break;
             case R.id.dob_layout:
                 showStartDatePickerDialog();
+                break;
+            case R.id.edit_image:
+                getCameraPermission();
                 break;
         }
     }
@@ -410,7 +466,59 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
 
     //The method for opening the registration page and another processes or checks for registering
     private void validateMotivatorDetails() {
+        if (profile_image.getDrawable() != null) {
+            if (!motivator_name.getText().toString().isEmpty()) {
+                if (!"Select District".equalsIgnoreCase(District.get(sp_district.getSelectedItemPosition()).getDistrictName())) {
+                    if (!"Select Block".equalsIgnoreCase(Block.get(sp_block.getSelectedItemPosition()).getBlockName())) {
+                        if (!"Select Village".equalsIgnoreCase(Village.get(sp_village.getSelectedItemPosition()).getVillageListPvName())) {
+                            if (!motivator_address.getText().toString().isEmpty()) {
+                                if (!motivator_mobileNO.getText().toString().isEmpty()) {
+                                    if (!motivator_account_tv.getText().toString().isEmpty()) {
+                                        if (!motivator_bank_tv.getText().toString().isEmpty()) {
+                                            if (!motivator_branch_tv.getText().toString().isEmpty()) {
+                                                if (!motivator_ifsc_tv.getText().toString().isEmpty()) {
+                                                    if (!motivator_dob_tv.getText().toString().isEmpty()) {
+                                                        if (!motivator_state_level_tv.getText().toString().isEmpty()) {
 
+                                                        } else {
+                                                            Utils.showAlert(this, "Enter the No Of State Level Traniee Attended ");
+                                                        }
+                                                    } else {
+                                                        Utils.showAlert(this, "Select the Date Of Birth!");
+                                                    }
+                                                } else {
+                                                    Utils.showAlert(this, "Enter the IFSC Code!");
+                                                }
+                                            } else {
+                                                Utils.showAlert(this, "Select the Branch Name!");
+                                            }
+                                        } else {
+                                            Utils.showAlert(this, "Select the Bank Name!");
+                                        }
+                                    } else {
+                                        Utils.showAlert(this, "Enter the Account No!");
+                                    }
+                                } else {
+                                    Utils.showAlert(this, "Enter the Mobile No!");
+                                }
+                            } else {
+                                Utils.showAlert(this, "Enter the Address!");
+                            }
+                        } else {
+                            Utils.showAlert(this, "Select Village!");
+                        }
+                    } else {
+                        Utils.showAlert(this, "Select Block!");
+                    }
+                } else {
+                    Utils.showAlert(this, "Select District!");
+                }
+            } else {
+                Utils.showAlert(this, "Enter the Name!");
+            }
+        } else {
+            Utils.showAlert(this, "Capture the Profile Image First!");
+        }
     }
 
     @Override
@@ -556,4 +664,134 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
 
     }
 
+    private void getCameraPermission() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (CameraUtils.checkPermissions(RegisterScreen.this)) {
+                captureImage();
+            } else {
+                requestCameraPermission(MEDIA_TYPE_IMAGE);
+            }
+        } else {
+            captureImage();
+        }
+
+
+    }
+
+    private void captureImage() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        File file = CameraUtils.getOutputMediaFile(MEDIA_TYPE_IMAGE);
+        if (file != null) {
+            imageStoragePath = file.getAbsolutePath();
+        }
+
+        Uri fileUri = CameraUtils.getOutputMediaFileUri(this, file);
+
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+
+        // start the image capture Intent
+        startActivityForResult(intent, CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
+    }
+
+
+    private void requestCameraPermission(final int type) {
+        Dexter.withActivity(this)
+                .withPermissions(Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+                        if (report.areAllPermissionsGranted()) {
+
+                            if (type == MEDIA_TYPE_IMAGE) {
+                                // capture picture
+                                captureImage();
+                            } else {
+//                                captureVideo();
+                            }
+
+                        } else if (report.isAnyPermissionPermanentlyDenied()) {
+                            showPermissionsAlert();
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+                }).check();
+    }
+
+    private void showPermissionsAlert() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Permissions required!")
+                .setMessage("Camera needs few permissions to work properly. Grant them in settings.")
+                .setPositiveButton("GOTO SETTINGS", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        CameraUtils.openSettings(RegisterScreen.this);
+                    }
+                })
+                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).show();
+    }
+
+    public void previewCapturedImage() {
+        try {
+            // hide video preview
+            Bitmap bitmap = CameraUtils.optimizeBitmap(BITMAP_SAMPLE_SIZE, imageStoragePath);
+            profile_image_preview.setVisibility(View.GONE);
+            profile_image.setImageBitmap(bitmap);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // if the result is capturing Image
+        if (requestCode == CAMERA_CAPTURE_IMAGE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                // Refreshing the gallery
+                CameraUtils.refreshGallery(getApplicationContext(), imageStoragePath);
+
+                // successfully captured the image
+                // display it in image view
+                previewCapturedImage();
+            } else if (resultCode == RESULT_CANCELED) {
+                // user cancelled Image capture
+                Toast.makeText(getApplicationContext(),
+                        "User cancelled image capture", Toast.LENGTH_SHORT)
+                        .show();
+            } else {
+                // failed to capture image
+                Toast.makeText(getApplicationContext(),
+                        "Sorry! Failed to capture image", Toast.LENGTH_SHORT)
+                        .show();
+            }
+        } else if (requestCode == CAMERA_CAPTURE_VIDEO_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                // Refreshing the gallery
+                CameraUtils.refreshGallery(getApplicationContext(), imageStoragePath);
+
+                // video successfully recorded
+                // preview the recorded video
+//                previewVideo();
+            } else if (resultCode == RESULT_CANCELED) {
+                // user cancelled recording
+                Toast.makeText(getApplicationContext(),
+                        "User cancelled video recording", Toast.LENGTH_SHORT)
+                        .show();
+            } else {
+                // failed to record video
+                Toast.makeText(getApplicationContext(),
+                        "Sorry! Failed to record video", Toast.LENGTH_SHORT)
+                        .show();
+            }
+        }
+    }
 }

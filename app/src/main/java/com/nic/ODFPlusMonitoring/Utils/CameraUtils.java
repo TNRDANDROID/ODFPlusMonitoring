@@ -15,6 +15,7 @@ import android.support.v4.content.FileProvider;
 import android.util.Log;
 
 
+import com.nic.ODFPlusMonitoring.Activity.RegisterScreen;
 import com.nic.ODFPlusMonitoring.BuildConfig;
 
 import java.io.File;
@@ -96,17 +97,19 @@ public class CameraUtils {
      */
     public static File getOutputMediaFile(int type) {
 
+        File mediaStorageDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/com.nic.RuralInspection/files");
+
         // External sdcard location
-        File mediaStorageDir = new File(
-                Environment
-                        .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-             "Hello Camera");
+//        File mediaStorageDir = new File(
+//                Environment
+//                        .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+//                ViewInspectionReportScreen.GALLERY_DIRECTORY_NAME);
 
         // Create the storage directory if it does not exist
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
-                Log.e("Hello Camera", "Oops! Failed create "
-                        +"Hello Camera" + " directory");
+                Log.e(RegisterScreen.GALLERY_DIRECTORY_NAME, "Oops! Failed create "
+                        + RegisterScreen.GALLERY_DIRECTORY_NAME + " directory");
                 return null;
             }
         }
@@ -116,12 +119,12 @@ public class CameraUtils {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",
                 Locale.getDefault()).format(new Date());
         File mediaFile;
-        if (type == MEDIA_TYPE_IMAGE) {
+        if (type == RegisterScreen.MEDIA_TYPE_IMAGE) {
             mediaFile = new File(mediaStorageDir.getPath() + File.separator
-                    + "IMG_" + timeStamp + "." + IMAGE_EXTENSION);
-        } else if (type == MEDIA_TYPE_VIDEO) {
+                    + "IMG_" + timeStamp + "." +  IMAGE_EXTENSION);
+        } else if (type == RegisterScreen.MEDIA_TYPE_VIDEO) {
             mediaFile = new File(mediaStorageDir.getPath() + File.separator
-                    + "VID_" + timeStamp + "." + VIDEO_EXTENSION);
+                    + "VID_" + timeStamp + "." +  VIDEO_EXTENSION);
         } else {
             return null;
         }

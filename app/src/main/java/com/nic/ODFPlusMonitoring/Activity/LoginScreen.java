@@ -115,11 +115,13 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     }
 
     public void fetchAllResponseFromApi(){
+        getMotivatorCategoryList();
+        getVillageList();
         getDistrictList();
         getBlockList();
-        getVillageList();
         getBankNameList();
         getBankBranchList();
+
     }
 
     @Override
@@ -271,6 +273,14 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         }
     }
 
+    public void getMotivatorCategoryList() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("MotivatorCategoryList", Api.Method.POST, UrlGenerator.getMotivatorCategory(), motivatorCategoryListJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public JSONObject districtListJsonParams() throws JSONException {
         JSONObject dataSet = new JSONObject();
@@ -303,6 +313,13 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     public JSONObject bankbranchNameListJsonParams() throws JSONException {
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_SERVICE_ID,AppConstant.KEY_BANK_BRANCH_NAME_LIST);
+        Log.d("object", "" + dataSet);
+        return dataSet;
+    }
+
+    public JSONObject motivatorCategoryListJsonParams() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID,AppConstant.KEY_MOTIVATOR_CATEGORY);
         Log.d("object", "" + dataSet);
         return dataSet;
     }
@@ -379,6 +396,15 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                     Log.d("Record", responseObj.getString(AppConstant.KEY_MESSAGE));
                 }
                 Log.d("BankBranchList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
+            }
+
+            if ("MotivatorCategoryList".equals(urlType) && responseObj != null) {
+                if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
+//                    new  InsertBankBranchTask().execute(responseObj.getJSONArray(AppConstant.JSON_DATA));
+                } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("NO_RECORD")) {
+                    Log.d("Record", responseObj.getString(AppConstant.KEY_MESSAGE));
+                }
+                Log.d("MotivatorCategoryList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
             }
 
 

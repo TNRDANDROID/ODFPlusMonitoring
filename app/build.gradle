@@ -43,6 +43,7 @@ dependencies {
     implementation 'com.github.scottyab:showhidepasswordedittext:0.8'
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
     implementation 'com.jakewharton:butterknife:8.0.1'
+    implementation 'com.karumi:dexter:4.2.0'
     implementation files('libs/volley.jar')
 
 }

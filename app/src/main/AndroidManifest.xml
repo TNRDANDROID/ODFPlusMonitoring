@@ -62,8 +62,27 @@
             </intent-filter>
 
         </activity>
-        <activity android:name="com.nic.ODFPlusMonitoring.Activity.LoginScreen"/>
-        <activity android:name=".Activity.RegisterScreen"></activity>
+        <activity
+            android:name="com.nic.ODFPlusMonitoring.Activity.LoginScreen"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateUnchanged|adjustPan" />
+
+        <activity
+            android:name=".Activity.RegisterScreen"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateUnchanged|adjustPan" />
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.nic.ODFPlusMonitoring.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
     </application>
 
 
