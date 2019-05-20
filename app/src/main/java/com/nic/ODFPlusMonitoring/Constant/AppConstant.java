@@ -9,6 +9,7 @@ public class AppConstant {
     public static String KEY_APP_CODE = "appcode";
     public static String JSON_DATA = "JSON_DATA";
     public static String KEY_VERSION_CHECK= "version_check";
+    public static String DATA_CONTENT = "data_content";
 
     public static String KEY_DISTRICT_LIST_ALL = "district_list_all";
     public static String KEY_BLOCK_LIST_ALL = "block_list_all";
@@ -48,6 +49,22 @@ public class AppConstant {
 
 
     public static String KEY_MOTIVATOR_CATEGORY = "motivator_category";
+    public static String KEY_MOTIVATOR_CATEGORY_ID = "motivator_category_id";
+    public static String KEY_MOTIVATOR_CATEGORY_NAME = "motivator_category_name";
     public static String FINANCIAL_YEAR = "fin_year";
+
+    public static String KEY_REGISTER_SIGNUP = "signup";
+    public static String KEY_MOTIVATOR_NAME = "motivator_name";
+    public static String KEY_REGISTER_DOB = "dob";
+    public static String KEY_REGISTER_MOBILE = "mobile";
+    public static String KEY_REGISTER_EMAIL = "email";
+    public static String KEY_REGISTER_ADDRESS = "address";
+    public static String KEY_MOTIVATOR_PHOTO = "motivator_photo";
+    public static String KEY_REGISTER_ACC_NO = "ac_number";
+    public static String KEY_MOTIVATOR_NO_OF_STATE_LEVEL_TRAINEE = "no_of_state_level_training_attended";
+    public static String KEY_REGISTER_CATEGORY = "category";
+    public static String KEY_REGISTER_CATEGORY_OTHERS = "category_other";
+    public static String KEY_REGISTER_MOTIVATOR_POSITION = "motivator_position";
+
 
 }

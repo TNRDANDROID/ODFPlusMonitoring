@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -45,6 +47,7 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.nic.ODFPlusMonitoring.Adapter.AutoSuggestAdapter;
 import com.nic.ODFPlusMonitoring.Adapter.CommonAdapter;
 import com.nic.ODFPlusMonitoring.Api.Api;
+import com.nic.ODFPlusMonitoring.Api.ApiService;
 import com.nic.ODFPlusMonitoring.Api.ServerResponse;
 import com.nic.ODFPlusMonitoring.Constant.AppConstant;
 import com.nic.ODFPlusMonitoring.DataBase.DBHelper;
@@ -55,11 +58,13 @@ import com.nic.ODFPlusMonitoring.Support.MyCustomTextView;
 import com.nic.ODFPlusMonitoring.Support.MyEditTextView;
 import com.nic.ODFPlusMonitoring.Support.ProgressHUD;
 import com.nic.ODFPlusMonitoring.Utils.CameraUtils;
+import com.nic.ODFPlusMonitoring.Utils.UrlGenerator;
 import com.nic.ODFPlusMonitoring.Utils.Utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -71,6 +76,7 @@ import static com.nic.ODFPlusMonitoring.DataBase.DBHelper.BANKLIST_BRANCH_TABLE_
 import static com.nic.ODFPlusMonitoring.DataBase.DBHelper.BANKLIST_TABLE_NAME;
 import static com.nic.ODFPlusMonitoring.DataBase.DBHelper.BLOCK_TABLE_NAME;
 import static com.nic.ODFPlusMonitoring.DataBase.DBHelper.DISTRICT_TABLE_NAME;
+import static com.nic.ODFPlusMonitoring.DataBase.DBHelper.MOTIVATOR_CATEGORY_LIST_TABLE_NAME;
 import static com.nic.ODFPlusMonitoring.DataBase.DBHelper.VILLAGE_TABLE_NAME;
 
 /**
@@ -81,16 +87,18 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
 
     private Button btn_register;
     private Handler handler;
-    private MyEditTextView motivator_name, motivator_address, motivator_mobileNO, motivator_state_level_tv;
+    private MyEditTextView motivator_name, motivator_address, motivator_mobileNO, motivator_email_id, motivator_state_level_tv, motivator_position_tv;
     private AppCompatAutoCompleteTextView motivator_bank_tv, motivator_account_tv, motivator_branch_tv;
     private MyCustomTextView motivator_ifsc_tv;
     private static MyCustomTextView motivator_dob_tv;
     private RelativeLayout dob_layout, edit_image;
+    private LinearLayout position_layout;
     private Spinner sp_block, sp_district, sp_village, sp_category;
     private PrefManager prefManager;
     private List<ODFMonitoringListValue> Block = new ArrayList<>();
     private List<ODFMonitoringListValue> District = new ArrayList<>();
     private List<ODFMonitoringListValue> Village = new ArrayList<>();
+    private List<ODFMonitoringListValue> Category = new ArrayList<>();
     private List<ODFMonitoringListValue> BankDetails = new ArrayList<>();
     private List<ODFMonitoringListValue> BranchDetails = new ArrayList<>();
     private ProgressHUD progressHUD;
@@ -141,18 +149,21 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         sp_category = (Spinner) findViewById(R.id.category);
         motivator_address = (MyEditTextView) findViewById(R.id.motivator_address);
         motivator_mobileNO = (MyEditTextView) findViewById(R.id.motivator_mobile_no);
+        motivator_email_id = (MyEditTextView) findViewById(R.id.motivator_email_id);
         motivator_state_level_tv = (MyEditTextView) findViewById(R.id.motivator_state_level_tv);
         motivator_account_tv = (AppCompatAutoCompleteTextView) findViewById(R.id.motivator_account_tv);
         motivator_bank_tv = (AppCompatAutoCompleteTextView) findViewById(R.id.motivator_bank_tv);
         motivator_branch_tv = (AppCompatAutoCompleteTextView) findViewById(R.id.motivator_branch_tv);
         motivator_ifsc_tv = (MyCustomTextView) findViewById(R.id.motivator_ifsc_tv);
         motivator_dob_tv = (MyCustomTextView) findViewById(R.id.motivator_dob_tv);
+        motivator_position_tv = (MyEditTextView) findViewById(R.id.motivator_position_tv);
         scrollView = (ScrollView)findViewById(R.id.scroll_view) ;
         arrowImage = (ImageView) findViewById(R.id.arrow_image) ;
         arrowImageUp = (ImageView)findViewById(R.id.arrow_image_up) ;
         childlayout = (LinearLayout)findViewById(R.id.child_view);
         dob_layout = (RelativeLayout) findViewById(R.id.dob_layout);
         edit_image = (RelativeLayout) findViewById(R.id.edit_image);
+        position_layout = (LinearLayout) findViewById(R.id.position_layout);
         profile_image = (CircleImageView) findViewById(R.id.profile_image);
         profile_image_preview = (CircleImageView) findViewById(R.id.profile_image_preview);
         arrowImage.setOnClickListener(this);
@@ -222,6 +233,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                 }
                 pref_Block = Block.get(position).getBlockName();
                 prefManager.setBlockName(pref_Block);
+                prefManager.setKeySpinnerSelectedBlockcode(Block.get(position).getBlockCode());
 
                 villageFilterSpinner(Block.get(position).getBlockCode());
 
@@ -240,7 +252,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
 
                 pref_Village = Village.get(position).getVillageListPvName();
                 prefManager.setVillageListPvName(pref_Village);
-//                    prefManager.setKeySpinnerSelectedPvcode(Village.get(position).getVillageListPvCode());
+                prefManager.setKeySpinnerSelectedPvcode(Village.get(position).getVillageListPvCode());
 
             }
 
@@ -252,7 +264,14 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         sp_category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (Category.get(position).getMotivatorCategoryId() == 5) {
+                    position_layout.setVisibility(View.VISIBLE);
+                } else {
+                    position_layout.setVisibility(View.GONE);
 
+                }
+                prefManager.setSpinnerSelectedCategoryName(Category.get(position).getMotivatorCategoryName());
+                prefManager.setSpinnerSelectedCategoryId(Category.get(position).getMotivatorCategoryId());
             }
 
             @Override
@@ -261,6 +280,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
             }
         });
         loadOfflineDistrictListDBValues();
+        loadCategoryListDBValues();
 
     }
 
@@ -341,6 +361,27 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         sp_village.setAdapter(new CommonAdapter(this, Village, "VillageList"));
     }
 
+    public void loadCategoryListDBValues() {
+        Cursor CategoryListCursor = getRawEvents("Select * from " + MOTIVATOR_CATEGORY_LIST_TABLE_NAME, null);
+        Category.clear();
+        ODFMonitoringListValue ODFMonitoringListValue = new ODFMonitoringListValue();
+        ODFMonitoringListValue.setMotivatorCategoryName("Select Category");
+        Category.add(ODFMonitoringListValue);
+        if (CategoryListCursor.getCount() > 0) {
+            if (CategoryListCursor.moveToFirst()) {
+                do {
+                    ODFMonitoringListValue categoryList = new ODFMonitoringListValue();
+                    int categoryId = CategoryListCursor.getInt(CategoryListCursor.getColumnIndexOrThrow(AppConstant.KEY_MOTIVATOR_CATEGORY_ID));
+                    String categoryName = CategoryListCursor.getString(CategoryListCursor.getColumnIndexOrThrow(AppConstant.KEY_MOTIVATOR_CATEGORY_NAME));
+                    categoryList.setMotivatorCategoryId(categoryId);
+                    categoryList.setMotivatorCategoryName(categoryName);
+                    Category.add(categoryList);
+                } while (CategoryListCursor.moveToNext());
+            }
+        }
+        sp_category.setAdapter(new CommonAdapter(this, Category, "CategoryList"));
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -373,8 +414,8 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                                             final int position, long id) {
                         String input = motivator_bank_tv.getText().toString();
                         prefManager.setKeyAutocompleteSelectedBankName(input);
-                       Log.d("ODF",""+(motivator_bank_tv.getText().toString()));
-                  //     Log.d("BANK_ID",""+BankDetails.get(position).getBank_Id());
+                        Log.d("ODF", "" + (motivator_bank_tv.getText().toString()));
+                        //     Log.d("BANK_ID",""+BankDetails.get(position).getBank_Id());
 
 //                        String selection = (String) parent.getItemAtPosition(position);
 //                        int pos = -1;
@@ -385,7 +426,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                             Log.d("arraylrngth",String.valueOf(BankDetails.size()));
                             Log.d("arraylrngth",String.valueOf(BankDetails.get(i).getBank_Name()));
                             getId(BankDetails.get(i).getBank_Id());
-                                break;
+                            break;
                         }
                     }
                 });
@@ -411,9 +452,10 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
 
             @Override
             public void afterTextChanged(Editable s) {
-             }
+            }
         });
     }
+
     public void getId(int id){
         Log.d("branch_id",""+id);
         prefManager.setKeyAutocompleteSelectedBankID(id);
@@ -433,7 +475,9 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                         for (int i = 0; i < brancharray.size(); i++) {
                             Log.d("arraylrngth",String.valueOf(BranchDetails.get(i).getIFSC_Code()));
                             motivator_ifsc_tv.setText(BranchDetails.get(i).getIFSC_Code());
-                                break;
+                            prefManager.setKeyAutocompleteSelectedBranchID(BranchDetails.get(i).getBranch_Id());
+                            prefManager.setKeyAutocompleteSelectedIfscCode((BranchDetails.get(i).getIFSC_Code()));
+                            break;
                         }
                     }
                 });
@@ -463,7 +507,6 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
     }
 
 
-
     //The method for opening the registration page and another processes or checks for registering
     private void validateMotivatorDetails() {
         if (profile_image.getDrawable() != null) {
@@ -473,30 +516,54 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                         if (!"Select Village".equalsIgnoreCase(Village.get(sp_village.getSelectedItemPosition()).getVillageListPvName())) {
                             if (!motivator_address.getText().toString().isEmpty()) {
                                 if (!motivator_mobileNO.getText().toString().isEmpty()) {
-                                    if (!motivator_account_tv.getText().toString().isEmpty()) {
-                                        if (!motivator_bank_tv.getText().toString().isEmpty()) {
-                                            if (!motivator_branch_tv.getText().toString().isEmpty()) {
-                                                if (!motivator_ifsc_tv.getText().toString().isEmpty()) {
-                                                    if (!motivator_dob_tv.getText().toString().isEmpty()) {
-                                                        if (!motivator_state_level_tv.getText().toString().isEmpty()) {
-
+                                    if (Utils.isValidMobile(motivator_mobileNO.getText().toString())) {
+                                        if (!motivator_email_id.getText().toString().isEmpty()) {
+                                            if (Utils.isEmailValid(motivator_email_id.getText().toString())) {
+                                                if (!motivator_account_tv.getText().toString().isEmpty()) {
+                                                    if (!motivator_bank_tv.getText().toString().isEmpty()) {
+                                                        if (!motivator_branch_tv.getText().toString().isEmpty()) {
+                                                            if (!motivator_ifsc_tv.getText().toString().isEmpty()) {
+                                                                if (!motivator_dob_tv.getText().toString().isEmpty()) {
+                                                                    if (!motivator_state_level_tv.getText().toString().isEmpty()) {
+                                                                        if (!"Select Category".equalsIgnoreCase(Category.get(sp_category.getSelectedItemPosition()).getMotivatorCategoryName())) {
+                                                                            if ((prefManager.getSpinnerSelectedCategoryName()).equalsIgnoreCase("others")) {
+                                                                                if (!motivator_position_tv.getText().toString().isEmpty()) {
+                                                                                    signUP();
+                                                                                } else {
+                                                                                    Utils.showAlert(this, "Enter the Position ");
+                                                                                }
+                                                                            } else {
+                                                                                signUP();
+                                                                            }
+                                                                        } else {
+                                                                            Utils.showAlert(this, "Select the Category ");
+                                                                        }
+                                                                    } else {
+                                                                        Utils.showAlert(this, "Enter the No Of State Level Training Attended ");
+                                                                    }
+                                                                } else {
+                                                                    Utils.showAlert(this, "Select the Date Of Birth!");
+                                                                }
+                                                            } else {
+                                                                Utils.showAlert(this, "Enter the IFSC Code!");
+                                                            }
                                                         } else {
-                                                            Utils.showAlert(this, "Enter the No Of State Level Traniee Attended ");
+                                                            Utils.showAlert(this, "Select the Branch Name!");
                                                         }
                                                     } else {
-                                                        Utils.showAlert(this, "Select the Date Of Birth!");
+                                                        Utils.showAlert(this, "Select the Bank Name!");
                                                     }
                                                 } else {
-                                                    Utils.showAlert(this, "Enter the IFSC Code!");
+                                                    Utils.showAlert(this, "Enter the Account No!");
                                                 }
                                             } else {
-                                                Utils.showAlert(this, "Select the Branch Name!");
+                                                Utils.showAlert(this, "Enter the Valid Email Id!");
                                             }
                                         } else {
-                                            Utils.showAlert(this, "Select the Bank Name!");
+                                            Utils.showAlert(this, "Enter the Email Id!");
                                         }
                                     } else {
-                                        Utils.showAlert(this, "Enter the Account No!");
+                                        Utils.showAlert(this, "Enter the Valid Mobile No");
                                     }
                                 } else {
                                     Utils.showAlert(this, "Enter the Mobile No!");
@@ -526,9 +593,12 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         try {
             JSONObject responseObj = serverResponse.getJsonResponse();
             String urlType = serverResponse.getApi();
-            String status = responseObj.getString(AppConstant.KEY_STATUS);
-            String response = responseObj.getString(AppConstant.KEY_RESPONSE);
+            if ("save_data".equals(urlType) && responseObj != null) {
+                JSONObject jsonObject = new JSONObject();
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
 
+                }
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -793,5 +863,63 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                         .show();
             }
         }
+    }
+
+    public void signUP() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("Register", Api.Method.POST, UrlGenerator.getOpenUrl(), dataTobeSavedJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public JSONObject dataTobeSavedJsonParams() throws JSONException {
+
+        byte[] imageInByte = new byte[0];
+        String image_str = "";
+        try {
+            Bitmap bitmap = ((BitmapDrawable) profile_image.getDrawable()).getBitmap();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+            imageInByte = baos.toByteArray();
+            image_str = Base64.encodeToString(imageInByte, Base64.DEFAULT);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_REGISTER_SIGNUP);
+        dataSet.put(AppConstant.KEY_MOTIVATOR_NAME, motivator_name.getText().toString());
+        dataSet.put(AppConstant.KEY_REGISTER_DOB, motivator_dob_tv.getText().toString());
+        dataSet.put(AppConstant.KEY_REGISTER_MOBILE, motivator_mobileNO.getText().toString());
+        dataSet.put(AppConstant.KEY_REGISTER_EMAIL, motivator_email_id.getText().toString());
+        dataSet.put(AppConstant.KEY_REGISTER_ADDRESS, motivator_address.getText().toString());
+        dataSet.put(AppConstant.DISTRICT_CODE, prefManager.getDistrictCode());
+        dataSet.put(AppConstant.BLOCK_CODE, prefManager.getKeySpinnerSelectedBlockcode());
+        dataSet.put(AppConstant.PV_CODE, prefManager.getKeySpinnerSelectedPVcode());
+        dataSet.put(AppConstant.KEY_MOTIVATOR_PHOTO, image_str.trim());
+        dataSet.put(AppConstant.KEY_REGISTER_ACC_NO, motivator_account_tv.getText().toString());
+        dataSet.put(AppConstant.BANK_ID, prefManager.getKeyAutocompleteSelectedBankID());
+        dataSet.put(AppConstant.BRANCH_ID, prefManager.getKeyAutocompleteSelectedBranchID());
+        dataSet.put(AppConstant.IFSC_CODE, prefManager.getKeyAutocompleteSelectedIfscCode());
+        dataSet.put(AppConstant.KEY_MOTIVATOR_NO_OF_STATE_LEVEL_TRAINEE, motivator_state_level_tv.getText().toString());
+        if ((prefManager.getSpinnerSelectedCategoryName()).equalsIgnoreCase("others")) {
+            dataSet.put(AppConstant.KEY_REGISTER_CATEGORY_OTHERS, prefManager.getSpinnerSelectedCategoryId());
+            dataSet.put(AppConstant.KEY_REGISTER_MOTIVATOR_POSITION, motivator_position_tv.getText().toString());
+        } else {
+            dataSet.put(AppConstant.KEY_REGISTER_CATEGORY, prefManager.getSpinnerSelectedCategoryId());
+        }
+        Log.d("RegisterDataSet", "" + dataSet);
+        String authKey = dataSet.toString();
+        int maxLogSize = 2000;
+        for (int i = 0; i <= authKey.length() / maxLogSize; i++) {
+            int start = i * maxLogSize;
+            int end = (i + 1) * maxLogSize;
+            end = end > authKey.length() ? authKey.length() : end;
+            Log.v("to_send+_plain", authKey.substring(start, end));
+        }
+        return dataSet;
     }
 }

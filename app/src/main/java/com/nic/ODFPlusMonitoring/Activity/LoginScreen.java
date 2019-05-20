@@ -1,7 +1,7 @@
 package com.nic.ODFPlusMonitoring.Activity;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -352,7 +352,6 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                 }
 
             }
-
             if ("DistrictList".equals(urlType) && responseObj != null) {
                 if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
                    new  InsertDistrictTask().execute(responseObj.getJSONArray(AppConstant.JSON_DATA));
@@ -400,7 +399,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
             if ("MotivatorCategoryList".equals(urlType) && responseObj != null) {
                 if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
-//                    new  InsertBankBranchTask().execute(responseObj.getJSONArray(AppConstant.JSON_DATA));
+                    new MotivatorCategoryList().execute(responseObj.getJSONArray(AppConstant.JSON_DATA));
                 } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("NO_RECORD")) {
                     Log.d("Record", responseObj.getString(AppConstant.KEY_MESSAGE));
                 }
@@ -582,6 +581,35 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
         }
 
+    }
+
+    public class MotivatorCategoryList extends AsyncTask<JSONArray, Void, Void> {
+
+        @Override
+        protected Void doInBackground(JSONArray... params) {
+            dbData.open();
+            ArrayList<ODFMonitoringListValue> categoryListCount = dbData.getAllCategoryList();
+            if (categoryListCount.size() <= 0) {
+                if (params.length > 0) {
+                    JSONArray jsonArray = new JSONArray();
+                    jsonArray = params[0];
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        ODFMonitoringListValue motivatorCategoryListValue = new ODFMonitoringListValue();
+                        try {
+                            motivatorCategoryListValue.setMotivatorCategoryId(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_MOTIVATOR_CATEGORY_ID));
+                            motivatorCategoryListValue.setMotivatorCategoryName(jsonArray.getJSONObject(i).getString(AppConstant.KEY_MOTIVATOR_CATEGORY_NAME));
+
+                            dbData.insertCategoryList(motivatorCategoryListValue);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+
+            }
+            return null;
+        }
     }
 
     @Override

@@ -43,9 +43,13 @@ public class PrefManager {
     private static final String KEY_SPINNER_SELECTED_PVCODE = "spinner_selected_pv_code";
     private static final String KEY_AUTOCOMPLETE_SELECTED_BANK_NAME = "autocomplete_selected_bank_name";
     private static final String KEY_AUTOCOMPLETE_SELECTED_BANK_ID = "autocomplete_selected_bank_id";
-    private static final String KEY_SPINNER_SELECTED_FINYEAR = "spinner_selected_finyear";
+    private static final String KEY_SPINNER_SELECTED_CATEGORY_ID= "spinner_selected_category_id";
+    private static final String KEY_SPINNER_SELECTED_CATEGORY_OTHERS_ID= "spinner_selected_category_others_id";
     private static final String KEY_BLOCK_CODE_JSON = "block_code_json";
     private static final String KEY_VILLAGE_CODE_JSON = "village_code_json";
+    private static final String KEY_AUTOCOMPLETE_SELECTED_BRANCH_ID = "autocomplete_selected_branch_id";
+    private static final String KEY_AUTOCOMPLETE_SELECTED_IFSC_CODE = "autocomplete_selected_ifsc_code";
+    private static final String KEY_SPINNER_SELECTED_CATEGORY_NAME = "spinner_selected_category_name";
 
 
     private static final String IMEI = "imei";
@@ -231,9 +235,14 @@ public class PrefManager {
         return pref.getInt(KEY_AUTOCOMPLETE_SELECTED_BANK_ID, 0);
     }
 
-    public void setKeySpinnerSelectedFinyear(String userName) {
-        editor.putString(KEY_SPINNER_SELECTED_FINYEAR, userName);
+    public Integer setSpinnerSelectedCategoryId(Integer userName) {
+        editor.putInt(KEY_SPINNER_SELECTED_CATEGORY_ID, userName);
         editor.commit();
+        return userName;
+    }
+
+    public Integer getSpinnerSelectedCategoryId() {
+        return pref.getInt(KEY_SPINNER_SELECTED_CATEGORY_ID, 0);
     }
 
 
@@ -289,6 +298,32 @@ public class PrefManager {
         Log.d("prefVillageJson",""+jsonData);
         return jsonData;
     }
+    public Integer setKeyAutocompleteSelectedBranchID(Integer userName) {
+        editor.putInt(KEY_AUTOCOMPLETE_SELECTED_BRANCH_ID, userName);
+        editor.commit();
+        return userName;
+    }
 
+    public Integer getKeyAutocompleteSelectedBranchID() {
+        return pref.getInt(KEY_AUTOCOMPLETE_SELECTED_BRANCH_ID, 0);
+    }
+
+    public void setKeyAutocompleteSelectedIfscCode(String userName) {
+        editor.putString(KEY_AUTOCOMPLETE_SELECTED_IFSC_CODE, userName);
+        editor.commit();
+    }
+
+    public String getKeyAutocompleteSelectedIfscCode() {
+        return pref.getString(KEY_AUTOCOMPLETE_SELECTED_IFSC_CODE, null);
+    }
+
+    public void setSpinnerSelectedCategoryName(String userName) {
+        editor.putString(KEY_SPINNER_SELECTED_CATEGORY_NAME, userName);
+        editor.commit();
+    }
+
+    public String getSpinnerSelectedCategoryName() {
+        return pref.getString(KEY_SPINNER_SELECTED_CATEGORY_NAME, null);
+    }
 
 }

@@ -35,6 +35,25 @@ public class ODFMonitoringListValue {
     private String Name;
     private String VillageListPvName;
     private String VillageListPvCode;
+    private int motivatorCategoryId;
+
+    public int getMotivatorCategoryId() {
+        return motivatorCategoryId;
+    }
+
+    public void setMotivatorCategoryId(int motivatorCategoryId) {
+        this.motivatorCategoryId = motivatorCategoryId;
+    }
+
+    public String getMotivatorCategoryName() {
+        return motivatorCategoryName;
+    }
+
+    public void setMotivatorCategoryName(String motivatorCategoryName) {
+        this.motivatorCategoryName = motivatorCategoryName;
+    }
+
+    private String motivatorCategoryName;
 
     public String getPvName() {
         return PvName;

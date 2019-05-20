@@ -14,6 +14,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String VILLAGE_TABLE_NAME = "ODF_villageTable";
     public static final String BANKLIST_TABLE_NAME = "ODF_BankName";
     public static final String BANKLIST_BRANCH_TABLE_NAME = "ODF_BankName_Branch";
+    public static final String MOTIVATOR_CATEGORY_LIST_TABLE_NAME = "ODF_MotivatorCategory_List";
 
     private Context context;
 
@@ -51,6 +52,10 @@ public class DBHelper extends SQLiteOpenHelper {
                 "branch_id INTEGER," +
                 "branch TEXT," +
                 "ifsc TEXT)");
+
+        db.execSQL("CREATE TABLE " + MOTIVATOR_CATEGORY_LIST_TABLE_NAME + " ("
+                + "motivator_category_id INTEGER," +
+                "motivator_category_name TEXT)");
     }
 
     @Override
@@ -62,6 +67,7 @@ public class DBHelper extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + VILLAGE_TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + BANKLIST_TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + BANKLIST_BRANCH_TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + MOTIVATOR_CATEGORY_LIST_TABLE_NAME);
             onCreate(db);
         }
     }

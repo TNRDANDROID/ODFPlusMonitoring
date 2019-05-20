@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 import com.nic.ODFPlusMonitoring.R;
 
-
 import java.util.List;
 
 /**
@@ -50,13 +49,15 @@ public class CommonAdapter extends BaseAdapter {
 //        TextView tv_type = (TextView) view.findViewById(R.id.tv_spinner_item);
         View view = inflater.inflate(R.layout.spinner_value, parent, false);
         TextView tv_type = (TextView) view.findViewById(R.id.spinner_list_value);
-        ODFMonitoringListValue BlockListValue = ODFMonitoringListValue.get(position);
+        ODFMonitoringListValue ODFMonitoringList = ODFMonitoringListValue.get(position);
         if(type.equalsIgnoreCase("DistrictList")) {
-            tv_type.setText(BlockListValue.getDistrictName());
+            tv_type.setText(ODFMonitoringList.getDistrictName());
         } else if (type.equalsIgnoreCase("BlockList")) {
-            tv_type.setText(BlockListValue.getBlockName());
+            tv_type.setText(ODFMonitoringList.getBlockName());
         }else if(type.equalsIgnoreCase("VillageList")){
-            tv_type.setText(BlockListValue.getVillageListPvName());
+            tv_type.setText(ODFMonitoringList.getVillageListPvName());
+        } else if (type.equalsIgnoreCase("CategoryList")) {
+            tv_type.setText(ODFMonitoringList.getMotivatorCategoryName());
         }
         return view;
     }

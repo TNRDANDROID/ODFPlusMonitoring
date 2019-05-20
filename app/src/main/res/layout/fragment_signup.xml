@@ -148,6 +148,7 @@
                         android:singleLine="true"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/_15sdp"
+                        android:hint="Enter Name"
 
                         customfontdemo:fontName="@string/font_normal" />
 
@@ -362,7 +363,7 @@
                         android:id="@+id/motivator_address"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
+                        android:hint="Enter Address"
                         android:background="@drawable/rectangle_box"
                         android:gravity="top|left"
                         android:inputType="textMultiLine"
@@ -409,11 +410,62 @@
                         android:id="@+id/motivator_mobile_no"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:hint="Enter Mobile Number"
                         android:layout_alignParentStart="true"
                         android:layout_centerInParent="true"
                         android:layout_marginLeft="15dp"
                         android:background="@android:color/transparent"
                         android:inputType="number"
+                        android:scrollbars="vertical"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/_15sdp"
+                        android:visibility="visible"
+                        customfontdemo:fontName="@string/font_normal" />
+
+
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/email_id_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_left_20dp"
+                    android:layout_marginTop="@dimen/padding"
+                    android:layout_marginRight="@dimen/margin_left_20dp"
+                    android:text="Enter Email Id"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_15sdp"
+                    android:visibility="visible"
+                    customfontdemo:fontName="@string/font_medium" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/header"
+                    android:layout_marginLeft="@dimen/margin_left_20dp"
+                    android:layout_marginTop="@dimen/padding"
+                    android:layout_marginRight="@dimen/margin_left_20dp"
+                    android:background="@drawable/rectangle_box"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+                    <com.nic.ODFPlusMonitoring.Support.MyEditTextView
+                        android:id="@+id/motivator_email_id"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter Email Id"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginLeft="15dp"
+                        android:background="@android:color/transparent"
+                        android:inputType="textWebEmailAddress"
                         android:scrollbars="vertical"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/_15sdp"
@@ -458,6 +510,7 @@
                         android:id="@+id/motivator_account_tv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:hint="Enter Account No"
                         android:layout_alignParentStart="true"
                         android:layout_centerInParent="true"
                         android:layout_marginLeft="15dp"
@@ -506,6 +559,7 @@
                         android:id="@+id/motivator_bank_tv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:hint="Enter Bank Name"
                         android:layout_alignParentStart="true"
                         android:layout_centerInParent="true"
                         android:layout_marginLeft="15dp"
@@ -554,6 +608,7 @@
                         android:id="@+id/motivator_branch_tv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:hint="Enter Branch Name"
                         android:layout_alignParentStart="true"
                         android:layout_centerInParent="true"
                         android:layout_marginLeft="15dp"
@@ -602,6 +657,7 @@
                         android:id="@+id/motivator_ifsc_tv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:hint="Enter IFSC Code"
                         android:layout_alignParentStart="true"
                         android:layout_centerInParent="true"
                         android:layout_marginLeft="15dp"
@@ -652,6 +708,7 @@
                             style="@style/Toolbar.TitleText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:hint="Select Date Of Birth"
                             android:layout_alignParentStart="true"
                             android:layout_centerInParent="true"
                             android:layout_centerHorizontal="true"
@@ -733,6 +790,7 @@
                         android:id="@+id/motivator_state_level_tv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:hint="Enter No of Attendee"
                         android:layout_alignParentStart="true"
                         android:layout_centerInParent="true"
                         android:layout_marginLeft="15dp"
@@ -839,6 +897,7 @@
                         android:id="@+id/motivator_position_tv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:hint="Enter Position"
                         android:layout_alignParentStart="true"
                         android:layout_centerInParent="true"
                         android:layout_marginLeft="15dp"

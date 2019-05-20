@@ -274,6 +274,49 @@ public class dbData {
         return cards;
     }
 
+    public ODFMonitoringListValue insertCategoryList(ODFMonitoringListValue odfMonitoringListValue) {
+
+        ContentValues values = new ContentValues();
+        values.put(AppConstant.KEY_MOTIVATOR_CATEGORY_ID,odfMonitoringListValue.getMotivatorCategoryId());
+        values.put(AppConstant.KEY_MOTIVATOR_CATEGORY_NAME,odfMonitoringListValue.getMotivatorCategoryName());
+
+        long id = db.insert(DBHelper.MOTIVATOR_CATEGORY_LIST_TABLE_NAME,null,values);
+        Log.d("Inserted_idCategoryList",String.valueOf(id));
+
+        return odfMonitoringListValue;
+    }
+
+    public ArrayList<ODFMonitoringListValue> getAllCategoryList() {
+
+        ArrayList<ODFMonitoringListValue> cards = new ArrayList<>();
+        Cursor cursor = null;
+
+        try {
+            cursor = db.rawQuery("select * from "+DBHelper.MOTIVATOR_CATEGORY_LIST_TABLE_NAME,null);
+            // cursor = db.query(CardsDBHelper.TABLE_CARDS,
+            //       COLUMNS, null, null, null, null, null);
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    ODFMonitoringListValue categoryList = new ODFMonitoringListValue();
+
+                    categoryList.setMotivatorCategoryId(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_MOTIVATOR_CATEGORY_ID)));
+                    categoryList.setMotivatorCategoryName(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_MOTIVATOR_CATEGORY_NAME)));
+
+
+                    cards.add(categoryList);
+                }
+            }
+        } catch (Exception e){
+            //   Log.d(DEBUG_TAG, "Exception raised with a value of " + e);
+        } finally{
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return cards;
+    }
 
 
 }
