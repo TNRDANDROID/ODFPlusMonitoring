@@ -1,7 +1,6 @@
 package com.nic.ODFPlusMonitoring.Activity;
 
 import android.app.AlertDialog;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -11,13 +10,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
@@ -34,7 +34,6 @@ import com.nic.ODFPlusMonitoring.Support.MyEditTextView;
 import com.nic.ODFPlusMonitoring.Support.ProgressHUD;
 import com.nic.ODFPlusMonitoring.Utils.UrlGenerator;
 import com.nic.ODFPlusMonitoring.Utils.Utils;
-import com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -55,8 +54,9 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     private String name, pass, randString;
 
     private MyEditTextView userName;
-    private ShowHidePasswordEditText showHidePasswordEditText;
-    CheckBox rememberMe;
+    private MyEditTextView passwordEditText;
+    private int setPType;
+    private ImageView redEye;
     public static DBHelper dbHelper;
     public static SQLiteDatabase db;
     JSONObject jsonObject;
@@ -87,20 +87,18 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     public void intializeUI() {
         prefManager = new PrefManager(this);
         userName = (MyEditTextView) findViewById(R.id.user_name);
+        redEye = (ImageView) findViewById(R.id.red_eye);
         btn_sign_in = (Button) findViewById(R.id.btn_sign_in);
         btn_sign_up = (Button) findViewById(R.id.btn_sign_up);
-        showHidePasswordEditText = (ShowHidePasswordEditText) findViewById(R.id.password);
+        passwordEditText = (MyEditTextView) findViewById(R.id.passwordEditText);
 
         btn_sign_in.setOnClickListener(this);
         btn_sign_up.setOnClickListener(this);
 
-        showHidePasswordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-//        userName.setTypeface(FontCache.getInstance(this).getFont(FontCache.Font.REGULAR));
-//        showHidePasswordEditText.setTypeface(FontCache.getInstance(this).getFont(FontCache.Font.REGULAR));
-//        btn_sign_in.setTypeface(FontCache.getInstance(this).getFont(FontCache.Font.MEDIUM));
-//        btn_sign_up.setTypeface(FontCache.getInstance(this).getFont(FontCache.Font.MEDIUM));
+        passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
-        showHidePasswordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+        passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
                     checkLoginScreen();
@@ -108,9 +106,30 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                 return false;
             }
         });
-        showHidePasswordEditText.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Avenir-Roman.ttf"));
+        passwordEditText.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Avenir-Roman.ttf"));
         randString = Utils.randomChar();
+        setPType = 1;
+        redEye.setOnClickListener(this);
 
+
+    }
+
+    public void showPassword() {
+        if (setPType == 1) {
+            setPType = 0;
+            passwordEditText.setTransformationMethod(null);
+            if (passwordEditText.getText().length() > 0) {
+                passwordEditText.setSelection(passwordEditText.getText().length());
+                redEye.setBackgroundResource(R.drawable.ic_baseline_visibility_off_24px);
+            }
+        } else {
+            setPType = 1;
+            passwordEditText.setTransformationMethod(new PasswordTransformationMethod());
+            if (passwordEditText.getText().length() > 0) {
+                passwordEditText.setSelection(passwordEditText.getText().length());
+                redEye.setBackgroundResource(R.drawable.ic_baseline_visibility_24px);
+            }
+        }
 
     }
 
@@ -133,6 +152,9 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             case R.id.btn_sign_up:
                 ClickSignUp();
                 break;
+            case R.id.red_eye:
+                showPassword();
+                break;
         }
     }
 
@@ -140,7 +162,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         boolean valid = true;
         String username = userName.getText().toString().trim();
         prefManager.setUserName(username);
-        String password = showHidePasswordEditText.getText().toString().trim();
+        String password = passwordEditText.getText().toString().trim();
 
 
         if (username.isEmpty()) {
@@ -156,7 +178,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     private void checkLoginScreen() {
 
         final String username = userName.getText().toString().trim();
-        final String password = showHidePasswordEditText.getText().toString().trim();
+        final String password = passwordEditText.getText().toString().trim();
         prefManager.setUserPassword(password);
 
         if (Utils.isOnline()) {
@@ -206,7 +228,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         params.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         Log.d("user", "" + userName.getText().toString().trim());
 
-        String encryptUserPass = Utils.md5(showHidePasswordEditText.getText().toString().trim());
+        String encryptUserPass = Utils.md5(passwordEditText.getText().toString().trim());
         prefManager.setEncryptPass(encryptUserPass);
         Log.d("md5", "" + encryptUserPass);
 
@@ -352,6 +374,14 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                 }
 
             }
+            if ("MotivatorCategoryList".equals(urlType) && responseObj != null) {
+                if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
+                    new MotivatorCategoryList().execute(responseObj.getJSONArray(AppConstant.JSON_DATA));
+                } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("NO_RECORD")) {
+                    Log.d("Record", responseObj.getString(AppConstant.KEY_MESSAGE));
+                }
+                Log.d("MotivatorCategoryList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
+            }
             if ("DistrictList".equals(urlType) && responseObj != null) {
                 if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
                    new  InsertDistrictTask().execute(responseObj.getJSONArray(AppConstant.JSON_DATA));
@@ -397,14 +427,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                 Log.d("BankBranchList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
             }
 
-            if ("MotivatorCategoryList".equals(urlType) && responseObj != null) {
-                if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
-                    new MotivatorCategoryList().execute(responseObj.getJSONArray(AppConstant.JSON_DATA));
-                } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("NO_RECORD")) {
-                    Log.d("Record", responseObj.getString(AppConstant.KEY_MESSAGE));
-                }
-                Log.d("MotivatorCategoryList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
-            }
+
 
 
         } catch (JSONException e) {
@@ -624,8 +647,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 //    }
 
     private void showHomeScreen() {
-        Intent intent = new Intent(LoginScreen.this,AppVersionActivity.class);
-
+        Intent intent = new Intent(LoginScreen.this,HomePage.class);
         startActivity(intent);
         finish();
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);

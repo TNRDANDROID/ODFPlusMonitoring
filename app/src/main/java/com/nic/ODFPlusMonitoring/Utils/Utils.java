@@ -33,9 +33,13 @@ import android.widget.ImageView;
 
 import com.nic.ODFPlusMonitoring.Application.NICApplication;
 import com.nic.ODFPlusMonitoring.BuildConfig;
+import com.nic.ODFPlusMonitoring.Constant.AppConstant;
 import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Support.MyCustomTextView;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -1067,6 +1071,11 @@ public class Utils {
             throw new RuntimeException(ex);
         }
     }
-
+    public static JSONObject motivatorScheduleListJsonParams() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_MOTIVATOR_SCHEDULE);
+        Log.d("object", "" + dataSet);
+        return dataSet;
+    }
 
 }

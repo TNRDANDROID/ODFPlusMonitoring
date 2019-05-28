@@ -3,7 +3,7 @@
     xmlns:customfontdemo="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
+    android:background="@drawable/blue"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -20,7 +20,7 @@
             android:text="Registration"
             android:textColor="@android:color/white"
             android:textSize="18sp"
-            customfontdemo:fontName="@string/font_medium" />
+            customfontdemo:fontName="@string/font_circular_medium" />
 
 
     </RelativeLayout>
@@ -52,16 +52,16 @@
             android:orientation="vertical">
 
             <FrameLayout
-                android:layout_width="170dp"
-                android:layout_height="120dp"
+                android:layout_width="250dp"
+                android:layout_height="200dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/margin"
                 android:gravity="center">
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/profile_image"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
                     android:layout_gravity="center"
                     android:layout_margin="@dimen/padding"
                     android:background="@drawable/profile_bg_circle"
@@ -69,10 +69,10 @@
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/profile_image_preview"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_gravity="center"
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
                     android:layout_margin="@dimen/padding"
+                    android:layout_gravity="center"
                     android:background="@drawable/profile_bg_circle"
                     android:scaleType="centerCrop"
                     android:src="@drawable/ic_account_circle_black_24dp" />
@@ -83,7 +83,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="bottom|right"
-                    android:layout_margin="@dimen/padding"
+                    android:layout_margin="@dimen/_37sdp"
                     android:background="@drawable/edit_profile_bg">
 
                     <ImageView
@@ -96,17 +96,6 @@
 
             </FrameLayout>
 
-            <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
-                android:id="@+id/tv_asset_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/edit_text_padding"
-                android:gravity="center"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"
-                customfontdemo:fontName="@string/font_medium" />
 
             <LinearLayout
                 android:id="@+id/name_layout"
@@ -124,7 +113,7 @@
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_15sdp"
                     android:visibility="visible"
-                    customfontdemo:fontName="@string/font_medium" />
+                    customfontdemo:fontName="@string/font_circular_medium" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -150,7 +139,7 @@
                         android:textSize="@dimen/_15sdp"
                         android:hint="Enter Name"
 
-                        customfontdemo:fontName="@string/font_normal" />
+                        customfontdemo:fontName="@string/font_circular_book" />
 
 
                 </RelativeLayout>
@@ -174,7 +163,7 @@
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_15sdp"
                     android:visibility="visible"
-                    customfontdemo:fontName="@string/font_medium" />
+                    customfontdemo:fontName="@string/font_circular_medium" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -197,7 +186,7 @@
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/_15sdp"
                         android:visibility="visible"
-                        customfontdemo:fontName="@string/font_normal" />
+                        customfontdemo:fontName="@string/font_circular_book" />
 
                     <Spinner
                         android:id="@+id/district"
@@ -230,7 +219,7 @@
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_15sdp"
                     android:visibility="visible"
-                    customfontdemo:fontName="@string/font_medium" />
+                    customfontdemo:fontName="@string/font_circular_medium" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -253,7 +242,7 @@
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/_15sdp"
                         android:visibility="visible"
-                        customfontdemo:fontName="@string/font_normal" />
+                        customfontdemo:fontName="@string/font_circular_book" />
 
                     <Spinner
                         android:id="@+id/block"
@@ -289,7 +278,7 @@
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_15sdp"
                     android:visibility="visible"
-                    customfontdemo:fontName="@string/font_medium" />
+                    customfontdemo:fontName="@string/font_circular_medium" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -312,7 +301,7 @@
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/_15sdp"
                         android:visibility="visible"
-                        customfontdemo:fontName="@string/font_normal" />
+                        customfontdemo:fontName="@string/font_circular_book" />
 
                     <Spinner
                         android:id="@+id/village"
@@ -347,7 +336,7 @@
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_15sdp"
                     android:visibility="visible"
-                    customfontdemo:fontName="@string/font_medium" />
+                    customfontdemo:fontName="@string/font_circular_medium" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -394,7 +383,7 @@
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_15sdp"
                     android:visibility="visible"
-                    customfontdemo:fontName="@string/font_medium" />
+                    customfontdemo:fontName="@string/font_circular_medium" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -420,7 +409,7 @@
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/_15sdp"
                         android:visibility="visible"
-                        customfontdemo:fontName="@string/font_normal" />
+                        customfontdemo:fontName="@string/font_circular_book" />
 
 
                 </RelativeLayout>
@@ -444,7 +433,7 @@
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_15sdp"
                     android:visibility="visible"
-                    customfontdemo:fontName="@string/font_medium" />
+                    customfontdemo:fontName="@string/font_circular_medium" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -470,7 +459,7 @@
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/_15sdp"
                         android:visibility="visible"
-                        customfontdemo:fontName="@string/font_normal" />
+                        customfontdemo:fontName="@string/font_circular_book" />
 
 
                 </RelativeLayout>
@@ -494,7 +483,7 @@
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_15sdp"
                     android:visibility="visible"
-                    customfontdemo:fontName="@string/font_medium" />
+                    customfontdemo:fontName="@string/font_circular_medium" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -519,7 +508,7 @@
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/_15sdp"
                         android:visibility="visible"
-                        customfontdemo:fontName="@string/font_normal" />
+                        customfontdemo:fontName="@string/font_circular_book" />
 
 
                 </RelativeLayout>
@@ -543,7 +532,7 @@
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_15sdp"
                     android:visibility="visible"
-                    customfontdemo:fontName="@string/font_medium" />
+                    customfontdemo:fontName="@string/font_circular_medium" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -568,7 +557,7 @@
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/_15sdp"
                         android:visibility="visible"
-                        customfontdemo:fontName="@string/font_normal" />
+                        customfontdemo:fontName="@string/font_circular_book" />
 
 
                 </RelativeLayout>
@@ -592,7 +581,7 @@
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_15sdp"
                     android:visibility="visible"
-                    customfontdemo:fontName="@string/font_medium" />
+                    customfontdemo:fontName="@string/font_circular_medium" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -617,7 +606,7 @@
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/_15sdp"
                         android:visibility="visible"
-                        customfontdemo:fontName="@string/font_normal" />
+                        customfontdemo:fontName="@string/font_circular_book" />
 
 
                 </RelativeLayout>
@@ -641,7 +630,7 @@
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_15sdp"
                     android:visibility="visible"
-                    customfontdemo:fontName="@string/font_medium" />
+                    customfontdemo:fontName="@string/font_circular_medium" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -666,7 +655,7 @@
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/_15sdp"
                         android:visibility="visible"
-                        customfontdemo:fontName="@string/font_normal" />
+                        customfontdemo:fontName="@string/font_circular_book" />
 
 
                 </RelativeLayout>
@@ -689,7 +678,7 @@
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_15sdp"
                     android:visibility="visible"
-                    customfontdemo:fontName="@string/font_medium" />
+                    customfontdemo:fontName="@string/font_circular_medium" />
 
                 <RelativeLayout
                     android:id="@+id/dob_layout"
@@ -720,7 +709,7 @@
                             android:textAlignment="viewStart"
                             android:textColor="@android:color/black"
                             android:textSize="@dimen/_15sdp"
-                            customfontdemo:fontName="@string/font_normal" />
+                            customfontdemo:fontName="@string/font_circular_book" />
 
                         <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
                             android:id="@+id/calendar_icon"
@@ -750,7 +739,7 @@
                         <!--android:textColor="@android:color/black"-->
                         <!--android:textSize="@dimen/_15sdp"-->
                         <!--android:visibility="visible"-->
-                        <!--customfontdemo:fontName="@string/font_normal" />-->
+                        <!--customfontdemo:fontName="@string/font_circular_book" />-->
 
 
                 </RelativeLayout>
@@ -774,7 +763,7 @@
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_15sdp"
                     android:visibility="visible"
-                    customfontdemo:fontName="@string/font_medium" />
+                    customfontdemo:fontName="@string/font_circular_medium" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -799,7 +788,7 @@
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/_15sdp"
                         android:visibility="visible"
-                        customfontdemo:fontName="@string/font_normal" />
+                        customfontdemo:fontName="@string/font_circular_book" />
 
 
                 </RelativeLayout>
@@ -823,7 +812,7 @@
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_15sdp"
                     android:visibility="visible"
-                    customfontdemo:fontName="@string/font_medium" />
+                    customfontdemo:fontName="@string/font_circular_medium" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -846,7 +835,7 @@
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/_15sdp"
                         android:visibility="visible"
-                        customfontdemo:fontName="@string/font_normal" />
+                        customfontdemo:fontName="@string/font_circular_book" />
 
                     <Spinner
                         android:id="@+id/category"
@@ -881,7 +870,7 @@
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_15sdp"
                     android:visibility="visible"
-                    customfontdemo:fontName="@string/font_medium" />
+                    customfontdemo:fontName="@string/font_circular_medium" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -906,7 +895,7 @@
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/_15sdp"
                         android:visibility="visible"
-                        customfontdemo:fontName="@string/font_normal" />
+                        customfontdemo:fontName="@string/font_circular_book" />
 
 
                 </RelativeLayout>

@@ -25,7 +25,7 @@
         android:textColor="#FFFFFF"
         android:textSize="17sp"
         android:textStyle="bold"
-        customfontdemo:fontName="@string/font_medium" />
+        customfontdemo:fontName="@string/font_circular_medium" />
 
     <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
         android:id="@+id/amp"
@@ -38,7 +38,7 @@
         android:textColor="#FFFFFF"
         android:textSize="17sp"
         android:textStyle="bold"
-        customfontdemo:fontName="@string/font_medium" />
+        customfontdemo:fontName="@string/font_circular_medium" />
 
     <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
         android:id="@+id/dp"
@@ -51,5 +51,5 @@
         android:textColor="#FFFFFF"
         android:textSize="17sp"
         android:textStyle="bold"
-        customfontdemo:fontName="@string/font_medium" />
+        customfontdemo:fontName="@string/font_circular_medium" />
 </RelativeLayout>

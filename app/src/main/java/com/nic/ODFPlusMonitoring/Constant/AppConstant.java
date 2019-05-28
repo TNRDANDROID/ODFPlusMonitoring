@@ -10,6 +10,7 @@ public class AppConstant {
     public static String JSON_DATA = "JSON_DATA";
     public static String KEY_VERSION_CHECK= "version_check";
     public static String DATA_CONTENT = "data_content";
+    public static String ENCODE_DATA = "enc_data";
 
     public static String KEY_DISTRICT_LIST_ALL = "district_list_all";
     public static String KEY_BLOCK_LIST_ALL = "block_list_all";
@@ -65,6 +66,9 @@ public class AppConstant {
     public static String KEY_REGISTER_CATEGORY = "category";
     public static String KEY_REGISTER_CATEGORY_OTHERS = "category_other";
     public static String KEY_REGISTER_MOTIVATOR_POSITION = "motivator_position";
+    public static String KEY_REGISTER_IFSC_CODE = "ifsccode";
+    public static String KEY_REGISTER_MOTIVATOR_ID = "motivator_id";
+    public static String KEY_MOTIVATOR_SCHEDULE = "motivator_schedule";
 
 
 }

@@ -25,14 +25,18 @@ public class UrlGenerator {
 //    }
 
     public static String getTnrdHostName() {
-        return "10.163.19.140";
+        return "www.tnrd.gov.in";
     }
 
     public static String getOpenUrl() {
-        return "http://10.163.19.140:81/rdweb/project/webservices_forms/open_services/open_services.php";
+        return "https://www.tnrd.gov.in/project/webservices_forms/open_services/open_services.php";
     }
 
     public static String getMotivatorCategory() {
-        return "http://10.163.19.140:81/rdweb/project/webservices_forms/odf/odf_open_services.php";
+        return "https://www.tnrd.gov.in/project/webservices_forms/odf/odf_open_services.php";
+    }
+
+    public static String getMotivatorSchedule() {
+        return "https://www.tnrd.gov.in/project/webservices_forms/odf/odf_services.php";
     }
 }

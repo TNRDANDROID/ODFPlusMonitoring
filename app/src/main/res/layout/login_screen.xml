@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
+    android:background="@drawable/blue_feather"
     tools:context=".Activity.LoginScreen">
 
 
@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
-        android:layout_marginTop="@dimen/_40sdp"
+         android:layout_centerInParent="true"
         android:orientation="vertical">
 
 
@@ -52,12 +52,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:padding="@dimen/_5sdp"
                     android:background="@android:color/transparent"
                     android:hint="User Name"
                     android:inputType="textNoSuggestions"
                     android:textColor="@android:color/black"
                     android:textSize="16dp"
-                    customfontdemo:fontName="@string/font_medium" />
+                    customfontdemo:fontName="@string/font_circular_medium" />
 
 
             </LinearLayout>
@@ -78,18 +79,37 @@
                     android:background="@drawable/ic_lock_black_24dp" />
 
 
-                <com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText
-                    android:id="@+id/password"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="@android:color/transparent"
-                    android:hint="Password"
-                    android:singleLine="true"
-                    android:textColor="@android:color/black"
-                    android:textSize="16dp"
-                    customfontdemo:fontName="@string/font_medium"
-                    tools:ignore="HardcodedText" />
+                    android:layout_height="wrap_content">
+
+                    <com.nic.ODFPlusMonitoring.Support.MyEditTextView
+                        android:id="@+id/passwordEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerInParent="true"
+                        android:layout_toLeftOf="@+id/red_eye"
+                        android:background="@android:color/transparent"
+                        android:hint="Password"
+                        android:inputType="textPassword"
+                        android:padding="@dimen/_5sdp"
+                        android:singleLine="true"
+                        android:textColor="@android:color/black"
+                        android:textSize="16dp"
+                        customfontdemo:fontName="@string/font_circular_medium"
+                        tools:ignore="HardcodedText" />
+
+                    <ImageView
+                        android:id="@+id/red_eye"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="center"
+                        android:layout_margin="@dimen/_5sdp"
+                        android:background="@drawable/ic_baseline_visibility_24px" />
+
+                </RelativeLayout>
 
             </LinearLayout>
 

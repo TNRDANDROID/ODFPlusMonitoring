@@ -18,22 +18,22 @@
     </style>
 
     <style name="font_circular_medium">
-        <item name="android:fontFamily">@string/font_medium</item>
+        <item name="android:fontFamily">@string/font_circular_medium</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="font_circular_book">
-        <item name="android:fontFamily">@string/font_avenir_medium</item>
+        <item name="android:fontFamily">@string/font_circular_book</item>
         <item name="android:textStyle">normal</item>
     </style>
 
     <style name="font_circular_black">
-        <item name="android:fontFamily">@string/font_heavy</item>
+        <item name="android:fontFamily">@string/font_circular_black</item>
         <item name="android:textStyle">normal</item>
     </style>
 
     <style name="font_circular_bold">
-        <item name="android:fontFamily">@string/font_bold</item>
+        <item name="android:fontFamily">@string/font_circular_bold</item>
         <item name="android:textStyle">bold</item>
     </style>
 

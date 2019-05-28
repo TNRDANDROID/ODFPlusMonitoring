@@ -86,7 +86,7 @@ import static com.nic.ODFPlusMonitoring.DataBase.DBHelper.VILLAGE_TABLE_NAME;
 public class RegisterScreen extends AppCompatActivity implements View.OnClickListener, Api.ServerResponseListener {
 
     private Button btn_register;
-    private Handler handler;
+    private Handler handler = new Handler();
     private MyEditTextView motivator_name, motivator_address, motivator_mobileNO, motivator_email_id, motivator_state_level_tv, motivator_position_tv;
     private AppCompatAutoCompleteTextView motivator_bank_tv, motivator_account_tv, motivator_branch_tv;
     private MyCustomTextView motivator_ifsc_tv;
@@ -588,22 +588,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    @Override
-    public void OnMyResponse(ServerResponse serverResponse) {
-        try {
-            JSONObject responseObj = serverResponse.getJsonResponse();
-            String urlType = serverResponse.getApi();
-            if ("save_data".equals(urlType) && responseObj != null) {
-                JSONObject jsonObject = new JSONObject();
-                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
 
-                }
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
 
     public void loadBankName(String text) {
         array.clear();
@@ -867,7 +852,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
 
     public void signUP() {
         try {
-            new ApiService(this).makeJSONObjectRequest("Register", Api.Method.POST, UrlGenerator.getOpenUrl(), dataTobeSavedJsonParams(), "not cache", this);
+            new ApiService(this).makeJSONObjectRequest("Register", Api.Method.POST, UrlGenerator.getMotivatorCategory(), dataTobeSavedJsonParams(), "not cache", this);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -903,7 +888,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         dataSet.put(AppConstant.KEY_REGISTER_ACC_NO, motivator_account_tv.getText().toString());
         dataSet.put(AppConstant.BANK_ID, prefManager.getKeyAutocompleteSelectedBankID());
         dataSet.put(AppConstant.BRANCH_ID, prefManager.getKeyAutocompleteSelectedBranchID());
-        dataSet.put(AppConstant.IFSC_CODE, prefManager.getKeyAutocompleteSelectedIfscCode());
+        dataSet.put(AppConstant.KEY_REGISTER_IFSC_CODE, prefManager.getKeyAutocompleteSelectedIfscCode());
         dataSet.put(AppConstant.KEY_MOTIVATOR_NO_OF_STATE_LEVEL_TRAINEE, motivator_state_level_tv.getText().toString());
         if ((prefManager.getSpinnerSelectedCategoryName()).equalsIgnoreCase("others")) {
             dataSet.put(AppConstant.KEY_REGISTER_CATEGORY_OTHERS, prefManager.getSpinnerSelectedCategoryId());
@@ -921,5 +906,36 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
             Log.v("to_send+_plain", authKey.substring(start, end));
         }
         return dataSet;
+    }
+
+    @Override
+    public void OnMyResponse(ServerResponse serverResponse) {
+        try {
+            JSONObject responseObj = serverResponse.getJsonResponse();
+            String urlType = serverResponse.getApi();
+            String status = responseObj.getString(AppConstant.KEY_STATUS);
+            String response = responseObj.getString(AppConstant.KEY_RESPONSE);
+            if ("Register".equals(urlType) && responseObj != null) {
+                if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
+                    JSONObject jsonObject = responseObj.getJSONObject(AppConstant.JSON_DATA);
+                    String Motivatorid = jsonObject.getString(AppConstant.KEY_REGISTER_MOTIVATOR_ID);
+                    Log.d("motivatorid",""+Motivatorid);
+                    Utils.showAlert(this,"You have been successfully registered!");
+                    Runnable runnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            finish();
+                        }
+                    };
+                    handler.postDelayed(runnable,2000);
+
+                } else {
+                    Utils.showAlert(this, "Status Fail");
+                }
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }
