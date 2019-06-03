@@ -7,7 +7,7 @@
     <string name="font_circular_bold">circular-bold.ttf</string>
     <string name="font_circular_book">circular-book.ttf</string>
     <string name="font_circular_black">circular-black.ttf</string>
-    <string name="font_normal">din_pro_light</string>
+    <string name="font_normal">din_pro_light.otf</string>
     <string name="no_internet">Your internet seems to be offline!</string>
     <string name="view_image">View Inspected Image</string>
     <string name="take_action">Take Action</string>

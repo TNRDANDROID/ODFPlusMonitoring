@@ -36,6 +36,91 @@ public class ODFMonitoringListValue {
     private String VillageListPvName;
     private String VillageListPvCode;
     private int motivatorCategoryId;
+    private String scheduleMasterId;
+    private String motivatorId;
+    private String scheduleFromDate;
+    private String scheduletoDate;
+    private String scheduleDCode;
+    private String scheduleBCode;
+    private String schedulePvCode;
+
+    public String getScheduleDCode() {
+        return scheduleDCode;
+    }
+
+    public void setScheduleDCode(String scheduleDCode) {
+        this.scheduleDCode = scheduleDCode;
+    }
+
+    public String getScheduleBCode() {
+        return scheduleBCode;
+    }
+
+    public void setScheduleBCode(String scheduleBCode) {
+        this.scheduleBCode = scheduleBCode;
+    }
+
+    public String getSchedulePvCode() {
+        return schedulePvCode;
+    }
+
+    public void setSchedulePvCode(String schedulePvCode) {
+        this.schedulePvCode = schedulePvCode;
+    }
+
+    public String getSchedulePvName() {
+        return schedulePvName;
+    }
+
+    public void setSchedulePvName(String schedulePvName) {
+        this.schedulePvName = schedulePvName;
+    }
+
+    private String schedulePvName;
+
+    public String getScheduleFromDate() {
+        return scheduleFromDate;
+    }
+
+    public void setScheduleFromDate(String scheduleFromDate) {
+        this.scheduleFromDate = scheduleFromDate;
+    }
+
+    public String getScheduletoDate() {
+        return scheduletoDate;
+    }
+
+    public void setScheduletoDate(String scheduletoDate) {
+        this.scheduletoDate = scheduletoDate;
+    }
+
+    public String getScheduleMasterId() {
+        return scheduleMasterId;
+    }
+
+    public void setScheduleMasterId(String scheduleMasterId) {
+        this.scheduleMasterId = scheduleMasterId;
+    }
+
+    public String getMotivatorId() {
+        return motivatorId;
+    }
+
+    public void setMotivatorId(String motivatorId) {
+        this.motivatorId = motivatorId;
+    }
+
+
+
+    public String getScheduleDescription() {
+        return scheduleDescription;
+    }
+
+    public void setScheduleDescription(String scheduleDescription) {
+        this.scheduleDescription = scheduleDescription;
+    }
+
+    private String scheduleDescription;
 
     public int getMotivatorCategoryId() {
         return motivatorCategoryId;

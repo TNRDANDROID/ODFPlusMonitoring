@@ -21,7 +21,7 @@
             android:gravity="center"
             android:padding="@dimen/padding"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            customfontdemo:fontName="@string/font_normal" />
+            customfontdemo:fontName="@string/font_circular_book" />
 
         <View
             android:layout_width="match_parent"

@@ -70,5 +70,15 @@ public class AppConstant {
     public static String KEY_REGISTER_MOTIVATOR_ID = "motivator_id";
     public static String KEY_MOTIVATOR_SCHEDULE = "motivator_schedule";
 
+    //Home Page
+    public static String KEY_MOTIVATOR_SCHEDULE_ID = "schedule_id";
+    public static String KEY_MOTIVATOR_T_SCHEDULE = "t_schedule";
+    public static String KEY_SCHEDULE_MOTIVATOR_MASTER_ID = "schedule_master_id";
+    public static String KEY_SCHEDULE_MOTIVATOR_ID = "motivator_id";
+    public static String KEY_SCHEDULE_MOTIVATOR_FROM_DATE = "from_date";
+    public static String KEY_SCHEDULE_MOTIVATOR_TO_DATE = "to_date";
+    public static String KEY_SCHEDULE_MOTIVATOR_DESCRIPTION = "schedule_description";
+    public static String KEY_T_SCHEDULE_VILLAGE = "t_schedule_village";
+
 
 }

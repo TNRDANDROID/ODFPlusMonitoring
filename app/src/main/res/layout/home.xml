@@ -64,7 +64,7 @@
                                 customfontdemo:fontName="@string/font_circular_medium" />
 
                             <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
-
+                                android:id="@+id/from_date_tv"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:padding="5dp"
@@ -75,7 +75,6 @@
                                 customfontdemo:fontName="@string/font_circular_medium" />
 
                             <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
-                                android:id="@+id/from_date_tv"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
 
@@ -87,7 +86,7 @@
                                 customfontdemo:fontName="@string/font_circular_medium" />
 
                             <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
-
+                                android:id="@+id/to_date_tv"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
 
@@ -134,7 +133,7 @@
                                     android:orientation="vertical">
 
                                     <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
-                                        android:id="@+id/amount_tv"
+                                        android:id="@+id/schedule_description_tv"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:padding="10dp"

@@ -1,6 +1,8 @@
 package com.nic.ODFPlusMonitoring.Utils;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,10 +27,12 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 
 import com.nic.ODFPlusMonitoring.Application.NICApplication;
@@ -136,27 +140,52 @@ public class Utils {
 
     }
 
-    public static void showAlert(Context context, String message) {
+//    public static void showAlert(Context context, String message) {
+//        try {
+//            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//            @SuppressLint("InflateParams") View dialogView = inflater.inflate(R.layout.alert_dialog,null);
+//            final AlertDialog alertDialog = builder.create();
+//            alertDialog.setView(dialogView, 0, 0, 0, 0);
+//            alertDialog.setCancelable(false);
+//            alertDialog.show();
+//
+//            MyCustomTextView tv_message = (MyCustomTextView) dialogView.findViewById(R.id.tv_message);
+//            tv_message.setText(message);
+//
+//            Button btnOk = (Button) dialogView.findViewById(R.id.btn_ok);
+//            btnOk.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    alertDialog.dismiss();
+//                }
+//            });
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+    public static void showAlert(Activity activity, String msg){
         try {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View dialogView = inflater.inflate(R.layout.alert_dialog, null);
-            final AlertDialog alertDialog = builder.create();
-            alertDialog.setView(dialogView, 0, 0, 0, 0);
-            alertDialog.setCancelable(false);
-            alertDialog.show();
+        final Dialog dialog = new Dialog(activity);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.alert_dialog);
 
-            MyCustomTextView tv_message = (MyCustomTextView) dialogView.findViewById(R.id.tv_message);
-            tv_message.setText(message);
+        MyCustomTextView text = (MyCustomTextView) dialog.findViewById(R.id.tv_message);
+        text.setText(msg);
 
-            Button btnOk = (Button) dialogView.findViewById(R.id.btn_ok);
-            btnOk.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    alertDialog.dismiss();
-                }
-            });
+        Button dialogButton = (Button) dialog.findViewById(R.id.btn_ok);
+        dialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
