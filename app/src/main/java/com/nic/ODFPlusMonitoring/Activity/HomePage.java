@@ -1,15 +1,22 @@
 package com.nic.ODFPlusMonitoring.Activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.android.volley.VolleyError;
 import com.nic.ODFPlusMonitoring.Api.Api;
 import com.nic.ODFPlusMonitoring.Api.ApiService;
 import com.nic.ODFPlusMonitoring.Api.ServerResponse;
 import com.nic.ODFPlusMonitoring.Constant.AppConstant;
+import com.nic.ODFPlusMonitoring.Dialog.MyDialog;
 import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
@@ -20,8 +27,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class HomePage extends AppCompatActivity implements Api.ServerResponseListener {
+public class HomePage extends AppCompatActivity implements Api.ServerResponseListener, View.OnClickListener, MyDialog.myOnClickListener {
     private PrefManager prefManager;
+    private ImageView logout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,6 +40,8 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
 
     public void intializeUI() {
         prefManager = new PrefManager(this);
+        logout = (ImageView) findViewById(R.id.logout);
+        logout.setOnClickListener(this);
         getMotivatorSchedule();
     }
 
@@ -107,8 +117,60 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         }
 
     }
+
+
     @Override
     public void OnError(VolleyError volleyError) {
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.logout:
+                closeApplication();
+                break;
+        }
+
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        setResult(Activity.RESULT_CANCELED);
+        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+    }
+
+
+    private void closeApplication() {
+        new MyDialog(this).exitDialog(this, "Are you sure you want to Logout?", "Logout");
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+                new MyDialog(this).exitDialog(this, "Are you sure you want to exit ?", "Exit");
+                return false;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onButtonClick(AlertDialog alertDialog, String type) {
+        alertDialog.dismiss();
+        if ("Exit".equalsIgnoreCase(type)) {
+            onBackPressed();
+        } else {
+
+            Intent intent = new Intent(getApplicationContext(), LoginScreen.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.putExtra("EXIT", false);
+            startActivity(intent);
+            finish();
+            overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+        }
     }
 }
