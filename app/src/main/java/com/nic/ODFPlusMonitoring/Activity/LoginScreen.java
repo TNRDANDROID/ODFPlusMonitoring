@@ -253,6 +253,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     private void ClickSignUp() {
         Intent intent  = new Intent(LoginScreen.this,RegisterScreen.class);
         startActivity(intent);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
     public void getDistrictList() {
@@ -350,9 +351,13 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         try {
             JSONObject responseObj = serverResponse.getJsonResponse();
             String urlType = serverResponse.getApi();
-            String status = responseObj.getString(AppConstant.KEY_STATUS);
-            String response = responseObj.getString(AppConstant.KEY_RESPONSE);
+            String status = null;
+            String response = null;
          //   String message = responseObj.getString(AppConstant.KEY_MESSAGE);
+            if (!"MotivatorSchedule".equals(urlType)){
+                status  = responseObj.getString(AppConstant.KEY_STATUS);
+                response = responseObj.getString(AppConstant.KEY_RESPONSE);
+            }
             if ("LoginScreen".equals(urlType)) {
                 if (status.equalsIgnoreCase("OK")) {
                     if (response.equals("LOGIN_SUCCESS")) {
@@ -363,7 +368,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                         Log.d("userdatadecry", "" + userDataDecrypt);
                         jsonObject = new JSONObject(userDataDecrypt);
 
-                        Log.d("userdata", "" + prefManager.getDistrictCode() + prefManager.getBlockCode() + prefManager.getPvCode() + prefManager.getDistrictName() + prefManager.getBlockName() );
+                        Log.d("userdata", "" + prefManager.getDistrictCode() + prefManager.getBlockCode() + prefManager.getPvCode() + prefManager.getDistrictName() + prefManager.getBlockName());
                         prefManager.setUserPassKey(decryptedKey);
                         showHomeScreen();
                     } else {
@@ -657,9 +662,8 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     private void showHomeScreen() {
         Intent intent = new Intent(LoginScreen.this,HomePage.class);
         startActivity(intent);
-        finish();
-        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         getMotivatorSchedule();
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
     public void offline_mode(String name, String pass) {
