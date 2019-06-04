@@ -1137,7 +1137,7 @@ public class Utils {
 
 
     public static String getCurrentDateTime() {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss a");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss ");
         Date date = new Date();
         return formatter.format(date);
     }

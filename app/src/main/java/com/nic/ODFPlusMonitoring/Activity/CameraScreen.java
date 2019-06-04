@@ -2,6 +2,7 @@ package com.nic.ODFPlusMonitoring.Activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -20,6 +22,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -38,7 +42,9 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.nic.ODFPlusMonitoring.Api.Api;
 import com.nic.ODFPlusMonitoring.Api.ServerResponse;
+import com.nic.ODFPlusMonitoring.Constant.AppConstant;
 import com.nic.ODFPlusMonitoring.DataBase.DBHelper;
+import com.nic.ODFPlusMonitoring.DataBase.dbData;
 import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
 import com.nic.ODFPlusMonitoring.Support.MyEditTextView;
@@ -46,10 +52,14 @@ import com.nic.ODFPlusMonitoring.Support.MyLocationListener;
 import com.nic.ODFPlusMonitoring.Utils.CameraUtils;
 import com.nic.ODFPlusMonitoring.Utils.FontCache;
 import com.nic.ODFPlusMonitoring.Utils.Utils;
+import com.nic.ODFPlusMonitoring.DataBase.dbData;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import es.dmoral.toasty.Toasty;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.CAMERA;
@@ -77,8 +87,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
 
     public static DBHelper dbHelper;
     public static SQLiteDatabase db;
-
-
+    private dbData dbData = new dbData(this);
      private MyEditTextView description;
 
 
@@ -131,8 +140,48 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                 onBackPress();
                 break;
             case R.id.btn_save:
+                saveActivityImage();
                 break;
 
+        }
+    }
+
+    public void saveActivityImage() {
+        dbData.open();
+        ImageView imageView = (ImageView) findViewById(R.id.image_view);
+        byte[] imageInByte = new byte[0];
+        String image_str = "";
+        try {
+            Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+            imageInByte = baos.toByteArray();
+            image_str = Base64.encodeToString(imageInByte, Base64.DEFAULT);
+
+            ContentValues values = new ContentValues();
+            values.put(AppConstant.DISTRICT_CODE,prefManager.getDistrictCode() );
+            values.put(AppConstant.BLOCK_CODE, prefManager.getBlockCode());
+            values.put(AppConstant.PV_CODE,prefManager.getPvCode() );
+            values.put(AppConstant.KEY_SCHEDULE_ID,getIntent().getStringExtra(AppConstant.KEY_SCHEDULE_ID) );
+            values.put(AppConstant.KEY_MOTIVATOR_ID,prefManager.getMotivatorId() );
+            values.put(AppConstant.KEY_ACTIVITY_ID,getIntent().getStringExtra(AppConstant.KEY_ACTIVITY_ID) );
+            values.put(AppConstant.KEY_POINT_TYPE,getIntent().getStringExtra(AppConstant.KEY_POINT_TYPE) );
+            values.put(AppConstant.KEY_LATITUDE, offlatTextValue.toString());
+            values.put(AppConstant.KEY_LONGITUDE, offlongTextValue.toString());
+            values.put(AppConstant.KEY_IMAGE,image_str.trim());
+            values.put(AppConstant.KEY_DATE_TIME,Utils.getCurrentDateTime());
+            values.put(AppConstant.KEY_IMAGE_REMARK,description.getText().toString());
+
+            long id = db.insert(DBHelper.SAVE_ACTIVITY, null, values);
+
+            if(id > 0){
+                Toasty.success(this, "Success!", Toast.LENGTH_LONG, true).show();
+            }
+            Log.d("insIdsaveHabitation", String.valueOf(id));
+
+        } catch (Exception e) {
+            Utils.showAlert(CameraScreen.this, "Atleast Capture one Photo");
+            //e.printStackTrace();
         }
     }
 

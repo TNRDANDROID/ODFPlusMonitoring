@@ -704,6 +704,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             dbData.deleteScheduleVillageTable();
             dbData.deleteScheduleActivityTable();
         }
+        dbData.open();
         ArrayList<ODFMonitoringListValue> schedule_count = dbData.getAllSchedule(prefManager.getMotivatorId());
         if(schedule_count.size() <= 0) {
             for (int i = 0; i < jsonArray.length(); i++) {

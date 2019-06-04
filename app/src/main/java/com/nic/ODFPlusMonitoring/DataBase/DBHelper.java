@@ -19,6 +19,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String SCHEDULE_VILLAGE = "t_schedule_village";
     public static final String SCHEDULED_ACTIVITY = "t_scheduled_activity";
     public static final String SCHEDULED_ACTIVITY_PHOTOS = "t_scheduled_activity_photos";
+    public static final String SAVE_ACTIVITY = "save_activity";
 
     private Context context;
 
@@ -96,6 +97,20 @@ public class DBHelper extends SQLiteOpenHelper {
                 "start_lat TEXT," +
                 "start_long BLOB," +
                 "start_end_flag INTEGER)");
+
+        db.execSQL("CREATE TABLE " + SAVE_ACTIVITY + " ("
+                + "dcode INTEGER," +
+                "bcode INTEGER," +
+                "pvcode INTEGER," +
+                "activity_id INTEGER," +
+                "schedule_id INTEGER," +
+                "motivator_id INTEGER," +
+                "image BLOB," +
+                "lat TEXT," +
+                "long TEXT," +
+                "point_type TEXT," +
+                "dateTime TEXT," +
+                "remark TEXT)");
     }
 
     @Override

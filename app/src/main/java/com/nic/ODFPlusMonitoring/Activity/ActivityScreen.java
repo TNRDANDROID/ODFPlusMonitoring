@@ -79,14 +79,9 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
                     activityListAdapter.notifyDataSetChanged();
                     activity_tv.setVisibility(View.GONE);
                 } else {
-//                    JSONObject jsonObject = new JSONObject();
-//                    try {
-//                        jsonObject.put(AppConstant.KEY_PMGSY_DCODE,pmgsyVillageList.get(position).getPmgsyDcode());
-//                        jsonObject.put(AppConstant.KEY_PMGSY_BCODE,pmgsyVillageList.get(position).getPmgsyBcode());
-//                        jsonObject.put(AppConstant.KEY_PMGSY_PVCODE,pmgsyVillageList.get(position).getPmgsyPvcode());
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
+                    prefManager.setDistrictCode(scheduleVillageList.get(position).getDistictCode());
+                    prefManager.setBlockCode(scheduleVillageList.get(position).getBlockCode());
+                    prefManager.setPvCode(scheduleVillageList.get(position).getPvCode());
                     activity_tv.setVisibility(View.VISIBLE);
                     new fetchActivitytask().execute(String.valueOf(scheduleVillageList.get(position).getScheduleId()));
                 }

@@ -15,9 +15,11 @@ import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 import com.nic.ODFPlusMonitoring.Activity.CameraScreen;
+import com.nic.ODFPlusMonitoring.Constant.AppConstant;
 import com.nic.ODFPlusMonitoring.DataBase.dbData;
 import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 import com.nic.ODFPlusMonitoring.R;
+import com.nic.ODFPlusMonitoring.Session.PrefManager;
 import com.nic.ODFPlusMonitoring.Support.MyCustomTextView;
 import com.nic.ODFPlusMonitoring.Utils.Utils;
 
@@ -28,13 +30,13 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
     private final dbData dbData;
     private Context context;
     private List<ODFMonitoringListValue> activityListValues;
-  //  private PrefManager prefManager;
+   private PrefManager prefManager;
 
     public ActivityListAdapter(Context context, List<ODFMonitoringListValue> activityListValues, dbData dbData) {
         this.context = context;
         this.activityListValues = activityListValues;
         this.dbData = dbData;
-  //      prefManager = new PrefManager(context);
+        prefManager = new PrefManager(context);
     }
 
     @Override
@@ -103,7 +105,9 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
     public void cameraScreen(int pos,String type){
         Activity activity = (Activity) context;
         Intent intent = new Intent(context,CameraScreen.class);
-        intent.putExtra("StartEndType",type);
+        intent.putExtra(AppConstant.KEY_POINT_TYPE,type);
+        intent.putExtra(AppConstant.KEY_ACTIVITY_ID,activityListValues.get(pos).getActivityId());
+        intent.putExtra(AppConstant.KEY_SCHEDULE_ID,activityListValues.get(pos).getScheduleId());
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
