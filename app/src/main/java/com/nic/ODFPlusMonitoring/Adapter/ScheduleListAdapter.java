@@ -11,6 +11,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 
+import com.nic.ODFPlusMonitoring.Activity.ActivityScreen;
+import com.nic.ODFPlusMonitoring.Activity.CameraScreen;
+import com.nic.ODFPlusMonitoring.Constant.AppConstant;
 import com.nic.ODFPlusMonitoring.DataBase.dbData;
 import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 import com.nic.ODFPlusMonitoring.R;
@@ -85,6 +88,13 @@ public class ScheduleListAdapter extends RecyclerView.Adapter<ScheduleListAdapte
     public void openActivity(int pos){
         Log.d("schedule_id", String.valueOf(scheduleListValues.get(pos).getScheduleId()));
         Log.d("motivator", String.valueOf(scheduleListValues.get(pos).getMotivatorId()));
+        Activity activity = (Activity) context;
+        Intent intent = new Intent(context, ActivityScreen.class);
+        intent.putExtra(AppConstant.KEY_SCHEDULE_ID,String.valueOf(scheduleListValues.get(pos).getScheduleId()));
+        intent.putExtra(AppConstant.KEY_MOTIVATOR_ID,String.valueOf(scheduleListValues.get(pos).getMotivatorId()));
+        activity.startActivity(intent);
+
+
     }
 
 

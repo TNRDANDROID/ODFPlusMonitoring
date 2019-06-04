@@ -53,6 +53,7 @@ public class PrefManager {
 
 
     private static final String IMEI = "imei";
+    private static final String MOTIVATOR_ID = "motivator_id";
 
 
     public PrefManager(Context context) {
@@ -98,6 +99,15 @@ public class PrefManager {
 
     public void setUserPassKey(String userPassKey) {
         editor.putString(KEY_USER_PASS_KEY, userPassKey);
+        editor.commit();
+    }
+
+    public String getMotivatorId() {
+        return pref.getString(MOTIVATOR_ID, null);
+    }
+
+    public void setMotivatorId(String userPassKey) {
+        editor.putString(MOTIVATOR_ID, userPassKey);
         editor.commit();
     }
 

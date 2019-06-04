@@ -375,14 +375,17 @@ public class dbData {
     }
 
     /********************* t_schedule_village table *********************************/
-    public ArrayList<ODFMonitoringListValue> getAllScheduleVillage() {
+    public ArrayList<ODFMonitoringListValue> selectScheduledVillage(String motivator_id,String schedule_id) {
+
+        String selection = "motivator_id = ? and schedule_id = ?";
+        String[] selectionArgs = new String[]{motivator_id,schedule_id};
 
         ArrayList<ODFMonitoringListValue> cards = new ArrayList<>();
         Cursor cursor = null;
 
         try {
             cursor = db.query(DBHelper.SCHEDULE_VILLAGE,
-                    new String[] {"*"}, null, null, null, null, null);
+                    new String[] {"*"}, selection, selectionArgs, null, null, null);
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
                     ODFMonitoringListValue card = new ODFMonitoringListValue();
@@ -431,14 +434,16 @@ public class dbData {
     }
 
     /********************* t_scheduled_activity table *********************************/
-    public ArrayList<ODFMonitoringListValue> getAllScheduleActivity() {
+    public ArrayList<ODFMonitoringListValue> selectScheduleActivity(String schedule_id) {
 
         ArrayList<ODFMonitoringListValue> cards = new ArrayList<>();
         Cursor cursor = null;
+        String selection = "schedule_id = ?";
+        String[] selectionArgs = new String[]{schedule_id};
 
         try {
             cursor = db.query(DBHelper.SCHEDULED_ACTIVITY,
-                    new String[] {"*"}, null, null, null, null, null);
+                    new String[] {"*"}, selection, selectionArgs, null, null, null);
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
                     ODFMonitoringListValue card = new ODFMonitoringListValue();

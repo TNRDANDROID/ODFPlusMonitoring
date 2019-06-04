@@ -61,7 +61,6 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         recyclerView.setHasFixedSize(true);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setFocusable(false);
-
         new fetchScheduletask().execute();
     }
 
