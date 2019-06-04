@@ -370,6 +370,8 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
                         Log.d("userdata", "" + prefManager.getDistrictCode() + prefManager.getBlockCode() + prefManager.getPvCode() + prefManager.getDistrictName() + prefManager.getBlockName());
                         prefManager.setUserPassKey(decryptedKey);
+                        prefManager.setMotivatorId(String.valueOf(jsonObject.get(AppConstant.KEY_MOTIVATOR_ID)));
+                        getMotivatorSchedule();
                         showHomeScreen();
                     } else {
                         if (response.equals("LOGIN_FAILED")) {
@@ -662,7 +664,6 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     private void showHomeScreen() {
         Intent intent = new Intent(LoginScreen.this,HomePage.class);
         startActivity(intent);
-        getMotivatorSchedule();
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
