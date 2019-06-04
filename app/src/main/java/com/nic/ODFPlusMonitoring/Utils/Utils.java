@@ -1126,4 +1126,18 @@ public class Utils {
         return parsedDate;
     }
 
+    public static void getCurrentTimeUsingDate() {
+
+        Date date = new Date();
+
+        String strDateFormat = "hh:mm:ss a";
+
+        DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
+
+        String formattedDate= dateFormat.format(date);
+
+        System.out.println("Current time of the day using Date - 12 hour format: " + formattedDate);
+
+    }
+
 }

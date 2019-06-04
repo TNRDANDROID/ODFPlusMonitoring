@@ -18,35 +18,88 @@
             android:adjustViewBounds="true"
             android:src="@drawable/img_tabletennis"/>
 
-        <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
-            android:id="@+id/activity_name"
-            style="@style/TextAppearance.AppCompat.Headline"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/activity_name_layout"
+
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/sportsImage"
-            android:padding="@dimen/_12sdp"
-            android:text="title1"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark"/>
 
-        <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
-            android:id="@+id/newsTitle"
-            style="@style/TextAppearance.AppCompat.Subhead"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/sportsImage"
-            android:padding="@dimen/_12sdp"
-            android:text="Start Activity"
-            android:textColor="?android:textColorSecondary"
-            customfontdemo:fontName="@string/font_circular_medium" />
+            android:orientation="horizontal">
 
-        <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
-            android:id="@+id/subTitle"
-            style="@style/TextAppearance.AppCompat.Subhead"
-            android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.9"
+                android:orientation="vertical">
+
+                <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+                    android:id="@+id/activity_name"
+                    style="@style/TextAppearance.AppCompat.Headline"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_12sdp"
+                    android:text="Title1"
+                    android:textSize="20sp"
+                    android:theme="@style/ThemeOverlay.AppCompat.Dark" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/start_activity"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/newsTitle"
-            android:padding="@dimen/_12sdp"
-            customfontdemo:fontName="@string/font_circular_medium"
-            android:text="End Activity" />
+            android:layout_below="@+id/activity_name_layout">
+
+            <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+                android:id="@+id/newsTitle"
+                style="@style/TextAppearance.AppCompat.Subhead"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_12sdp"
+                android:text="Start Activity"
+                android:textColor="@android:color/black"
+                customfontdemo:fontName="@string/font_circular_medium" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:layout_gravity="end"
+                android:layout_marginRight="@dimen/_12sdp"
+                android:gravity="end"
+                android:src="@drawable/camera_icon"
+                android:text="Take Photo" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/start_activity">
+
+            <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+                android:id="@+id/subTitle"
+                style="@style/TextAppearance.AppCompat.Subhead"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_12sdp"
+                android:text="End Activity"
+                android:textColor="@android:color/black"
+                customfontdemo:fontName="@string/font_circular_medium" />
+
+            <ImageView
+                android:id="@+id/take_photo"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:layout_gravity="end"
+                android:layout_marginRight="@dimen/_12sdp"
+                android:gravity="end"
+                android:src="@drawable/camera_icon"
+                android:text="Take Photo" />
+
+        </RelativeLayout>
     </RelativeLayout>
 </android.support.v7.widget.CardView>

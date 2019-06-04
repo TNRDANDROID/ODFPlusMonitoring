@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#5E3F51B5">
+    android:background="#FFFFFF">
 
     <RelativeLayout
         android:id="@+id/header_layout"
@@ -18,7 +18,7 @@
             android:layout_centerInParent="true"
             android:layout_marginTop="@dimen/margin"
             android:text="Home Screen"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textSize="18sp"
             customfontdemo:fontName="@string/font_circular_medium" />
 
