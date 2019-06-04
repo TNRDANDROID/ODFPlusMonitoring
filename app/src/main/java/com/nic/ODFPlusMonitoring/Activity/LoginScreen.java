@@ -699,7 +699,12 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     public void loadMotivatorScheduleList(JSONArray jsonArray) {
 
         dbData.open();
-        ArrayList<ODFMonitoringListValue> schedule_count = dbData.getAllSchedule();
+        if (Utils.isOnline()) {
+            dbData.deleteScheduleTable();
+            dbData.deleteScheduleVillageTable();
+            dbData.deleteScheduleActivityTable();
+        }
+        ArrayList<ODFMonitoringListValue> schedule_count = dbData.getAllSchedule(prefManager.getMotivatorId());
         if(schedule_count.size() <= 0) {
             for (int i = 0; i < jsonArray.length(); i++) {
                 ODFMonitoringListValue odfMonitoringListValue = new ODFMonitoringListValue();

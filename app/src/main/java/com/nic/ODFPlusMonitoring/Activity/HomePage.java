@@ -64,13 +64,13 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         new fetchScheduletask().execute();
     }
 
-    public class fetchScheduletask extends AsyncTask<JSONObject, Void,
+    public class fetchScheduletask extends AsyncTask<Void, Void,
             ArrayList<ODFMonitoringListValue>> {
         @Override
-        protected ArrayList<ODFMonitoringListValue> doInBackground(JSONObject... params) {
+        protected ArrayList<ODFMonitoringListValue> doInBackground(Void... params) {
             dbData.open();
             ArrayList<ODFMonitoringListValue> scheduleList = new ArrayList<>();
-            scheduleList = dbData.getAllSchedule();
+            scheduleList = dbData.getAllSchedule(prefManager.getMotivatorId());
             Log.d("SCHEDULE_COUNT", String.valueOf(scheduleList.size()));
             return scheduleList;
         }

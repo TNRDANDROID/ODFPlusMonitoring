@@ -29,13 +29,14 @@ import com.nic.ODFPlusMonitoring.Dialog.MyDialog;
 import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
+import com.nic.ODFPlusMonitoring.Support.MyCustomTextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class ActivityScreen extends AppCompatActivity implements Api.ServerResponseListener, View.OnClickListener, MyDialog.myOnClickListener {
+public class ActivityScreen extends AppCompatActivity implements Api.ServerResponseListener, View.OnClickListener {
     private PrefManager prefManager;
     private Spinner scheduleVillage_sp;
     public dbData dbData = new dbData(this);
@@ -44,6 +45,7 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
     private ImageView back_img;
     ArrayList<ODFMonitoringListValue> scheduleVillageList = new ArrayList<>();
     ArrayList<ODFMonitoringListValue> activityList = new ArrayList<>();
+    private MyCustomTextView activity_tv;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,6 +58,7 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
         prefManager = new PrefManager(this);
         scheduleVillage_sp = (Spinner) findViewById(R.id.village_spinner);
         activityRecycler = (RecyclerView) findViewById(R.id.activity_list);
+        activity_tv = (MyCustomTextView) findViewById(R.id.activity_tv);
         back_img = (ImageView) findViewById(R.id.back_img);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -64,15 +67,17 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
         activityRecycler.setHasFixedSize(true);
         activityRecycler.setNestedScrollingEnabled(false);
         activityRecycler.setFocusable(false);
-
+        activityListAdapter = new ActivityListAdapter(this, activityList, dbData);
+        activityRecycler.setAdapter(activityListAdapter);
         back_img.setOnClickListener(this);
 
         scheduleVillage_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0) {
-//                    sp_village.setClickable(false);
-//                    sp_village.setVisibility(View.GONE);
+                    activityList.clear();
+                    activityListAdapter.notifyDataSetChanged();
+                    activity_tv.setVisibility(View.GONE);
                 } else {
 //                    JSONObject jsonObject = new JSONObject();
 //                    try {
@@ -82,6 +87,7 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
 //                    } catch (JSONException e) {
 //                        e.printStackTrace();
 //                    }
+                    activity_tv.setVisibility(View.VISIBLE);
                     new fetchActivitytask().execute(String.valueOf(scheduleVillageList.get(position).getScheduleId()));
                 }
             }
@@ -144,27 +150,6 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
 
         scheduleVillage_sp.setAdapter(new CommonAdapter(this, scheduleVillageList, "ScheduleVillage"));
     }
-
-    public class fetchScheduletask extends AsyncTask<JSONObject, Void,
-            ArrayList<ODFMonitoringListValue>> {
-        @Override
-        protected ArrayList<ODFMonitoringListValue> doInBackground(JSONObject... params) {
-            dbData.open();
-            ArrayList<ODFMonitoringListValue> scheduleList = new ArrayList<>();
-            scheduleList = dbData.getAllSchedule();
-            Log.d("SCHEDULE_COUNT", String.valueOf(scheduleList.size()));
-            return scheduleList;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<ODFMonitoringListValue> scheduleList) {
-            super.onPostExecute(scheduleList);
-//            scheduleListAdapter = new ScheduleListAdapter(ActivityScreen.this,
-//                               scheduleList, dbData);
-//            recyclerView.setAdapter(scheduleListAdapter);
-        }
-    }
-
     @Override
     public void OnMyResponse(ServerResponse serverResponse) {
         try {
@@ -191,8 +176,8 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.logout:
-                closeApplication();
+            case R.id.back_img:
+                onBackPress();
                 break;
         }
 
@@ -206,35 +191,16 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
         overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
     }
 
-
-    private void closeApplication() {
-        new MyDialog(this).exitDialog(this, "Are you sure you want to Logout?", "Logout");
+    public void onBackPress() {
+        super.onBackPressed();
+        setResult(Activity.RESULT_CANCELED);
+        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
-                new MyDialog(this).exitDialog(this, "Are you sure you want to exit ?", "Exit");
-                return false;
-            }
-        }
-        return super.onKeyDown(keyCode, event);
-    }
 
     @Override
-    public void onButtonClick(AlertDialog alertDialog, String type) {
-        alertDialog.dismiss();
-        if ("Exit".equalsIgnoreCase(type)) {
-            onBackPressed();
-        } else {
-
-            Intent intent = new Intent(getApplicationContext(), LoginScreen.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            intent.putExtra("EXIT", false);
-            startActivity(intent);
-            finish();
-            overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
-        }
+    protected void onResume() {
+        super.onResume();
+        activityListAdapter.notifyDataSetChanged();
     }
 }

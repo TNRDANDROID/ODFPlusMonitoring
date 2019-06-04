@@ -319,14 +319,17 @@ public class dbData {
     }
 
         /********************* t_schedule table *********************************/
-    public ArrayList<ODFMonitoringListValue> getAllSchedule() {
+    public ArrayList<ODFMonitoringListValue> getAllSchedule(String motivator_id) {
+
+        String selection = "motivator_id = ?";
+        String[] selectionArgs = new String[]{motivator_id};
 
         ArrayList<ODFMonitoringListValue> cards = new ArrayList<>();
         Cursor cursor = null;
 
         try {
              cursor = db.query(DBHelper.SCHEDULE,
-                   new String[] {"*"}, null, null, null, null, "schedule_id");
+                   new String[] {"*"}, selection, selectionArgs, null, null, "schedule_id");
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
                     ODFMonitoringListValue card = new ODFMonitoringListValue();
@@ -372,6 +375,10 @@ public class dbData {
         long id = db.insert(DBHelper.SCHEDULE,null,values);
         Log.d("Inserted_id_schedule",String.valueOf(id));
         return odfMonitoringListValue;
+    }
+
+    public void deleteScheduleTable() {
+        db.execSQL("delete from "+ DBHelper.SCHEDULE);
     }
 
     /********************* t_schedule_village table *********************************/
@@ -433,6 +440,9 @@ public class dbData {
         return odfMonitoringListValue;
     }
 
+    public void deleteScheduleVillageTable() {
+        db.execSQL("delete from "+ DBHelper.SCHEDULE_VILLAGE);
+    }
     /********************* t_scheduled_activity table *********************************/
     public ArrayList<ODFMonitoringListValue> selectScheduleActivity(String schedule_id) {
 
@@ -483,5 +493,9 @@ public class dbData {
         long id = db.insert(DBHelper.SCHEDULED_ACTIVITY,null,values);
         Log.d("Inserted_id_sche_Activ",String.valueOf(id));
         return odfMonitoringListValue;
+    }
+
+    public void deleteScheduleActivityTable() {
+        db.execSQL("delete from "+ DBHelper.SCHEDULED_ACTIVITY);
     }
 }
