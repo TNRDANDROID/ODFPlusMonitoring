@@ -93,6 +93,7 @@ public class ScheduleListAdapter extends RecyclerView.Adapter<ScheduleListAdapte
         intent.putExtra(AppConstant.KEY_SCHEDULE_ID,String.valueOf(scheduleListValues.get(pos).getScheduleId()));
         intent.putExtra(AppConstant.KEY_MOTIVATOR_ID,String.valueOf(scheduleListValues.get(pos).getMotivatorId()));
         activity.startActivity(intent);
+        activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
 
     }

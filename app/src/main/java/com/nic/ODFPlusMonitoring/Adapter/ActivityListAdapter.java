@@ -3,13 +3,17 @@ package com.nic.ODFPlusMonitoring.Adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
+import com.bumptech.glide.Glide;
 import com.nic.ODFPlusMonitoring.Activity.CameraScreen;
 import com.nic.ODFPlusMonitoring.DataBase.dbData;
 import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
@@ -40,11 +44,17 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private MyCustomTextView schedule_tv,from_date_tv,to_date_tv,schedule_description_tv;
+        private MyCustomTextView activity_name;
+        private RelativeLayout start_activity,end_activity;
         private LinearLayout schedule;
+        private ImageView sportsImage;
 
         public MyViewHolder(View itemView) {
             super(itemView);
+            sportsImage = (ImageView)itemView.findViewById(R.id.sportsImage);
+            activity_name = (MyCustomTextView) itemView.findViewById(R.id.activity_name);
+            start_activity = (RelativeLayout) itemView.findViewById(R.id.start_activity);
+            end_activity = (RelativeLayout) itemView.findViewById(R.id.end_activity);
         }
 
 
@@ -58,12 +68,44 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
+        if(position %2 == 1)
+        {
+            holder.sportsImage.setImageResource(R.drawable.img_cycling);
+            //  holder.imageView.setBackgroundColor(Color.parseColor("#FFFFFF"));
+        }
+        else
+        {
+            holder.sportsImage.setImageResource(R.drawable.img_golf);
+            //  holder.imageView.setBackgroundColor(Color.parseColor("#FFFAF8FD"));
+        }
+        holder.start_activity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cameraScreen(position,"Start");
+            }
+        });
+
+        holder.end_activity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cameraScreen(position,"End");
+            }
+        });
+        holder.activity_name.setText(activityListValues.get(position).getActivityName());
     }
 
 
     @Override
     public int getItemCount() {
         return activityListValues.size();
+    }
+
+    public void cameraScreen(int pos,String type){
+        Activity activity = (Activity) context;
+        Intent intent = new Intent(context,CameraScreen.class);
+        intent.putExtra("StartEndType",type);
+        activity.startActivity(intent);
+        activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
 }
