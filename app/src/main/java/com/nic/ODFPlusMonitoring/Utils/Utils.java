@@ -1107,4 +1107,23 @@ public class Utils {
         return dataSet;
     }
 
+    public static String formatDate (String date){
+        String initDateFormat = "yyyy-MM-dd";
+        String endDateFormat = "dd-MM-yyyy";
+
+        String parsedDate = null;
+
+        try {
+            Date initDate = new SimpleDateFormat(initDateFormat).parse(date);
+            SimpleDateFormat formatter = new SimpleDateFormat(endDateFormat);
+            parsedDate = formatter.format(initDate);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+        return parsedDate;
+    }
+
 }

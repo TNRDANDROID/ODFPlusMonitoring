@@ -2,6 +2,8 @@ package com.nic.ODFPlusMonitoring.Model;
 
 import android.graphics.Bitmap;
 
+import java.util.Date;
+
 /**
  * Created by AchanthiSundar on 01-11-2017.
  */
@@ -26,9 +28,6 @@ public class ODFMonitoringListValue {
     private String PvName;
 
     private String blockName;
-
-
-
     private String Bank_Name;
     private String IFSC_Code;
 
@@ -36,47 +35,86 @@ public class ODFMonitoringListValue {
     private String VillageListPvName;
     private String VillageListPvCode;
     private int motivatorCategoryId;
-    private String scheduleMasterId;
-    private String motivatorId;
+
+    private Integer scheduleId;
+    private Integer scheduleMasterId;
+    private Integer motivatorId;
     private String scheduleFromDate;
     private String scheduletoDate;
-    private String scheduleDCode;
-    private String scheduleBCode;
-    private String schedulePvCode;
+    private String scheduleDescription;
+    private Integer totalActivity;
+    private Integer completedActivity;
+    private Integer pendingActivity;
 
-    public String getScheduleDCode() {
-        return scheduleDCode;
+    private Integer VillageLinkId;
+    private Integer scheduleActivityId;
+    private Integer ActivityId;
+    private String ActivityName;
+    private String placeOfActivity;
+
+    public Integer getScheduleActivityId() {
+        return scheduleActivityId;
     }
 
-    public void setScheduleDCode(String scheduleDCode) {
-        this.scheduleDCode = scheduleDCode;
+    public void setScheduleActivityId(Integer scheduleActivityId) {
+        this.scheduleActivityId = scheduleActivityId;
     }
 
-    public String getScheduleBCode() {
-        return scheduleBCode;
+    public Integer getActivityId() {
+        return ActivityId;
     }
 
-    public void setScheduleBCode(String scheduleBCode) {
-        this.scheduleBCode = scheduleBCode;
+    public void setActivityId(Integer activityId) {
+        ActivityId = activityId;
     }
 
-    public String getSchedulePvCode() {
-        return schedulePvCode;
+    public String getActivityName() {
+        return ActivityName;
     }
 
-    public void setSchedulePvCode(String schedulePvCode) {
-        this.schedulePvCode = schedulePvCode;
+    public void setActivityName(String activityName) {
+        ActivityName = activityName;
     }
 
-    public String getSchedulePvName() {
-        return schedulePvName;
+    public String getPlaceOfActivity() {
+        return placeOfActivity;
     }
 
-    public void setSchedulePvName(String schedulePvName) {
-        this.schedulePvName = schedulePvName;
+    public void setPlaceOfActivity(String placeOfActivity) {
+        this.placeOfActivity = placeOfActivity;
     }
 
-    private String schedulePvName;
+    public Integer getVillageLinkId() {
+        return VillageLinkId;
+    }
+
+    public void setVillageLinkId(Integer villageLinkId) {
+        VillageLinkId = villageLinkId;
+    }
+
+    public Integer getScheduleId() {
+        return scheduleId;
+    }
+
+    public void setScheduleId(Integer scheduleId) {
+        this.scheduleId = scheduleId;
+    }
+
+    public Integer getScheduleMasterId() {
+        return scheduleMasterId;
+    }
+
+    public void setScheduleMasterId(Integer scheduleMasterId) {
+        this.scheduleMasterId = scheduleMasterId;
+    }
+
+    public Integer getMotivatorId() {
+        return motivatorId;
+    }
+
+    public void setMotivatorId(Integer motivatorId) {
+        this.motivatorId = motivatorId;
+    }
 
     public String getScheduleFromDate() {
         return scheduleFromDate;
@@ -94,23 +132,29 @@ public class ODFMonitoringListValue {
         this.scheduletoDate = scheduletoDate;
     }
 
-    public String getScheduleMasterId() {
-        return scheduleMasterId;
+    public Integer getTotalActivity() {
+        return totalActivity;
     }
 
-    public void setScheduleMasterId(String scheduleMasterId) {
-        this.scheduleMasterId = scheduleMasterId;
+    public void setTotalActivity(Integer totalActivity) {
+        this.totalActivity = totalActivity;
     }
 
-    public String getMotivatorId() {
-        return motivatorId;
+    public Integer getCompletedActivity() {
+        return completedActivity;
     }
 
-    public void setMotivatorId(String motivatorId) {
-        this.motivatorId = motivatorId;
+    public void setCompletedActivity(Integer completedActivity) {
+        this.completedActivity = completedActivity;
     }
 
+    public Integer getPendingActivity() {
+        return pendingActivity;
+    }
 
+    public void setPendingActivity(Integer pendingActivity) {
+        this.pendingActivity = pendingActivity;
+    }
 
     public String getScheduleDescription() {
         return scheduleDescription;
@@ -119,8 +163,6 @@ public class ODFMonitoringListValue {
     public void setScheduleDescription(String scheduleDescription) {
         this.scheduleDescription = scheduleDescription;
     }
-
-    private String scheduleDescription;
 
     public int getMotivatorCategoryId() {
         return motivatorCategoryId;

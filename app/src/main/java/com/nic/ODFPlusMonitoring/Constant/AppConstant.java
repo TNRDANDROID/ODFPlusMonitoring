@@ -70,15 +70,32 @@ public class AppConstant {
     public static String KEY_REGISTER_MOTIVATOR_ID = "motivator_id";
     public static String KEY_MOTIVATOR_SCHEDULE = "motivator_schedule";
 
-    //Home Page
-    public static String KEY_MOTIVATOR_SCHEDULE_ID = "schedule_id";
-    public static String KEY_MOTIVATOR_T_SCHEDULE = "t_schedule";
-    public static String KEY_SCHEDULE_MOTIVATOR_MASTER_ID = "schedule_master_id";
-    public static String KEY_SCHEDULE_MOTIVATOR_ID = "motivator_id";
-    public static String KEY_SCHEDULE_MOTIVATOR_FROM_DATE = "from_date";
-    public static String KEY_SCHEDULE_MOTIVATOR_TO_DATE = "to_date";
-    public static String KEY_SCHEDULE_MOTIVATOR_DESCRIPTION = "schedule_description";
+    /******************* t_schedule **********************/
+
+    public static String KEY_T_SCHEDULE = "t_schedule";
+    public static String KEY_SCHEDULE_ID = "schedule_id";
+    public static String KEY_SCHEDULE_MASTER_ID = "schedule_master_id";
+    public static String KEY_MOTIVATOR_ID = "motivator_id";
+    public static String KEY_FROM_DATE = "from_date";
+    public static String KEY_TO_DATE = "to_date";
+    public static String KEY_SCHEDULE_DESCRIPTION = "schedule_description";
+    public static String KEY_TOTAL_ACTIVITY = "total_activity";
+    public static String KEY_COMPLETED_ACTIVITY = "completed_activity";
+    public static String KEY_PENDING_ACTIVITY = "pending_activity";
+
+    /******************* t_schedule_village **********************/
+
     public static String KEY_T_SCHEDULE_VILLAGE = "t_schedule_village";
+    public static String KEY_SCHEDULE_VILLAGE_LINK_ID = "schedule_village_link_id";
+
+    /******************* t_scheduled_activity **********************/
+
+    public static String KEY_T_SCHEDULE_ACTIVITY = "t_scheduled_activity";
+    public static String KEY_SCHEDULE_ACTIVITY_ID = "schedule_activity_id";
+    public static String KEY_ACTIVITY_ID = "activity_id";
+    public static String KEY_PLACE_OF_ACTIVITY = "place_of_activity";
+    public static String KEY_ACTIVITY_NAME = "activity_name";
+
 
 
 }

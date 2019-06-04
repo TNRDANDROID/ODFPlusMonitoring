@@ -318,5 +318,165 @@ public class dbData {
         return cards;
     }
 
+        /********************* t_schedule table *********************************/
+    public ArrayList<ODFMonitoringListValue> getAllSchedule() {
 
+        ArrayList<ODFMonitoringListValue> cards = new ArrayList<>();
+        Cursor cursor = null;
+
+        try {
+             cursor = db.query(DBHelper.SCHEDULE,
+                   new String[] {"*"}, null, null, null, null, "schedule_id");
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    ODFMonitoringListValue card = new ODFMonitoringListValue();
+                    card.setScheduleId(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_SCHEDULE_ID)));
+                    card.setScheduleMasterId(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_SCHEDULE_MASTER_ID)));
+                    card.setMotivatorId(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_MOTIVATOR_ID)));
+                    card.setScheduleFromDate(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_FROM_DATE)));
+                    card.setScheduletoDate(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_TO_DATE)));
+                    card.setScheduleDescription(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_SCHEDULE_DESCRIPTION)));
+
+                    cards.add(card);
+                }
+            }
+        } catch (Exception e){
+            //   Log.d(DEBUG_TAG, "Exception raised with a value of " + e);
+        } finally{
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return cards;
+    }
+
+    public ODFMonitoringListValue insertSchedule(ODFMonitoringListValue odfMonitoringListValue) {
+
+        ContentValues values = new ContentValues();
+        values.put(AppConstant.KEY_SCHEDULE_ID,odfMonitoringListValue.getScheduleId());
+        values.put(AppConstant.KEY_SCHEDULE_MASTER_ID,odfMonitoringListValue.getScheduleMasterId());
+        values.put(AppConstant.KEY_MOTIVATOR_ID,odfMonitoringListValue.getMotivatorId());
+        values.put(AppConstant.KEY_FROM_DATE,odfMonitoringListValue.getScheduleFromDate());
+        values.put(AppConstant.KEY_TO_DATE,odfMonitoringListValue.getScheduletoDate());
+        values.put(AppConstant.KEY_SCHEDULE_DESCRIPTION,odfMonitoringListValue.getScheduleDescription());
+        values.put(AppConstant.KEY_TOTAL_ACTIVITY,odfMonitoringListValue.getTotalActivity());
+        values.put(AppConstant.KEY_COMPLETED_ACTIVITY,odfMonitoringListValue.getCompletedActivity());
+        values.put(AppConstant.KEY_PENDING_ACTIVITY,odfMonitoringListValue.getPendingActivity());
+
+        long id = db.insert(DBHelper.SCHEDULE,null,values);
+        Log.d("Inserted_id_schedule",String.valueOf(id));
+        return odfMonitoringListValue;
+    }
+
+    /********************* t_schedule_village table *********************************/
+    public ArrayList<ODFMonitoringListValue> getAllScheduleVillage() {
+
+        ArrayList<ODFMonitoringListValue> cards = new ArrayList<>();
+        Cursor cursor = null;
+
+        try {
+            cursor = db.query(DBHelper.SCHEDULE_VILLAGE,
+                    new String[] {"*"}, null, null, null, null, null);
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    ODFMonitoringListValue card = new ODFMonitoringListValue();
+                    card.setVillageLinkId(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_SCHEDULE_VILLAGE_LINK_ID)));
+                    card.setScheduleId(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_SCHEDULE_ID)));
+                    card.setMotivatorId(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_MOTIVATOR_ID)));
+                    card.setDistictCode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.DISTRICT_CODE)));
+                    card.setBlockCode(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.BLOCK_CODE)));
+                    card.setPvCode(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.PV_CODE)));
+                    card.setPvName(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.PV_NAME)));
+
+                    cards.add(card);
+                }
+            }
+        } catch (Exception e){
+            //   Log.d(DEBUG_TAG, "Exception raised with a value of " + e);
+        } finally{
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return cards;
+    }
+
+    public ODFMonitoringListValue insertScheduleVillage(ODFMonitoringListValue odfMonitoringListValue) {
+
+        ContentValues values = new ContentValues();
+        values.put(AppConstant.KEY_SCHEDULE_VILLAGE_LINK_ID,odfMonitoringListValue.getVillageLinkId());
+        values.put(AppConstant.KEY_SCHEDULE_ID,odfMonitoringListValue.getScheduleId());
+        values.put(AppConstant.KEY_MOTIVATOR_ID,odfMonitoringListValue.getMotivatorId());
+        values.put(AppConstant.DISTRICT_CODE,odfMonitoringListValue.getDistictCode());
+        values.put(AppConstant.BLOCK_CODE,odfMonitoringListValue.getBlockCode());
+        values.put(AppConstant.PV_CODE,odfMonitoringListValue.getPvCode());
+        values.put(AppConstant.PV_NAME,odfMonitoringListValue.getPvName());
+
+        long id = db.insert(DBHelper.SCHEDULE_VILLAGE,null,values);
+        Log.d("Inserted_id_Vill_Sche",String.valueOf(id));
+        return odfMonitoringListValue;
+    }
+
+    /********************* t_scheduled_activity table *********************************/
+    public ArrayList<ODFMonitoringListValue> getAllScheduleActivity() {
+
+        ArrayList<ODFMonitoringListValue> cards = new ArrayList<>();
+        Cursor cursor = null;
+
+        try {
+            cursor = db.query(DBHelper.SCHEDULED_ACTIVITY,
+                    new String[] {"*"}, null, null, null, null, null);
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    ODFMonitoringListValue card = new ODFMonitoringListValue();
+                    card.setScheduleActivityId(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_SCHEDULE_ACTIVITY_ID)));
+                    card.setScheduleId(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_SCHEDULE_ID)));
+                    card.setActivityId(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_ID)));
+                    card.setActivityName(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_NAME)));
+                    card.setPlaceOfActivity(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_PLACE_OF_ACTIVITY)));
+
+                    cards.add(card);
+                }
+            }
+        } catch (Exception e){
+            //   Log.d(DEBUG_TAG, "Exception raised with a value of " + e);
+        } finally{
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return cards;
+    }
+
+    public ODFMonitoringListValue insertScheduleActivity(ODFMonitoringListValue odfMonitoringListValue) {
+
+        ContentValues values = new ContentValues();
+        values.put(AppConstant.KEY_SCHEDULE_ACTIVITY_ID,odfMonitoringListValue.getScheduleActivityId());
+        values.put(AppConstant.KEY_SCHEDULE_ID,odfMonitoringListValue.getScheduleId());
+        values.put(AppConstant.KEY_ACTIVITY_ID,odfMonitoringListValue.getActivityId());
+        values.put(AppConstant.KEY_ACTIVITY_NAME,odfMonitoringListValue.getActivityName());
+        values.put(AppConstant.KEY_PLACE_OF_ACTIVITY,odfMonitoringListValue.getPlaceOfActivity());
+
+        long id = db.insert(DBHelper.SCHEDULED_ACTIVITY,null,values);
+        Log.d("Inserted_id_sche_Activ",String.valueOf(id));
+        return odfMonitoringListValue;
+    }
 }
