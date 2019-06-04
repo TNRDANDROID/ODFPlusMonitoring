@@ -1,0 +1,52 @@
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:customfontdemo="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="@dimen/_10sdp"
+    card_view:cardCornerRadius="15dp"
+    android:background="?android:selectableItemBackground">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/sportsImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:src="@drawable/img_tabletennis"/>
+
+        <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+            android:id="@+id/activity_name"
+            style="@style/TextAppearance.AppCompat.Headline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/sportsImage"
+            android:padding="@dimen/_12sdp"
+            android:text="title1"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark"/>
+
+        <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+            android:id="@+id/newsTitle"
+            style="@style/TextAppearance.AppCompat.Subhead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/sportsImage"
+            android:padding="@dimen/_12sdp"
+            android:text="Start Activity"
+            android:textColor="?android:textColorSecondary"
+            customfontdemo:fontName="@string/font_circular_medium" />
+
+        <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+            android:id="@+id/subTitle"
+            style="@style/TextAppearance.AppCompat.Subhead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/newsTitle"
+            android:padding="@dimen/_12sdp"
+            customfontdemo:fontName="@string/font_circular_medium"
+            android:text="End Activity" />
+    </RelativeLayout>
+</android.support.v7.widget.CardView>
