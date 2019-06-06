@@ -40,13 +40,22 @@
 
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <com.cooltechworks.views.shimmer.ShimmerRecyclerView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/scheduleList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/header_layout"
         android:padding="@dimen/_5sdp"
-        android:fadeScrollbars="false"
-        android:scrollbarSize="4dp"
-        android:scrollbars="vertical" />
+        app:shimmer_demo_layout="@layout/layout_demo"
+        app:shimmer_demo_shimmer_color="#8FFFFFFF" />
+
+    <!--<android.support.v7.widget.RecyclerView-->
+        <!--android:id="@+id/scheduleList"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/header_layout"-->
+        <!--android:padding="@dimen/_5sdp"-->
+        <!--android:fadeScrollbars="false"-->
+        <!--android:scrollbarSize="4dp"-->
+        <!--android:scrollbars="vertical" />-->
 </RelativeLayout>

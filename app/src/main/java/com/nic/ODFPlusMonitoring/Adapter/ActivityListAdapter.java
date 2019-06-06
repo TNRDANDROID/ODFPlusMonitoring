@@ -3,9 +3,7 @@ package com.nic.ODFPlusMonitoring.Adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.bumptech.glide.Glide;
 import com.nic.ODFPlusMonitoring.Activity.CameraScreen;
 import com.nic.ODFPlusMonitoring.Constant.AppConstant;
 import com.nic.ODFPlusMonitoring.DataBase.dbData;
@@ -21,7 +18,6 @@ import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
 import com.nic.ODFPlusMonitoring.Support.MyCustomTextView;
-import com.nic.ODFPlusMonitoring.Utils.Utils;
 
 import java.util.List;
 
@@ -46,8 +42,8 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private MyCustomTextView activity_name;
-        private RelativeLayout start_activity,end_activity;
+        private MyCustomTextView activity_name, view_online_images, view_offline_images;
+        private RelativeLayout start_layout, end_layout;
         private LinearLayout schedule;
         private ImageView sportsImage;
 
@@ -55,8 +51,10 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
             super(itemView);
             sportsImage = (ImageView)itemView.findViewById(R.id.sportsImage);
             activity_name = (MyCustomTextView) itemView.findViewById(R.id.activity_name);
-            start_activity = (RelativeLayout) itemView.findViewById(R.id.start_activity);
-            end_activity = (RelativeLayout) itemView.findViewById(R.id.end_activity);
+            view_online_images = (MyCustomTextView) itemView.findViewById(R.id.view_online_images);
+            view_offline_images = (MyCustomTextView) itemView.findViewById(R.id.view_offline_images);
+            start_layout = (RelativeLayout) itemView.findViewById(R.id.start_layout);
+            end_layout = (RelativeLayout) itemView.findViewById(R.id.end_layout);
         }
 
 
@@ -80,17 +78,31 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
             holder.sportsImage.setImageResource(R.drawable.img_golf);
             //  holder.imageView.setBackgroundColor(Color.parseColor("#FFFAF8FD"));
         }
-        holder.start_activity.setOnClickListener(new View.OnClickListener() {
+        holder.start_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 cameraScreen(position,"Start");
             }
         });
 
-        holder.end_activity.setOnClickListener(new View.OnClickListener() {
+        holder.end_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 cameraScreen(position,"End");
+            }
+        });
+
+        holder.view_online_images.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        holder.view_offline_images.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
         holder.activity_name.setText(activityListValues.get(position).getActivityName());
@@ -105,9 +117,9 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
     public void cameraScreen(int pos,String type){
         Activity activity = (Activity) context;
         Intent intent = new Intent(context,CameraScreen.class);
-        intent.putExtra(AppConstant.KEY_POINT_TYPE,type);
-        intent.putExtra(AppConstant.KEY_ACTIVITY_ID,activityListValues.get(pos).getActivityId());
-        intent.putExtra(AppConstant.KEY_SCHEDULE_ID,activityListValues.get(pos).getScheduleId());
+        intent.putExtra(AppConstant.KEY_POINT_TYPE, type);
+        intent.putExtra(AppConstant.KEY_ACTIVITY_ID, String.valueOf(activityListValues.get(pos).getActivityId()));
+        intent.putExtra(AppConstant.KEY_SCHEDULE_ID, String.valueOf(activityListValues.get(pos).getScheduleId()));
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
