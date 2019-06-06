@@ -114,6 +114,11 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
 
         if(activityImage.size() > 0) {
             holder.view_offline_images.setVisibility(View.VISIBLE);
+            for (int i=0;i<activityImage.size();i++){
+                if(activityImage.get(i).getType().equalsIgnoreCase("start")){
+                    holder.start_layout.setEnabled(false);
+                }
+            }
         }
         else {
             holder.view_offline_images.setVisibility(View.GONE);

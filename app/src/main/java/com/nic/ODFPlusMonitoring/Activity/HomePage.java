@@ -138,7 +138,8 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                         activityJson.put(AppConstant.KEY_MOTIVATOR_ID, saveActivityLists.get(i).getMotivatorId());
                         activityJson.put(AppConstant.KEY_SCHEDULE_ID, saveActivityLists.get(i).getScheduleId());
                         activityJson.put(AppConstant.KEY_ACTIVITY_ID, saveActivityLists.get(i).getActivityId());
-                        activityJson.put(AppConstant.DISTRICT_CODE, saveActivityLists.get(i).getDistictCode());
+                        activityJson.put(AppConstant.KEY_SCHEDULE_MASTER_ID, saveActivityLists.get(i).getScheduleMasterId());
+                        activityJson.put(AppConstant.DISTRICT_CODE, String.valueOf(saveActivityLists.get(i).getDistictCode()));
                         activityJson.put(AppConstant.BLOCK_CODE, saveActivityLists.get(i).getBlockCode());
                         activityJson.put(AppConstant.PV_CODE, saveActivityLists.get(i).getPvCode());
                         activityJson.put(AppConstant.KEY_LATITUDE, saveActivityLists.get(i).getLatitude());
@@ -218,14 +219,17 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         try {
             JSONObject responseObj = serverResponse.getJsonResponse();
             String urlType = serverResponse.getApi();
-//            if ("MotivatorSchedule".equals(urlType) && responseObj != null) {
-//                if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
-////                    new MotivatorCategoryList().execute(responseObj.getJSONArray(AppConstant.JSON_DATA));
-//                } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("NO_RECORD")) {
-//                    Log.d("Record", responseObj.getString(AppConstant.KEY_MESSAGE));
-//                }
-//                Log.d("MotivatorSchedule", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
-//            }
+            if ("saveActivityImage".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    // getAssetList();
+                    Utils.showAlert(this, "Activity Image Saved");
+                    syncButtonVisibility();
+                }
+                Log.d("savedImage", "" + responseDecryptedBlockKey);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

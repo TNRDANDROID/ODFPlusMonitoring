@@ -517,6 +517,8 @@ public class dbData {
                     Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
 
                     ODFMonitoringListValue card = new ODFMonitoringListValue();
+                    card.setScheduleMasterId(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_SCHEDULE_MASTER_ID)));
                     card.setMotivatorId(cursor.getInt(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_MOTIVATOR_ID)));
                     card.setActivityId(cursor.getInt(cursor

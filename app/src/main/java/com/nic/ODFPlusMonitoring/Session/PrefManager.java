@@ -54,6 +54,7 @@ public class PrefManager {
 
     private static final String IMEI = "imei";
     private static final String MOTIVATOR_ID = "motivator_id";
+    private static final String SCHEDULE_MASTER_ID = "schedule_master_id";
 
 
     public PrefManager(Context context) {
@@ -62,6 +63,14 @@ public class PrefManager {
         editor = pref.edit();
     }
 
+    public Integer getScheduleMasterId() {
+        return pref.getInt(SCHEDULE_MASTER_ID,0);
+    }
+
+    public void setScheduleMasterId(Integer scheduleMasterId) {
+        editor.putInt(SCHEDULE_MASTER_ID,scheduleMasterId);
+        editor.commit();
+    }
 
     public String getIMEI() {
         return pref.getString(IMEI,null);

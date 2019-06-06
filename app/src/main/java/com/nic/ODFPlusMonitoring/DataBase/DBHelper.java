@@ -105,11 +105,12 @@ public class DBHelper extends SQLiteOpenHelper {
                 "activity_id INTEGER," +
                 "schedule_id INTEGER," +
                 "motivator_id INTEGER," +
+                "schedule_master_id INTEGER," +
                 "image BLOB," +
                 "lat TEXT," +
                 "long TEXT," +
                 "type TEXT," +
-                "dateTime TEXT," +
+                "datetime TEXT," +
                 "remark TEXT)");
     }
 

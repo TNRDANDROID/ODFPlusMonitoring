@@ -17,6 +17,7 @@ import com.nic.ODFPlusMonitoring.Constant.AppConstant;
 import com.nic.ODFPlusMonitoring.DataBase.dbData;
 import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 import com.nic.ODFPlusMonitoring.R;
+import com.nic.ODFPlusMonitoring.Session.PrefManager;
 import com.nic.ODFPlusMonitoring.Support.MyCustomTextView;
 import com.nic.ODFPlusMonitoring.Utils.Utils;
 
@@ -30,13 +31,13 @@ public class ScheduleListAdapter extends RecyclerView.Adapter<ScheduleListAdapte
     private final dbData dbData;
     private Context context;
     private List<ODFMonitoringListValue> scheduleListValues;
-  //  private PrefManager prefManager;
+    private PrefManager prefManager;
 
     public ScheduleListAdapter(Context context, List<ODFMonitoringListValue> scheduleListValues, dbData dbData) {
         this.context = context;
         this.scheduleListValues = scheduleListValues;
         this.dbData = dbData;
-  //      prefManager = new PrefManager(context);
+       prefManager = new PrefManager(context);
     }
 
     @Override
@@ -73,6 +74,7 @@ public class ScheduleListAdapter extends RecyclerView.Adapter<ScheduleListAdapte
 
         String from_date = scheduleListValues.get(position).getScheduleFromDate();
         String to_date = scheduleListValues.get(position).getScheduletoDate();
+        prefManager.setScheduleMasterId(scheduleListValues.get(position).getScheduleMasterId());
 
         holder.schedule_tv.setText("Schedule "+scheduleListValues.get(position).getScheduleId());
         holder.schedule_description_tv.setText(scheduleListValues.get(position).getScheduleDescription());
