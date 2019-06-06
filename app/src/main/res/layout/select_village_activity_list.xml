@@ -82,7 +82,7 @@
                 android:layout_marginTop="@dimen/padding"
                 android:layout_marginRight="@dimen/margin_left_20dp"
                 android:text="Select Village"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/holo_red_dark"
                 android:textSize="@dimen/_15sdp"
                 android:visibility="visible"
                 customfontdemo:fontName="@string/font_circular_bold" />
@@ -121,7 +121,7 @@
                 android:layout_marginTop="@dimen/padding"
                 android:layout_marginRight="@dimen/margin_left_20dp"
                 android:text="Activity Name"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/holo_red_dark"
                 android:textSize="@dimen/_15sdp"
                 customfontdemo:fontName="@string/font_circular_bold" />
 

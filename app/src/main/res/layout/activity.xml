@@ -76,7 +76,9 @@
                             android:layout_height="wrap_content"
                             android:padding="@dimen/_12sdp"
                             android:text="Start"
-                            android:textColor="@android:color/black"
+                            android:textSize="16sp"
+
+                            android:textColor="#000080"
                             customfontdemo:fontName="@string/font_circular_medium" />
 
                         <ImageView
@@ -177,7 +179,9 @@
                             android:layout_toLeftOf="@+id/dummy2"
                             android:padding="@dimen/_12sdp"
                             android:text="End"
-                            android:textColor="@android:color/black"
+                            android:textSize="16sp"
+
+                            android:textColor="#000080"
                             customfontdemo:fontName="@string/font_circular_medium" />
 
                         <ImageView
@@ -224,8 +228,8 @@
                 android:layout_gravity="center"
                 android:padding="@dimen/_12sdp"
                 android:text="View Offline Images"
-                android:textColor="@android:color/black"
-                android:textSize="14sp"
+                android:textColor="#000080"
+                android:textSize="16sp"
                 android:visibility="gone"
                 customfontdemo:fontName="@string/font_circular_medium" />
 
@@ -238,8 +242,8 @@
                 android:layout_gravity="center"
                 android:padding="@dimen/_12sdp"
                 android:text="View Images"
-                android:textColor="@android:color/black"
-                android:textSize="14sp"
+                android:textColor="#000080"
+                android:textSize="16sp"
                 customfontdemo:fontName="@string/font_circular_medium" />
 
 
