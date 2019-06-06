@@ -553,4 +553,59 @@ public class dbData {
         }
         return cards;
     }
+
+    public ArrayList<ODFMonitoringListValue> selectImageActivity(String dcode,String bcode, String pvcode,String schedule_id,String activity_id) {
+
+        ArrayList<ODFMonitoringListValue> cards = new ArrayList<>();
+        Cursor cursor = null;
+        String selection = "dcode = ? and bcode = ? and pvcode = ? and schedule_id = ? and activity_id = ?";
+        String[] selectionArgs = new String[]{dcode,bcode,pvcode,schedule_id,activity_id};
+
+        try {
+            cursor = db.query(DBHelper.SAVE_ACTIVITY,
+                    new String[]{"*"}, selection, selectionArgs, null, null, null);
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+
+                    byte[] photo = cursor.getBlob(cursor.getColumnIndexOrThrow(AppConstant.KEY_IMAGE));
+                    byte[] decodedString = Base64.decode(photo, Base64.DEFAULT);
+                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+                    ODFMonitoringListValue card = new ODFMonitoringListValue();
+                    card.setMotivatorId(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_MOTIVATOR_ID)));
+                    card.setActivityId(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_ID)));
+                    card.setScheduleId(cursor.getInt(cursor
+                            .getColumnIndex(AppConstant.KEY_SCHEDULE_ID)));
+                    card.setDistictCode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.DISTRICT_CODE)));
+                    card.setBlockCode(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.BLOCK_CODE)));
+                    card.setPvCode(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.PV_CODE)));
+                    card.setLatitude(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_LATITUDE)));
+                    card.setLongitude(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_LONGITUDE)));
+                    card.setType(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_TYPE)));
+                    card.setDateTime(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_DATE_TIME)));
+                    card.setImageRemark(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_IMAGE_REMARK)));
+                    card.setImage(decodedByte);
+
+                    cards.add(card);
+                }
+            }
+        } catch (Exception e){
+            Log.d("Exception" , e.toString());
+        } finally{
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return cards;
+    }
 }

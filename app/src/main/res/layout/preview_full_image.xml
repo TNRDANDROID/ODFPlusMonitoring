@@ -32,6 +32,25 @@
                 android:layout_weight="0.9"
                 android:orientation="vertical">
 
+                <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+
+                <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+                    android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="Type"
+                android:textAlignment="center"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp"
+                customfontdemo:fontName="@string/font_circular_book" />
+                </LinearLayout>
+
                 <ImageView
                     android:id="@+id/preview_Full_imageview"
                     android:layout_width="match_parent"

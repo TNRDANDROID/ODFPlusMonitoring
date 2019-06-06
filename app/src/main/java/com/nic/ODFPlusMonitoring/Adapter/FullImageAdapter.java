@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 
+import com.nic.ODFPlusMonitoring.DataBase.dbData;
 import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
@@ -21,11 +22,13 @@ public class FullImageAdapter extends RecyclerView.Adapter<FullImageAdapter.MyVi
     private Context context;
     private PrefManager prefManager;
     private List<ODFMonitoringListValue> imagePreviewlistvalues;
+    private final dbData dbData;
 
-    public FullImageAdapter(Context context, List<ODFMonitoringListValue> imagePreviewlistvalues) {
+    public FullImageAdapter(Context context, List<ODFMonitoringListValue> imagePreviewlistvalues, dbData dbData) {
 
         this.context = context;
         prefManager = new PrefManager(context);
+        this.dbData = dbData;
         this.imagePreviewlistvalues = imagePreviewlistvalues;
     }
 
@@ -38,13 +41,14 @@ public class FullImageAdapter extends RecyclerView.Adapter<FullImageAdapter.MyVi
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private ImageView preview_Full_imageview;
-        private MyCustomTextView description;
+        private MyCustomTextView description,title;
 
 
         public MyViewHolder(View itemView) {
             super(itemView);
             preview_Full_imageview = (ImageView) itemView.findViewById(R.id.preview_Full_imageview);
             description = (MyCustomTextView) itemView.findViewById(R.id.description);
+            title = (MyCustomTextView) itemView.findViewById(R.id.title);
 
 
         }
@@ -54,8 +58,9 @@ public class FullImageAdapter extends RecyclerView.Adapter<FullImageAdapter.MyVi
 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
-        holder.description.setText(imagePreviewlistvalues.get(position).getDescription());
+        holder.description.setText(imagePreviewlistvalues.get(position).getImageRemark());
         holder.preview_Full_imageview.setImageBitmap(imagePreviewlistvalues.get(position).getImage());
+        holder.title.setText(imagePreviewlistvalues.get(position).getType());
 
 
 

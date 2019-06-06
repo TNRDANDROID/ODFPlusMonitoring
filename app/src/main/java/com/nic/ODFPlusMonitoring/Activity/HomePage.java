@@ -30,6 +30,7 @@ import com.nic.ODFPlusMonitoring.Dialog.MyDialog;
 import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
+import com.nic.ODFPlusMonitoring.Support.MyCustomTextView;
 import com.nic.ODFPlusMonitoring.Utils.UrlGenerator;
 import com.nic.ODFPlusMonitoring.Utils.Utils;
 
@@ -47,6 +48,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     private ScheduleListAdapter scheduleListAdapter;
     private ShimmerRecyclerView recyclerView;
     JSONObject datasetActivity = new JSONObject();
+    private MyCustomTextView sync;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,8 +60,10 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     public void intializeUI() {
         prefManager = new PrefManager(this);
         logout = (ImageView) findViewById(R.id.logout);
+        sync = (MyCustomTextView) findViewById(R.id.sync);
         recyclerView = (ShimmerRecyclerView) findViewById(R.id.scheduleList);
         logout.setOnClickListener(this);
+        sync.setOnClickListener(this);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
@@ -73,7 +77,19 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
             public void run() {
                 new fetchScheduletask().execute();
             }
-        }, 3000);
+        }, 2000);
+
+    }
+
+    public void syncButtonVisibility() {
+        dbData.open();
+        ArrayList<ODFMonitoringListValue> activityCount = dbData.getSavedActivity();
+
+        if (activityCount.size() > 0) {
+            sync.setVisibility(View.VISIBLE);
+        }else {
+            sync.setVisibility(View.GONE);
+        }
     }
 
     public class fetchScheduletask extends AsyncTask<Void, Void,
@@ -99,12 +115,13 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                 public void run() {
                     loadCards();
                 }
-            }, 3000);
+            }, 2000);
         }
     }
     private void loadCards() {
 
         recyclerView.hideShimmerAdapter();
+        syncButtonVisibility();
     }
 
     public class toUploadActivityTask extends AsyncTask<Void, Void,
@@ -226,14 +243,14 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                 closeApplication();
                 break;
 
-//            case R.id.sync:
-//                if(Utils.isOnline()){
-//                    new toUploadActivityTask().execute();
-//                }
-//                else {
-//                    Utils.showAlert(this,"Please Turn on Your Mobile Data to Upload");
-//                }
-//                break;
+            case R.id.sync:
+                if(Utils.isOnline()){
+                    new toUploadActivityTask().execute();
+                }
+                else {
+                    Utils.showAlert(this,"Please Turn on Your Mobile Data to Upload");
+                }
+                break;
         }
 
 

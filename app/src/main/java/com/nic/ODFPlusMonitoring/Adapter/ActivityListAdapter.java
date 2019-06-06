@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.nic.ODFPlusMonitoring.Activity.CameraScreen;
+import com.nic.ODFPlusMonitoring.Activity.FullImageActivity;
 import com.nic.ODFPlusMonitoring.Constant.AppConstant;
 import com.nic.ODFPlusMonitoring.DataBase.dbData;
 import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
@@ -19,6 +20,7 @@ import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
 import com.nic.ODFPlusMonitoring.Support.MyCustomTextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapter.MyViewHolder>{
@@ -26,7 +28,7 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
     private final dbData dbData;
     private Context context;
     private List<ODFMonitoringListValue> activityListValues;
-   private PrefManager prefManager;
+    private PrefManager prefManager;
 
     public ActivityListAdapter(Context context, List<ODFMonitoringListValue> activityListValues, dbData dbData) {
         this.context = context;
@@ -68,6 +70,8 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
+
+        holder.activity_name.setText(activityListValues.get(position).getActivityName());
         if(position %2 == 1)
         {
             holder.sportsImage.setImageResource(R.drawable.img_cycling);
@@ -99,13 +103,38 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
             }
         });
 
+        dbData.open();
+        final String activity_id = String.valueOf(activityListValues.get(position).getActivityId());
+        final String schedule_id = String.valueOf(activityListValues.get(position).getScheduleId());
+        final String dcode = prefManager.getDistrictCode();
+        final String bcode = prefManager.getBlockCode();
+        final String pvcode = prefManager.getPvCode();
+
+        ArrayList<ODFMonitoringListValue> activityImage = dbData.selectImageActivity(dcode,bcode,pvcode,schedule_id,activity_id);
+
+        if(activityImage.size() > 0) {
+            holder.view_offline_images.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.view_offline_images.setVisibility(View.GONE);
+        }
+
         holder.view_offline_images.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                viewOfflineImages(schedule_id,activity_id);
             }
         });
-        holder.activity_name.setText(activityListValues.get(position).getActivityName());
+
+    }
+
+    public void viewOfflineImages(String schedule_id,String activity_id) {
+        Activity activity = (Activity) context;
+        Intent intent = new Intent(context, FullImageActivity.class);
+        intent.putExtra(AppConstant.KEY_SCHEDULE_ID,schedule_id);
+        intent.putExtra(AppConstant.KEY_ACTIVITY_ID,activity_id);
+        activity.startActivity(intent);
+        activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
 

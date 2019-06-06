@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,9 @@ import android.widget.ImageView;
 
 
 import com.nic.ODFPlusMonitoring.Adapter.FullImageAdapter;
+import com.nic.ODFPlusMonitoring.Adapter.ScheduleListAdapter;
+import com.nic.ODFPlusMonitoring.Constant.AppConstant;
+import com.nic.ODFPlusMonitoring.DataBase.dbData;
 import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
@@ -33,8 +37,8 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     private PrefManager prefManager;
     private FullImageAdapter fullImageAdapter;
     private MyCustomTextView title_tv;
-    private List<ODFMonitoringListValue> imagelistvalues;
     private ImageView back_img,home_img;
+    private dbData dbData = new dbData(this);
 
 
     @Override
@@ -45,10 +49,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     }
     public void intializeUI() {
         prefManager = new PrefManager(this);
-        imagelistvalues = new ArrayList<>();
-        fullImageAdapter = new FullImageAdapter(this, imagelistvalues);
         image_preview_recyclerview = (RecyclerView) findViewById(R.id.image_preview_recyclerview);
-        title_tv = (MyCustomTextView)findViewById(R.id.title_tv);
         back_img = (ImageView) findViewById(R.id.back_img);
         home_img = (ImageView) findViewById(R.id.home_img);
         back_img.setOnClickListener(this);
@@ -62,8 +63,9 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         image_preview_recyclerview.setNestedScrollingEnabled(false);
         image_preview_recyclerview.setFocusable(false);
         image_preview_recyclerview.setAdapter(fullImageAdapter);
-        title_tv.setText("View Image");
 
+
+        new fetchImagetask().execute();
     }
 
 
@@ -78,6 +80,30 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
             case R.id.home_img:
                 homePage();
                 break;
+        }
+    }
+
+    public class fetchImagetask extends AsyncTask<Void, Void,
+            ArrayList<ODFMonitoringListValue>> {
+        @Override
+        protected ArrayList<ODFMonitoringListValue> doInBackground(Void... params) {
+            String schedule_id = getIntent().getStringExtra(AppConstant.KEY_SCHEDULE_ID);
+            String activity_id = getIntent().getStringExtra(AppConstant.KEY_ACTIVITY_ID);
+            final String dcode = prefManager.getDistrictCode();
+            final String bcode = prefManager.getBlockCode();
+            final String pvcode = prefManager.getPvCode();
+            dbData.open();
+            ArrayList<ODFMonitoringListValue> activityImage = dbData.selectImageActivity(dcode,bcode,pvcode,schedule_id,activity_id);
+            Log.d("IMAGE_COUNT", String.valueOf(activityImage.size()));
+            return activityImage;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<ODFMonitoringListValue> imageList) {
+            super.onPostExecute(imageList);
+            fullImageAdapter = new FullImageAdapter(FullImageActivity.this,
+                    imageList, dbData);
+            image_preview_recyclerview.setAdapter(fullImageAdapter);
         }
     }
 
