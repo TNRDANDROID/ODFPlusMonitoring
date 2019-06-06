@@ -115,13 +115,13 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         description = (MyEditTextView) findViewById(R.id.description);
         btn_save = (Button) findViewById(R.id.btn_save);
 
-//        back_img = (ImageView) findViewById(R.id.back_img);
+        back_img = (ImageView) findViewById(R.id.back_img);
 
         mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         mlocListener = new MyLocationListener();
         image_view_preview.setOnClickListener(this);
         imageView.setOnClickListener(this);
-//        back_img.setOnClickListener(this);
+        back_img.setOnClickListener(this);
         btn_save.setOnClickListener(this);
 
 

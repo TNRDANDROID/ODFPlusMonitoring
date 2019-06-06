@@ -1,0 +1,55 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:customfontdemo="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/transparent"
+    tools:context=".Activity.FullImageActivity">
+
+    <RelativeLayout
+        android:id="@+id/header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary">
+
+        <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="@dimen/margin"
+            android:text="View Image"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            customfontdemo:fontName="@string/font_circular_medium" />
+
+        <ImageView
+            android:id="@+id/back_img"
+            android:layout_width="@dimen/_30sdp"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_alignParentStart="true"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="@dimen/_12sdp"
+            android:src="@mipmap/back_arrow"/>
+
+        <ImageView
+            android:id="@+id/home_img"
+            android:layout_width="30dp"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true"
+            android:src="@mipmap/home_img"
+            android:layout_marginRight="@dimen/_12sdp"
+
+            android:layout_alignParentEnd="true" />
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/image_preview_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/header_layout"
+        android:fadeScrollbars="false"
+        android:scrollbarSize="4dp"
+        android:scrollbars="vertical" />
+
+</RelativeLayout>
