@@ -117,7 +117,7 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
     public void cameraScreen(int pos,String type){
         Activity activity = (Activity) context;
         Intent intent = new Intent(context,CameraScreen.class);
-        intent.putExtra(AppConstant.KEY_POINT_TYPE, type);
+        intent.putExtra(AppConstant.KEY_TYPE, type);
         intent.putExtra(AppConstant.KEY_ACTIVITY_ID, String.valueOf(activityListValues.get(pos).getActivityId()));
         intent.putExtra(AppConstant.KEY_SCHEDULE_ID, String.valueOf(activityListValues.get(pos).getScheduleId()));
         activity.startActivity(intent);
