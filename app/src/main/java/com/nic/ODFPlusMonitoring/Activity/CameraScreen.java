@@ -165,7 +165,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
             values.put(AppConstant.KEY_SCHEDULE_ID,getIntent().getStringExtra(AppConstant.KEY_SCHEDULE_ID) );
             values.put(AppConstant.KEY_MOTIVATOR_ID,prefManager.getMotivatorId() );
             values.put(AppConstant.KEY_ACTIVITY_ID,getIntent().getStringExtra(AppConstant.KEY_ACTIVITY_ID) );
-            values.put(AppConstant.KEY_POINT_TYPE,getIntent().getStringExtra(AppConstant.KEY_POINT_TYPE) );
+            values.put(AppConstant.KEY_TYPE,getIntent().getStringExtra(AppConstant.KEY_TYPE) );
             values.put(AppConstant.KEY_LATITUDE, offlatTextValue.toString());
             values.put(AppConstant.KEY_LONGITUDE, offlongTextValue.toString());
             values.put(AppConstant.KEY_IMAGE,image_str.trim());

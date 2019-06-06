@@ -52,6 +52,34 @@ public class ODFMonitoringListValue {
     private String ActivityName;
     private String placeOfActivity;
 
+    private String type;
+    private String imageRemark;
+    private String dateTime;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String pointType) {
+        this.type = pointType;
+    }
+
+    public String getImageRemark() {
+        return imageRemark;
+    }
+
+    public void setImageRemark(String imageRemark) {
+        this.imageRemark = imageRemark;
+    }
+
+    public String getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(String dateTime) {
+        this.dateTime = dateTime;
+    }
+
     public Integer getScheduleActivityId() {
         return scheduleActivityId;
     }

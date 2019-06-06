@@ -108,7 +108,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "image BLOB," +
                 "lat TEXT," +
                 "long TEXT," +
-                "point_type TEXT," +
+                "type TEXT," +
                 "dateTime TEXT," +
                 "remark TEXT)");
     }

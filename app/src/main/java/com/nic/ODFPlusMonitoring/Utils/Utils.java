@@ -1141,4 +1141,10 @@ public class Utils {
         Date date = new Date();
         return formatter.format(date);
     }
+
+    public static String getCurrentDate() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        return formatter.format(date);
+    }
 }

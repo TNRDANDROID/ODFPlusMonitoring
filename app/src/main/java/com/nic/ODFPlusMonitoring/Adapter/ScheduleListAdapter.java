@@ -20,7 +20,9 @@ import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Support.MyCustomTextView;
 import com.nic.ODFPlusMonitoring.Utils.Utils;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class ScheduleListAdapter extends RecyclerView.Adapter<ScheduleListAdapter.MyViewHolder>{
@@ -80,7 +82,21 @@ public class ScheduleListAdapter extends RecyclerView.Adapter<ScheduleListAdapte
         holder.schedule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openActivity(position);
+                try {
+                    Date from =  new SimpleDateFormat("yyyy-MM-dd").parse(scheduleListValues.get(position).getScheduleFromDate());
+                    Date to =  new SimpleDateFormat("yyyy-MM-dd").parse(scheduleListValues.get(position).getScheduletoDate());
+                    Date current =  new SimpleDateFormat("yyyy-MM-dd").parse(Utils.getCurrentDate());
+
+                    if (from.compareTo(current) * current.compareTo(to) >= 0) {
+                        openActivity(position);
+                    }
+                    else {
+                        Utils.showAlert((Activity) context,"Expired");
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
             }
         });
     }
