@@ -58,4 +58,18 @@
         <!--android:fadeScrollbars="false"-->
         <!--android:scrollbarSize="4dp"-->
         <!--android:scrollbars="vertical" />-->
+
+    <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+        android:id="@+id/sync"
+        android:layout_width="110dp"
+        android:layout_height="40dp"
+        android:layout_margin="5dp"
+        android:layout_centerInParent="true"
+        android:padding="8dp"
+        android:text="Sync Data"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/_14sdp"
+        android:background="@drawable/add_button_new"
+        customfontdemo:fontName="@string/font_circular_medium" />
 </RelativeLayout>

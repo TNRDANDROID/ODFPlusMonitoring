@@ -42,7 +42,7 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
     public dbData dbData = new dbData(this);
     private ActivityListAdapter activityListAdapter;
     private RecyclerView activityRecycler;;
-    private ImageView back_img;
+    private ImageView back_img,home_img;
     ArrayList<ODFMonitoringListValue> scheduleVillageList = new ArrayList<>();
     ArrayList<ODFMonitoringListValue> activityList = new ArrayList<>();
     private MyCustomTextView activity_tv;
@@ -60,6 +60,7 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
         activityRecycler = (RecyclerView) findViewById(R.id.activity_list);
         activity_tv = (MyCustomTextView) findViewById(R.id.activity_tv);
         back_img = (ImageView) findViewById(R.id.back_img);
+        home_img = (ImageView) findViewById(R.id.home_img);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         activityRecycler.setLayoutManager(mLayoutManager);
@@ -70,6 +71,7 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
         activityListAdapter = new ActivityListAdapter(this, activityList, dbData);
         activityRecycler.setAdapter(activityListAdapter);
         back_img.setOnClickListener(this);
+        home_img.setOnClickListener(this);
 
         scheduleVillage_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -174,9 +176,20 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
             case R.id.back_img:
                 onBackPress();
                 break;
+            case R.id.home_img:
+                homePage();
+                break;
         }
 
 
+    }
+
+    public void homePage() {
+        Intent intent = new Intent(this, HomePage.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
     }
 
     @Override

@@ -78,7 +78,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     LocationListener mlocListener;
     Double offlatTextValue, offlongTextValue;
     private PrefManager prefManager;
-    private ImageView back_img;
+    private ImageView back_img,home_img;
 
     private List<View> viewArrayList = new ArrayList<>();
 
@@ -116,12 +116,14 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         btn_save = (Button) findViewById(R.id.btn_save);
 
         back_img = (ImageView) findViewById(R.id.back_img);
+        home_img = (ImageView) findViewById(R.id.home_img);
 
         mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         mlocListener = new MyLocationListener();
         image_view_preview.setOnClickListener(this);
         imageView.setOnClickListener(this);
         back_img.setOnClickListener(this);
+        home_img.setOnClickListener(this);
         btn_save.setOnClickListener(this);
 
 
@@ -138,6 +140,9 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.back_img:
                 onBackPress();
+                break;
+            case R.id.home_img:
+                homePage();
                 break;
             case R.id.btn_save:
                 saveActivityImage();
@@ -360,6 +365,14 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     @Override
     public void OnError(VolleyError volleyError) {
 
+    }
+
+    public void homePage() {
+        Intent intent = new Intent(this, HomePage.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
     }
 
     @Override

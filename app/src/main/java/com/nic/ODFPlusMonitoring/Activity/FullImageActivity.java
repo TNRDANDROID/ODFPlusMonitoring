@@ -1,6 +1,7 @@
 package com.nic.ODFPlusMonitoring.Activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -33,7 +34,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     private FullImageAdapter fullImageAdapter;
     private MyCustomTextView title_tv;
     private List<ODFMonitoringListValue> imagelistvalues;
-    private ImageView back_img;
+    private ImageView back_img,home_img;
 
 
     @Override
@@ -49,7 +50,9 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         image_preview_recyclerview = (RecyclerView) findViewById(R.id.image_preview_recyclerview);
         title_tv = (MyCustomTextView)findViewById(R.id.title_tv);
         back_img = (ImageView) findViewById(R.id.back_img);
+        home_img = (ImageView) findViewById(R.id.home_img);
         back_img.setOnClickListener(this);
+        home_img.setOnClickListener(this);
 
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -71,7 +74,19 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
             case R.id.back_img:
                 onBackPress();
                 break;
+
+            case R.id.home_img:
+                homePage();
+                break;
         }
+    }
+
+    public void homePage() {
+        Intent intent = new Intent(this, HomePage.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
     }
 
     @Override
