@@ -556,12 +556,23 @@ public class dbData {
         return cards;
     }
 
-    public ArrayList<ODFMonitoringListValue> selectImageActivity(String dcode,String bcode, String pvcode,String schedule_id,String activity_id) {
+    public ArrayList<ODFMonitoringListValue> selectImageActivity(String dcode,String bcode, String pvcode,String schedule_id,String activity_id,String type) {
 
         ArrayList<ODFMonitoringListValue> cards = new ArrayList<>();
         Cursor cursor = null;
-        String selection = "dcode = ? and bcode = ? and pvcode = ? and schedule_id = ? and activity_id = ?";
-        String[] selectionArgs = new String[]{dcode,bcode,pvcode,schedule_id,activity_id};
+        String selection = null;
+        String[] selectionArgs = null;
+
+        if(!type.isEmpty()){
+            selection = "dcode = ? and bcode = ? and pvcode = ? and schedule_id = ? and activity_id = ? and type = ?";
+            selectionArgs = new String[]{dcode,bcode,pvcode,schedule_id,activity_id,type};
+        }
+        else {
+            selection = "dcode = ? and bcode = ? and pvcode = ? and schedule_id = ? and activity_id = ?";
+            selectionArgs = new String[]{dcode,bcode,pvcode,schedule_id,activity_id};
+        }
+
+
 
         try {
             cursor = db.query(DBHelper.SAVE_ACTIVITY,

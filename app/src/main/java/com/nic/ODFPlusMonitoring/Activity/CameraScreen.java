@@ -182,6 +182,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
 
             if(id > 0){
                 Toasty.success(this, "Success!", Toast.LENGTH_LONG, true).show();
+                finish();
             }
             Log.d("insIdsaveHabitation", String.valueOf(id));
 

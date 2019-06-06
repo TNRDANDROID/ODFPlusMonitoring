@@ -19,6 +19,7 @@ import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
 import com.nic.ODFPlusMonitoring.Support.MyCustomTextView;
+import com.nic.ODFPlusMonitoring.Utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,12 +30,16 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
     private Context context;
     private List<ODFMonitoringListValue> activityListValues;
     private PrefManager prefManager;
+    public final String dcode,bcode,pvcode;
 
     public ActivityListAdapter(Context context, List<ODFMonitoringListValue> activityListValues, dbData dbData) {
         this.context = context;
         this.activityListValues = activityListValues;
         this.dbData = dbData;
         prefManager = new PrefManager(context);
+        dcode = prefManager.getDistrictCode();
+        bcode = prefManager.getBlockCode();
+        pvcode = prefManager.getPvCode();
     }
 
     @Override
@@ -85,14 +90,53 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
         holder.start_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cameraScreen(position,"Start");
+
+                final String activity_id = String.valueOf(activityListValues.get(position).getActivityId());
+                final String schedule_id = String.valueOf(activityListValues.get(position).getScheduleId());
+
+                ArrayList<ODFMonitoringListValue> activityImage = dbData.selectImageActivity(dcode,bcode,pvcode,schedule_id,activity_id,"Start");
+
+                if(activityImage.size() > 0) {
+                    holder.view_offline_images.setVisibility(View.VISIBLE);
+                    for (int i=0;i<activityImage.size();i++){
+                        if(activityImage.get(i).getType().equalsIgnoreCase("start")){
+                            Utils.showAlert((Activity) context,"Already Captured");
+                        }
+                        else {
+                            cameraScreen(position,"Start");
+                        }
+                    }
+                }
+                else {
+                    cameraScreen(position,"Start");
+                }
+
+
             }
         });
 
         holder.end_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cameraScreen(position,"End");
+                final String activity_id = String.valueOf(activityListValues.get(position).getActivityId());
+                final String schedule_id = String.valueOf(activityListValues.get(position).getScheduleId());
+
+                ArrayList<ODFMonitoringListValue> activityImage = dbData.selectImageActivity(dcode,bcode,pvcode,schedule_id,activity_id,"End");
+
+                if(activityImage.size() > 0) {
+                    holder.view_offline_images.setVisibility(View.VISIBLE);
+                    for (int i=0;i<activityImage.size();i++){
+                        if(activityImage.get(i).getType().equalsIgnoreCase("end")){
+                            Utils.showAlert((Activity) context,"Already Captured");
+                        }
+                        else {
+                            cameraScreen(position,"End");
+                        }
+                    }
+                }
+                else {
+                    cameraScreen(position,"End");
+                }
             }
         });
 
@@ -106,19 +150,11 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
         dbData.open();
         final String activity_id = String.valueOf(activityListValues.get(position).getActivityId());
         final String schedule_id = String.valueOf(activityListValues.get(position).getScheduleId());
-        final String dcode = prefManager.getDistrictCode();
-        final String bcode = prefManager.getBlockCode();
-        final String pvcode = prefManager.getPvCode();
 
-        ArrayList<ODFMonitoringListValue> activityImage = dbData.selectImageActivity(dcode,bcode,pvcode,schedule_id,activity_id);
+        ArrayList<ODFMonitoringListValue> activityImage = dbData.selectImageActivity(dcode,bcode,pvcode,schedule_id,activity_id,"");
 
         if(activityImage.size() > 0) {
             holder.view_offline_images.setVisibility(View.VISIBLE);
-            for (int i=0;i<activityImage.size();i++){
-                if(activityImage.get(i).getType().equalsIgnoreCase("start")){
-                    holder.start_layout.setEnabled(false);
-                }
-            }
         }
         else {
             holder.view_offline_images.setVisibility(View.GONE);

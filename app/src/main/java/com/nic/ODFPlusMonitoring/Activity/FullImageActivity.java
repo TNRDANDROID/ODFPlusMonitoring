@@ -93,7 +93,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
             final String bcode = prefManager.getBlockCode();
             final String pvcode = prefManager.getPvCode();
             dbData.open();
-            ArrayList<ODFMonitoringListValue> activityImage = dbData.selectImageActivity(dcode,bcode,pvcode,schedule_id,activity_id);
+            ArrayList<ODFMonitoringListValue> activityImage = dbData.selectImageActivity(dcode,bcode,pvcode,schedule_id,activity_id,"");
             Log.d("IMAGE_COUNT", String.valueOf(activityImage.size()));
             return activityImage;
         }

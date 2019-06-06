@@ -74,7 +74,7 @@ public class ScheduleListAdapter extends RecyclerView.Adapter<ScheduleListAdapte
 
         String from_date = scheduleListValues.get(position).getScheduleFromDate();
         String to_date = scheduleListValues.get(position).getScheduletoDate();
-        prefManager.setScheduleMasterId(scheduleListValues.get(position).getScheduleMasterId());
+
 
         holder.schedule_tv.setText("Schedule "+scheduleListValues.get(position).getScheduleId());
         holder.schedule_description_tv.setText(scheduleListValues.get(position).getScheduleDescription());
@@ -104,6 +104,7 @@ public class ScheduleListAdapter extends RecyclerView.Adapter<ScheduleListAdapte
     }
 
     public void openActivity(int pos){
+        prefManager.setScheduleMasterId(scheduleListValues.get(pos).getScheduleMasterId());
         Log.d("schedule_id", String.valueOf(scheduleListValues.get(pos).getScheduleId()));
         Log.d("motivator", String.valueOf(scheduleListValues.get(pos).getMotivatorId()));
         Activity activity = (Activity) context;
