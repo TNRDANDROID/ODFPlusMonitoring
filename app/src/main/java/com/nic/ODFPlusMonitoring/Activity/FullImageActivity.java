@@ -87,13 +87,25 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
             ArrayList<ODFMonitoringListValue>> {
         @Override
         protected ArrayList<ODFMonitoringListValue> doInBackground(Void... params) {
+            ArrayList<ODFMonitoringListValue> activityImage = new ArrayList<>();
             String schedule_id = getIntent().getStringExtra(AppConstant.KEY_SCHEDULE_ID);
-            String activity_id = getIntent().getStringExtra(AppConstant.KEY_ACTIVITY_ID);
             final String dcode = prefManager.getDistrictCode();
             final String bcode = prefManager.getBlockCode();
             final String pvcode = prefManager.getPvCode();
-            dbData.open();
-            ArrayList<ODFMonitoringListValue> activityImage = dbData.selectImageActivity(dcode,bcode,pvcode,schedule_id,activity_id,"");
+            String id = "";
+            String OnOffType = getIntent().getStringExtra("OnOffType");
+
+            if(OnOffType.equalsIgnoreCase("Online")){
+                id = getIntent().getStringExtra(AppConstant.KEY_SCHEDULE_ACTIVITY_ID);
+                dbData.open();
+                activityImage = dbData.selectActivityPhoto(schedule_id,id);
+            }
+            else if(OnOffType.equalsIgnoreCase("Offline")){
+                id = getIntent().getStringExtra(AppConstant.KEY_ACTIVITY_ID);
+                dbData.open();
+                activityImage = dbData.selectImageActivity(dcode,bcode,pvcode,schedule_id,id,"");
+            }
+
             Log.d("IMAGE_COUNT", String.valueOf(activityImage.size()));
             return activityImage;
         }

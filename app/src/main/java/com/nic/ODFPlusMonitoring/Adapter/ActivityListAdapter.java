@@ -138,20 +138,14 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
             }
         });
 
-        holder.view_online_images.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
         dbData.open();
         final String activity_id = String.valueOf(activityListValues.get(position).getActivityId());
         final String schedule_id = String.valueOf(activityListValues.get(position).getScheduleId());
+        final String schedule_activity_id = String.valueOf(activityListValues.get(position).getScheduleActivityId());
 
-        ArrayList<ODFMonitoringListValue> activityImage = dbData.selectImageActivity(dcode,bcode,pvcode,schedule_id,activity_id,"");
+        ArrayList<ODFMonitoringListValue> activityImageOffline = dbData.selectImageActivity(dcode,bcode,pvcode,schedule_id,activity_id,"");
 
-        if(activityImage.size() > 0) {
+        if(activityImageOffline.size() > 0) {
             holder.view_offline_images.setVisibility(View.VISIBLE);
         }
         else {
@@ -161,17 +155,39 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
         holder.view_offline_images.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewOfflineImages(schedule_id,activity_id);
+                viewOfflineImages(schedule_id,activity_id,"Offline");
+            }
+        });
+        dbData.open();
+        ArrayList<ODFMonitoringListValue> activityImageOnline = dbData.selectActivityPhoto(schedule_id,schedule_activity_id);
+
+        if(activityImageOnline.size() > 0) {
+            holder.view_online_images.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.view_online_images.setVisibility(View.GONE);
+        }
+
+        holder.view_online_images.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewOfflineImages(schedule_id,schedule_activity_id,"Online");
             }
         });
 
     }
 
-    public void viewOfflineImages(String schedule_id,String activity_id) {
+    public void viewOfflineImages(String schedule_id,String id,String OnOffType) {
         Activity activity = (Activity) context;
         Intent intent = new Intent(context, FullImageActivity.class);
         intent.putExtra(AppConstant.KEY_SCHEDULE_ID,schedule_id);
-        intent.putExtra(AppConstant.KEY_ACTIVITY_ID,activity_id);
+        if(OnOffType.equalsIgnoreCase("Offline")){
+            intent.putExtra(AppConstant.KEY_ACTIVITY_ID,id);
+        }
+        else if(OnOffType.equalsIgnoreCase("Online")) {
+            intent.putExtra(AppConstant.KEY_SCHEDULE_ACTIVITY_ID,id);
+        }
+        intent.putExtra("OnOffType",OnOffType);
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }

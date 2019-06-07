@@ -340,6 +340,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
             dbData.deleteScheduleTable();
             dbData.deleteScheduleVillageTable();
             dbData.deleteScheduleActivityTable();
+            dbData.deleteActivityPhotos();
         }
         dbData.open();
         ArrayList<ODFMonitoringListValue> schedule_count = dbData.getAllSchedule(prefManager.getMotivatorId());

@@ -525,6 +525,56 @@ public class dbData {
         return odfMonitoringListValue;
     }
 
+    public ArrayList<ODFMonitoringListValue> selectActivityPhoto(String schedule_id,String schedule_activity_id) {
+
+        ArrayList<ODFMonitoringListValue> cards = new ArrayList<>();
+        Cursor cursor = null;
+        String selection = "schedule_id = ? and schedule_activity_id = ?";
+        String[] selectionArgs = new String[]{schedule_id,schedule_activity_id};
+
+        try {
+            cursor = db.query(DBHelper.SCHEDULED_ACTIVITY_PHOTOS,
+                    new String[]{"*"}, selection, selectionArgs, null, null, null);
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+
+                    byte[] photo = cursor.getBlob(cursor.getColumnIndexOrThrow(AppConstant.KEY_IMAGE));
+                    byte[] decodedString = Base64.decode(photo, Base64.DEFAULT);
+                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+                    ODFMonitoringListValue card = new ODFMonitoringListValue();
+                    card.setScheduleActivityId(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_SCHEDULE_ACTIVITY_ID)));
+                    card.setScheduleId(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_SCHEDULE_ID)));
+                    card.setLatitude(cursor.getString(cursor
+                            .getColumnIndex(AppConstant.KEY_LATITUDE)));
+                    card.setLongitude(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_LONGITUDE)));
+                    card.setImageRemark(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_IMAGE_REMARK)));
+                    card.setType(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_TYPE)));
+
+                    card.setImage(decodedByte);
+
+                    cards.add(card);
+                }
+            }
+        } catch (Exception e){
+            Log.d("Exception" , e.toString());
+        } finally{
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return cards;
+    }
+
+    public void deleteActivityPhotos() {
+        db.execSQL("delete from "+ DBHelper.SCHEDULED_ACTIVITY_PHOTOS);
+    }
+
     /************************** Get Saved Activity Images ***************************/
 
     public ArrayList<ODFMonitoringListValue> getSavedActivity() {
@@ -650,5 +700,13 @@ public class dbData {
 
     public void deleteSavedActivity() {
         db.execSQL("delete from "+ DBHelper.SAVE_ACTIVITY);
+    }
+
+    public void deleteAll(){
+        db.execSQL("delete from "+ DBHelper.MOTIVATOR_CATEGORY_LIST_TABLE_NAME);
+        deleteScheduleTable();
+        deleteScheduleVillageTable();
+        deleteScheduleActivityTable();
+        deleteActivityPhotos();
     }
 }

@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 
+import com.nic.ODFPlusMonitoring.DataBase.dbData;
 import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Support.MyCustomTextView;
 
@@ -16,12 +17,13 @@ import com.nic.ODFPlusMonitoring.Support.MyCustomTextView;
  */
 public class MyDialog {
     public myOnClickListener myListener;
-
+    private dbData dbData;
 //    private PrefManager prefManager;
 
     public MyDialog(Activity context) {
 //        prefManager         = new PrefManager(context);
         this.myListener = (myOnClickListener) context;
+        dbData = new dbData(context);
 
     }
 
@@ -58,6 +60,10 @@ public class MyDialog {
 //                    ImageLoader imgLoader = new ImageLoader(activity);
 //                    imgLoader.clearCache();
 //                }
+                if(type.equals("Logout")) {
+                    dbData.open();
+                    dbData.deleteAll();
+                }
 
 
             }

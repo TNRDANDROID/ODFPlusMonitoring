@@ -128,6 +128,7 @@ public class DBHelper extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + SCHEDULED_ACTIVITY);
             db.execSQL("DROP TABLE IF EXISTS " + SCHEDULE_VILLAGE);
             db.execSQL("DROP TABLE IF EXISTS " + SCHEDULED_ACTIVITY_PHOTOS);
+            db.execSQL("DROP TABLE IF EXISTS " + SAVE_ACTIVITY);
             onCreate(db);
         }
     }
