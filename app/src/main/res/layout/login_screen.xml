@@ -11,8 +11,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+android:layout_marginTop="@dimen/_100sdp"
 
-         android:layout_centerInParent="true"
         android:orientation="vertical">
 
 
@@ -52,10 +52,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:padding="@dimen/_5sdp"
                     android:background="@android:color/transparent"
                     android:hint="User Name"
                     android:inputType="textNoSuggestions"
+                    android:padding="@dimen/_5sdp"
                     android:textColor="@android:color/black"
                     android:textSize="16dp"
                     customfontdemo:fontName="@string/font_circular_medium" />
@@ -141,6 +141,7 @@
                     android:layout_marginRight="@dimen/margin"
                     android:background="@drawable/add_button"
                     android:text="Sign in"
+                    android:clickable="true"
                     android:textAllCaps="false"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/menu_title_size" />
@@ -154,6 +155,7 @@
                     android:layout_marginRight="@dimen/margin"
                     android:background="@drawable/add_button_new"
                     android:text="Sign up"
+                    android:clickable="true"
                     android:textAllCaps="false"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/menu_title_size" />
@@ -163,7 +165,7 @@
 
             <ImageView
                 android:layout_width="170dp"
-                android:layout_height="@dimen/padding"
+                android:layout_height="13dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="@dimen/margin"
                 android:layout_marginRight="@dimen/margin"
@@ -187,7 +189,7 @@
         android:padding="@dimen/_13sdp"
         android:text="Sofware Designed &amp; Developed by NIC"
         android:textAlignment="center"
-        android:textColor="@android:color/black"
+        android:textColor="@android:color/white"
         android:textSize="@dimen/_15sdp"
         android:textStyle="bold" />
 

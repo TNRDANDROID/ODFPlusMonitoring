@@ -97,7 +97,6 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
                 ArrayList<ODFMonitoringListValue> activityImage = dbData.selectImageActivity(dcode,bcode,pvcode,schedule_id,activity_id,"Start");
 
                 if(activityImage.size() > 0) {
-                    holder.view_offline_images.setVisibility(View.VISIBLE);
                     for (int i=0;i<activityImage.size();i++){
                         if(activityImage.get(i).getType().equalsIgnoreCase("start")){
                             Utils.showAlert((Activity) context,"Already Captured");
@@ -124,7 +123,6 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
                 ArrayList<ODFMonitoringListValue> activityImage = dbData.selectImageActivity(dcode,bcode,pvcode,schedule_id,activity_id,"End");
 
                 if(activityImage.size() > 0) {
-                    holder.view_offline_images.setVisibility(View.VISIBLE);
                     for (int i=0;i<activityImage.size();i++){
                         if(activityImage.get(i).getType().equalsIgnoreCase("end")){
                             Utils.showAlert((Activity) context,"Already Captured");

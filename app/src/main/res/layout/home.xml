@@ -19,8 +19,8 @@
             android:layout_marginTop="@dimen/margin"
             android:text="Home Screen"
             android:textColor="@android:color/black"
-            android:textSize="18sp"
-            customfontdemo:fontName="@string/font_circular_medium" />
+            style="@style/font_circular_bold"
+            android:textSize="@dimen/_15sdp" />
 
         <ImageView
             android:layout_width="40dp"
@@ -64,8 +64,8 @@
         android:layout_width="110dp"
         android:layout_height="40dp"
         android:layout_margin="5dp"
-        android:layout_marginTop="@dimen/_20sdp"
-         android:layout_centerInParent="true"
+        android:layout_marginTop="@dimen/_25sdp"
+        android:layout_centerInParent="true"
         android:padding="8dp"
         android:text="Sync Data"
         android:textAlignment="center"
