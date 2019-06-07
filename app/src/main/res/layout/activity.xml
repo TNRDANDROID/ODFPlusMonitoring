@@ -79,7 +79,7 @@
                             android:textSize="16sp"
 
                             android:textColor="#000080"
-                            customfontdemo:fontName="@string/font_circular_medium" />
+                            customfontdemo:fontName="@string/font_circular_bold" />
 
                         <ImageView
                             android:id="@+id/dummy1"
@@ -182,7 +182,7 @@
                             android:textSize="16sp"
 
                             android:textColor="#000080"
-                            customfontdemo:fontName="@string/font_circular_medium" />
+                            customfontdemo:fontName="@string/font_circular_bold" />
 
                         <ImageView
                             android:id="@+id/dummy2"
@@ -241,10 +241,10 @@
                 android:layout_centerInParent="true"
                 android:layout_gravity="center"
                 android:padding="@dimen/_12sdp"
-                android:text="View Images"
+                android:text="View Activity Images"
                 android:textColor="#000080"
                 android:textSize="16sp"
-                customfontdemo:fontName="@string/font_circular_medium" />
+                customfontdemo:fontName="@string/font_circular_bold" />
 
 
         </RelativeLayout>
