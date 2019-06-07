@@ -371,7 +371,6 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                         Log.d("userdata", "" + prefManager.getDistrictCode() + prefManager.getBlockCode() + prefManager.getPvCode() + prefManager.getDistrictName() + prefManager.getBlockName());
                         prefManager.setUserPassKey(decryptedKey);
                         prefManager.setMotivatorId(String.valueOf(jsonObject.get(AppConstant.KEY_MOTIVATOR_ID)));
-                        getMotivatorSchedule();
                         showHomeScreen();
                     } else {
                         if (response.equals("LOGIN_FAILED")) {
@@ -433,17 +432,6 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                 }
                 Log.d("BankBranchList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
             }
-            if ("MotivatorSchedule".equals(urlType) && responseObj != null) {
-                String key = responseObj.getString(AppConstant.ENCODE_DATA);
-                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
-                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
-                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-                    loadMotivatorScheduleList(jsonObject.getJSONArray(AppConstant.JSON_DATA));
-                }
-                Log.d("MotivatorSchedule", "" + responseDecryptedBlockKey);
-            }
-
-
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -676,123 +664,5 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             Utils.showAlert(this, "No data available for offline. Please Turn On Your Network");
         }
     }
-
-    public void getMotivatorSchedule() {
-        try {
-            new ApiService(this).makeJSONObjectRequest("MotivatorSchedule", Api.Method.POST, UrlGenerator.getMotivatorSchedule(), motivatorScheduleListJsonParams(), "not cache", this);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public JSONObject motivatorScheduleListJsonParams() throws JSONException {
-
-        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.motivatorScheduleListJsonParams().toString());
-        JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
-        dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("scheduleListWise", "" + authKey);
-        return dataSet;
-
-    }
-
-    public void loadMotivatorScheduleList(JSONArray jsonArray) {
-
-        dbData.open();
-        if (Utils.isOnline()) {
-            dbData.deleteScheduleTable();
-            dbData.deleteScheduleVillageTable();
-            dbData.deleteScheduleActivityTable();
-        }
-        dbData.open();
-        ArrayList<ODFMonitoringListValue> schedule_count = dbData.getAllSchedule(prefManager.getMotivatorId());
-        if(schedule_count.size() <= 0) {
-            for (int i = 0; i < jsonArray.length(); i++) {
-                ODFMonitoringListValue odfMonitoringListValue = new ODFMonitoringListValue();
-                try {
-                    String scheduleId = jsonArray.getJSONObject(i).getString(AppConstant.KEY_SCHEDULE_ID);
-                    JSONObject tSchedulejsonObject = jsonArray.getJSONObject(i).getJSONObject(AppConstant.KEY_T_SCHEDULE);
-
-                    odfMonitoringListValue.setScheduleId(tSchedulejsonObject.getInt(AppConstant.KEY_SCHEDULE_ID));
-                    odfMonitoringListValue.setScheduleMasterId(tSchedulejsonObject.getInt(AppConstant.KEY_SCHEDULE_MASTER_ID));
-                    odfMonitoringListValue.setMotivatorId(tSchedulejsonObject.getInt(AppConstant.KEY_MOTIVATOR_ID));
-                    odfMonitoringListValue.setScheduleFromDate(tSchedulejsonObject.getString(AppConstant.KEY_FROM_DATE));
-                    odfMonitoringListValue.setScheduletoDate(tSchedulejsonObject.getString(AppConstant.KEY_TO_DATE));
-                    odfMonitoringListValue.setScheduleDescription(tSchedulejsonObject.getString(AppConstant.KEY_SCHEDULE_DESCRIPTION));
-                    odfMonitoringListValue.setTotalActivity(tSchedulejsonObject.getInt(AppConstant.KEY_TOTAL_ACTIVITY));
-                    odfMonitoringListValue.setPendingActivity(tSchedulejsonObject.getInt(AppConstant.KEY_PENDING_ACTIVITY));
-                    odfMonitoringListValue.setCompletedActivity(tSchedulejsonObject.getInt(AppConstant.KEY_COMPLETED_ACTIVITY));
-                    dbData.insertSchedule(odfMonitoringListValue);
-
-                    JSONArray villageArray = jsonArray.getJSONObject(i).getJSONArray(AppConstant.KEY_T_SCHEDULE_VILLAGE);
-                    new InsertScheduleVillageTask().execute(villageArray);
-
-                    JSONArray activityArray = jsonArray.getJSONObject(i).getJSONArray(AppConstant.KEY_T_SCHEDULE_ACTIVITY);
-                    new InsertScheduleActivityTask().execute(activityArray);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-    }
-
-    public class InsertScheduleVillageTask extends AsyncTask<JSONArray ,Void ,Void> {
-
-        @Override
-        protected Void doInBackground(JSONArray... params) {
-            dbData.open();
-            if (params.length > 0) {
-                JSONArray jsonArray = params[0];
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    ODFMonitoringListValue schedulevillageValue = new ODFMonitoringListValue();
-                    try {
-                        schedulevillageValue.setVillageLinkId(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_SCHEDULE_VILLAGE_LINK_ID));
-                        schedulevillageValue.setScheduleId(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_SCHEDULE_ID));
-                        schedulevillageValue.setMotivatorId(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_MOTIVATOR_ID));
-                        schedulevillageValue.setDistictCode(jsonArray.getJSONObject(i).getInt(AppConstant.DISTRICT_CODE));
-                        schedulevillageValue.setBlockCode(jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE));
-                        schedulevillageValue.setPvCode(jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE));
-                        schedulevillageValue.setPvName(jsonArray.getJSONObject(i).getString(AppConstant.PV_NAME));
-                        dbData.insertScheduleVillage(schedulevillageValue);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-            }
-
-            return null;
-        }
-    }
-
-    public class InsertScheduleActivityTask extends AsyncTask<JSONArray ,Void ,Void> {
-
-        @Override
-        protected Void doInBackground(JSONArray... params) {
-            dbData.open();
-            if (params.length > 0) {
-                JSONArray jsonArray = params[0];
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    ODFMonitoringListValue scheduleActivityValue = new ODFMonitoringListValue();
-                    try {
-                        scheduleActivityValue.setScheduleActivityId(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_SCHEDULE_ACTIVITY_ID));
-                        scheduleActivityValue.setScheduleId(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_SCHEDULE_ID));
-                        scheduleActivityValue.setActivityId(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_ACTIVITY_ID));
-                        scheduleActivityValue.setActivityName(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ACTIVITY_NAME));
-                        scheduleActivityValue.setPlaceOfActivity(jsonArray.getJSONObject(i).getString(AppConstant.KEY_PLACE_OF_ACTIVITY));
-
-                        dbData.insertScheduleActivity(scheduleActivityValue);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-            }
-            return null;
-        }
-    }
-
 
 }

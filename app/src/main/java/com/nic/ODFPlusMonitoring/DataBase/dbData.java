@@ -621,4 +621,8 @@ public class dbData {
         }
         return cards;
     }
+
+    public void deleteSavedActivity() {
+        db.execSQL("delete from "+ DBHelper.SAVE_ACTIVITY);
+    }
 }
