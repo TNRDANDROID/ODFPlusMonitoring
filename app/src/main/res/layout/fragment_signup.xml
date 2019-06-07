@@ -1,51 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:customfontdemo="http://schemas.android.com/apk/res-auto"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:customfontdemo="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/blue"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/header_layout"
+
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary">
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary">
 
-        <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="@dimen/margin"
-            android:text="Registration"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
-            customfontdemo:fontName="@string/font_circular_medium" />
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_scrollFlags="scroll|enterAlways|snap"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+            <RelativeLayout
+                android:id="@+id/header_layout"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/colorPrimary">
 
 
-    </RelativeLayout>
+                <ImageView
+                    android:id="@+id/back_img"
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="start"
+                    android:src="@mipmap/back_arrow" />
 
-    <View
-        android:id="@+id/horizontal_line"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_below="@+id/header_layout"
-        android:background="#FFF"
-        android:visibility="gone" />
+                <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="@dimen/margin"
+                    android:text="Registration"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp"
+                    customfontdemo:fontName="@string/font_circular_medium" />
 
-    <ScrollView
+
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/horizontal_line"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_below="@+id/header_layout"
+                android:background="#FFF"
+                />
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+
+    <android.support.v4.widget.NestedScrollView
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/horizontal_line"
+        android:layout_height="wrap_content"
+        app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
 
-        android:layout_alignParentStart="true"
 
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="-1dp"
-        android:fadeScrollbars="false">
-
-        <LinearLayout
+    <LinearLayout
             android:id="@+id/child_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -64,8 +87,9 @@
                     android:layout_height="130dp"
                     android:layout_gravity="center"
                     android:layout_margin="@dimen/padding"
-                    android:background="@drawable/profile_bg_circle"
-                    android:scaleType="centerCrop"/>
+                    app:civ_border_width="2dip"
+                    app:civ_border_color="#01d1c1"
+                    />
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/profile_image_preview"
@@ -74,7 +98,8 @@
                     android:layout_margin="@dimen/padding"
                     android:layout_gravity="center"
                     android:background="@drawable/profile_bg_circle"
-                    android:scaleType="centerCrop"
+                    app:civ_border_width="2dip"
+                    app:civ_border_color="#01d1c1"
                     android:src="@drawable/ic_account_circle_black_24dp" />
 
 
@@ -927,17 +952,17 @@
 
 
         </LinearLayout>
-    </ScrollView>
-
-
+    </android.support.v4.widget.NestedScrollView>
 
     <ImageView
         android:id="@+id/arrow_image"
         android:layout_width="32dp"
         android:layout_height="32dp"
+        android:layout_gravity="top|center_horizontal"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/edit_text_padding"
+        android:visibility="gone"
         android:src="@drawable/double_down_arroe" />
 
     <ImageView
@@ -945,10 +970,10 @@
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_below="@id/horizontal_line"
-        android:layout_alignParentBottom="false"
-        android:layout_centerHorizontal="true"
+        android:layout_gravity="bottom|center_horizontal"
         android:layout_marginTop="@dimen/edit_text_padding"
         android:rotation="180"
+        android:visibility="gone"
         android:src="@drawable/double_down_arroe" />
 
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

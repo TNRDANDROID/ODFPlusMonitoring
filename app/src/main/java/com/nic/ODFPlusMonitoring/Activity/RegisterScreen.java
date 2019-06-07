@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;
@@ -104,8 +105,8 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
     private List<ODFMonitoringListValue> BranchDetails = new ArrayList<>();
     private ProgressHUD progressHUD;
     private AutoSuggestAdapter autoSuggestAdapter;
-    private ImageView arrowImage,arrowImageUp;
-    private ScrollView  scrollView;
+    private ImageView arrowImage,arrowImageUp,back_img;
+    private NestedScrollView scrollView;
     private CircleImageView profile_image,profile_image_preview;
     String pref_Block,pref_district, pref_Village;
     public static DBHelper dbHelper;
@@ -158,7 +159,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         motivator_ifsc_tv = (MyCustomTextView) findViewById(R.id.motivator_ifsc_tv);
         motivator_dob_tv = (MyCustomTextView) findViewById(R.id.motivator_dob_tv);
         motivator_position_tv = (MyEditTextView) findViewById(R.id.motivator_position_tv);
-        scrollView = (ScrollView)findViewById(R.id.scroll_view) ;
+        scrollView = (NestedScrollView) findViewById(R.id.scroll_view) ;
         arrowImage = (ImageView) findViewById(R.id.arrow_image) ;
         arrowImageUp = (ImageView)findViewById(R.id.arrow_image_up) ;
         childlayout = (LinearLayout)findViewById(R.id.child_view);
@@ -167,34 +168,37 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         position_layout = (LinearLayout) findViewById(R.id.position_layout);
         profile_image = (CircleImageView) findViewById(R.id.profile_image);
         profile_image_preview = (CircleImageView) findViewById(R.id.profile_image_preview);
+        back_img = (ImageView) findViewById(R.id.back_img);
         arrowImage.setOnClickListener(this);
         arrowImageUp.setOnClickListener(this);
         dob_layout.setOnClickListener(this);
         edit_image.setOnClickListener(this);
-
-        if (childlayout.getMeasuredHeight() > scrollView.getMeasuredHeight()) {
-            showArrowImage();
-        }
-        scrollView.fullScroll(ScrollView.FOCUS_UP);
+        back_img.setOnClickListener(this);
         btn_register.setOnClickListener(this);
-        scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged() {
-                View view = (View) scrollView.getChildAt(scrollView.getChildCount() - 1);
-                int diffBottom = (view.getBottom() - (scrollView.getHeight() + scrollView.getScrollY()));
 
-                if (diffBottom == 0) {
-                    arrowImage.setVisibility(View.GONE);
-                    arrowImage.clearAnimation();
-                } else if (scrollView.getScrollY() == 0) {
-                    arrowImageUp.setVisibility(View.GONE);
-                    arrowImageUp.clearAnimation();
-                } else {
-                    showArrowImage();
-                    showUpArrowImage();
-                }
-            }
-        });
+//        if (childlayout.getMeasuredHeight() > scrollView.getMeasuredHeight()) {
+//            showArrowImage();
+//        }
+//        scrollView.fullScroll(ScrollView.FOCUS_UP);
+
+//        scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+//            @Override
+//            public void onScrollChanged() {
+//                View view = (View) scrollView.getChildAt(scrollView.getChildCount() - 1);
+//                int diffBottom = (view.getBottom() - (scrollView.getHeight() + scrollView.getScrollY()));
+//
+//                if (diffBottom == 0) {
+//                    arrowImage.setVisibility(View.GONE);
+//                    arrowImage.clearAnimation();
+//                } else if (scrollView.getScrollY() == 0) {
+//                    arrowImageUp.setVisibility(View.GONE);
+//                    arrowImageUp.clearAnimation();
+//                } else {
+//                    showArrowImage();
+//                    showUpArrowImage();
+//                }
+//            }
+//        });
 //        getBankNameList();
 //        getBankBranchList();
         autoCompleteApiBankName();
@@ -389,17 +393,20 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
             case R.id.btn_register:
                 validateMotivatorDetails();
                 break;
-            case R.id.arrow_image:
-                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
-                break;
-            case R.id.arrow_image_up:
-                scrollView.fullScroll(ScrollView.FOCUS_UP);
-                break;
+//            case R.id.arrow_image:
+//                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+//                break;
+//            case R.id.arrow_image_up:
+//                scrollView.fullScroll(ScrollView.FOCUS_UP);
+//                break;
             case R.id.dob_layout:
                 showStartDatePickerDialog();
                 break;
             case R.id.edit_image:
                 getCameraPermission();
+                break;
+            case R.id.back_img:
+                onBackPress();
                 break;
         }
     }
@@ -938,6 +945,11 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+    public void onBackPress() {
+        super.onBackPressed();
+        setResult(Activity.RESULT_CANCELED);
+        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
     }
 
     @Override
