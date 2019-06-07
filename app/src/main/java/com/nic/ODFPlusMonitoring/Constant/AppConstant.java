@@ -105,6 +105,10 @@ public class AppConstant {
     public static String KEY_TRACK_DATA = "track_data";
     public static String KEY_ACTIVITY_IMAGE_SAVE = "activity_image_save";
 
+    /******************* t_scheduled_activity_photos **********************/
+
+    public static String KEY_T_SCHEDULE_ACTIVITY_PHOTOS = "t_scheduled_activity_photos";
+
 
 
 }

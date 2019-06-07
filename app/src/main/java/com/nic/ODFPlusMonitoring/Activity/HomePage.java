@@ -3,6 +3,7 @@ package com.nic.ODFPlusMonitoring.Activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -366,6 +367,9 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                     JSONArray activityArray = jsonArray.getJSONObject(i).getJSONArray(AppConstant.KEY_T_SCHEDULE_ACTIVITY);
                     new InsertScheduleActivityTask().execute(activityArray);
 
+                    JSONArray photosArray = jsonArray.getJSONObject(i).getJSONArray(AppConstant.KEY_T_SCHEDULE_ACTIVITY_PHOTOS);
+                    new InsertActivityPhotosTask().execute(photosArray);
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -420,6 +424,39 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                         scheduleActivityValue.setPlaceOfActivity(jsonArray.getJSONObject(i).getString(AppConstant.KEY_PLACE_OF_ACTIVITY));
 
                         dbData.insertScheduleActivity(scheduleActivityValue);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+            return null;
+        }
+    }
+
+    public class InsertActivityPhotosTask extends AsyncTask<JSONArray ,Void ,Void> {
+
+        @Override
+        protected Void doInBackground(JSONArray... params) {
+            dbData.open();
+            if (params.length > 0) {
+                JSONArray jsonArray = params[0];
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    ODFMonitoringListValue activityPhotosValue = new ODFMonitoringListValue();
+                    try {
+                        activityPhotosValue.setScheduleActivityId(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_SCHEDULE_ACTIVITY_ID));
+                        activityPhotosValue.setScheduleId(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_SCHEDULE_ID));
+                        activityPhotosValue.setLatitude(jsonArray.getJSONObject(i).getString("location_lat"));
+                        activityPhotosValue.setLongitude(jsonArray.getJSONObject(i).getString("location_long"));
+                        activityPhotosValue.setType(jsonArray.getJSONObject(i).getString("activity_type"));
+                        activityPhotosValue.setImageRemark(jsonArray.getJSONObject(i).getString(AppConstant.KEY_IMAGE_REMARK));
+
+                        byte[] decodedString = Base64.decode(jsonArray.getJSONObject(i).getString(AppConstant.KEY_IMAGE), Base64.DEFAULT);
+                        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+                        activityPhotosValue.setImage(decodedByte);
+
+                        dbData.insertActivityPhotos(activityPhotosValue);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

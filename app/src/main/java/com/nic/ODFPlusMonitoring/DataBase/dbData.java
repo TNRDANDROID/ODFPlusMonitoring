@@ -18,6 +18,7 @@ import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 
@@ -497,6 +498,31 @@ public class dbData {
 
     public void deleteScheduleActivityTable() {
         db.execSQL("delete from "+ DBHelper.SCHEDULED_ACTIVITY);
+    }
+
+    /************************************** Activity Photos *************************************************/
+
+    public ODFMonitoringListValue insertActivityPhotos(ODFMonitoringListValue odfMonitoringListValue) {
+
+        ContentValues values = new ContentValues();
+        values.put(AppConstant.KEY_SCHEDULE_ACTIVITY_ID,odfMonitoringListValue.getScheduleActivityId());
+        values.put(AppConstant.KEY_SCHEDULE_ID,odfMonitoringListValue.getScheduleId());
+        values.put(AppConstant.KEY_LATITUDE,odfMonitoringListValue.getLatitude());
+        values.put(AppConstant.KEY_LONGITUDE,odfMonitoringListValue.getLongitude());
+        values.put(AppConstant.KEY_TYPE,odfMonitoringListValue.getType());
+        values.put(AppConstant.KEY_IMAGE_REMARK,odfMonitoringListValue.getImageRemark());
+
+        Bitmap bitmap = odfMonitoringListValue.getImage();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+        byte[] imageInByte = baos.toByteArray();
+        String image_str = Base64.encodeToString(imageInByte, Base64.DEFAULT);
+
+        values.put(AppConstant.KEY_IMAGE,image_str);
+
+        long id = db.insert(DBHelper.SCHEDULED_ACTIVITY_PHOTOS,null,values);
+        Log.d("Inserted_id_Activ_photo",String.valueOf(id));
+        return odfMonitoringListValue;
     }
 
     /************************** Get Saved Activity Images ***************************/

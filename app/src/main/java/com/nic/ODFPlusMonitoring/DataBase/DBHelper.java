@@ -92,11 +92,11 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + SCHEDULED_ACTIVITY_PHOTOS + " ("
                 + "schedule_activity_id INTEGER," +
                 "schedule_id INTEGER," +
-                "motivator_id INTEGER," +
+                "lat TEXT," +
+                "long TEXT," +
+                "type TEXT," +
                 "image BLOB," +
-                "start_lat TEXT," +
-                "start_long BLOB," +
-                "start_end_flag INTEGER)");
+                "remark TEXT)");
 
         db.execSQL("CREATE TABLE " + SAVE_ACTIVITY + " ("
                 + "dcode INTEGER," +
