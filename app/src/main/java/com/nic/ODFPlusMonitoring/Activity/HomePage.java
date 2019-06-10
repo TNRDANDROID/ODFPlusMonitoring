@@ -232,6 +232,14 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                     loadMotivatorScheduleList(jsonObject.getJSONArray(AppConstant.JSON_DATA));
                 }
                 Log.d("MotivatorSchedule", "" + responseDecryptedBlockKey);
+                String authKey = responseDecryptedBlockKey;
+                    int maxLogSize = 2000;
+                    for (int i = 0; i <= authKey.length() / maxLogSize; i++) {
+                        int start = i * maxLogSize;
+                        int end = (i + 1) * maxLogSize;
+                        end = end > authKey.length() ? authKey.length() : end;
+                        Log.v("to_send_plain", authKey.substring(start, end));
+                    }
             }
             if ("saveActivityImage".equals(urlType) && responseObj != null) {
                 String key = responseObj.getString(AppConstant.ENCODE_DATA);
