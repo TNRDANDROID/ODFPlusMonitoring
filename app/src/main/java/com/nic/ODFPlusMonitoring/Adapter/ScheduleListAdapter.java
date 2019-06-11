@@ -3,6 +3,12 @@ package com.nic.ODFPlusMonitoring.Adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,9 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-
 import com.nic.ODFPlusMonitoring.Activity.ActivityScreen;
-import com.nic.ODFPlusMonitoring.Activity.CameraScreen;
 import com.nic.ODFPlusMonitoring.Constant.AppConstant;
 import com.nic.ODFPlusMonitoring.DataBase.dbData;
 import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
@@ -25,6 +29,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 public class ScheduleListAdapter extends RecyclerView.Adapter<ScheduleListAdapter.MyViewHolder>{
 
@@ -48,15 +53,20 @@ public class ScheduleListAdapter extends RecyclerView.Adapter<ScheduleListAdapte
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private MyCustomTextView schedule_tv,from_date_tv,to_date_tv,schedule_description_tv;
-        private LinearLayout schedule;
+        private LinearLayout schedule, vertical_tv;
+        private CardView district_card;
+        int[] androidColors;
 
         public MyViewHolder(View itemView) {
             super(itemView);
+            androidColors = itemView.getResources().getIntArray(R.array.androidcolors);
             schedule_tv = (MyCustomTextView)itemView.findViewById(R.id.schedule_tv);
             from_date_tv = (MyCustomTextView)itemView.findViewById(R.id.from_date_tv);
             to_date_tv = (MyCustomTextView)itemView.findViewById(R.id.to_date_tv);
             schedule_description_tv = (MyCustomTextView)itemView.findViewById(R.id.schedule_description_tv);
             schedule = (LinearLayout)itemView.findViewById(R.id.schedule);
+            vertical_tv = (LinearLayout) itemView.findViewById(R.id.vertical_tv);
+            district_card = (CardView) itemView.findViewById(R.id.district_card);
         }
 
 
@@ -70,7 +80,29 @@ public class ScheduleListAdapter extends RecyclerView.Adapter<ScheduleListAdapte
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
-
+//        if (position % 2 == 1) {
+//            holder.district_card.setBackgroundColor(Color.parseColor("#C900BFA5"));
+//            holder.vertical_tv.setBackgroundResource(R.drawable.blue_background);
+//            holder.schedule_tv.setBackgroundResource(R.drawable.white_background);
+//
+//        } else {
+//            holder.district_card.setBackgroundColor(Color.parseColor("#C900BFA5"));
+//            holder.vertical_tv.setBackgroundResource(R.drawable.blue_background);
+//            holder.schedule_tv.setBackgroundResource(R.drawable.white_background);
+//        }
+//        int remainder = holder.getAdapterPosition() % holder.androidColors.length;
+//        mView.setCardBackgroundColor(Color.parseColor(holder.androidColors.get(remainder)));
+//        int randomAndroidColor = holder.androidColors[new Random().nextInt(holder.androidColors.length)];
+//        Drawable background = holder.district_card.getBackground();
+//        if (background instanceof ShapeDrawable) {
+//            ((ShapeDrawable)background).getPaint().setColor(randomAndroidColor);
+//        } else if (background instanceof GradientDrawable) {
+//            ((GradientDrawable)background).setColor(randomAndroidColor);
+//        } else if (background instanceof ColorDrawable) {
+//            ((ColorDrawable)background).setColor(randomAndroidColor);
+//
+        int randomAndroidColor = holder.androidColors[new Random().nextInt(holder.androidColors.length)];
+        holder.district_card.setBackgroundColor(randomAndroidColor);
 
         String from_date = scheduleListValues.get(position).getScheduleFromDate();
         String to_date = scheduleListValues.get(position).getScheduletoDate();

@@ -9,6 +9,7 @@ import android.widget.Button;
 
 import com.nic.ODFPlusMonitoring.DataBase.dbData;
 import com.nic.ODFPlusMonitoring.R;
+import com.nic.ODFPlusMonitoring.Session.PrefManager;
 import com.nic.ODFPlusMonitoring.Support.MyCustomTextView;
 
 
@@ -18,10 +19,10 @@ import com.nic.ODFPlusMonitoring.Support.MyCustomTextView;
 public class MyDialog {
     public myOnClickListener myListener;
     private dbData dbData;
-//    private PrefManager prefManager;
+    private PrefManager prefManager;
 
     public MyDialog(Activity context) {
-//        prefManager         = new PrefManager(context);
+        prefManager         = new PrefManager(context);
         this.myListener = (myOnClickListener) context;
         dbData = new dbData(context);
 
@@ -63,6 +64,7 @@ public class MyDialog {
                 if(type.equals("Logout")) {
                     dbData.open();
                     dbData.deleteAll();
+                    prefManager.clearSession();
                 }
 
 

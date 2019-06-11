@@ -65,6 +65,7 @@
         android:layout_height="40dp"
         android:layout_margin="5dp"
         android:layout_marginTop="@dimen/_25sdp"
+        android:layout_below="@+id/scheduleList"
         android:layout_centerInParent="true"
         android:padding="8dp"
         android:text="Sync Data"

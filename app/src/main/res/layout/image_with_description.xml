@@ -86,14 +86,14 @@
                             <ImageView
                                 android:id="@+id/image_view_preview"
                                 android:layout_width="match_parent"
-                                android:layout_height="150dp"
-                                android:background="@drawable/camera"
+                                android:layout_height="170dp"
+                                android:background="@drawable/capture_image"
                                 android:scaleType="fitXY" />
 
                             <ImageView
                                 android:id="@+id/image_view"
                                 android:layout_width="match_parent"
-                                android:layout_height="150dp"
+                                android:layout_height="170dp"
                                 android:scaleType="fitXY"
                                 android:visibility="gone" />
 

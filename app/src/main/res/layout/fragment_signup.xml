@@ -393,7 +393,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/phone_no_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -411,6 +410,7 @@
                     customfontdemo:fontName="@string/font_circular_medium" />
 
                 <RelativeLayout
+                    android:id="@+id/phone_no_layout"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/header"
                     android:layout_marginLeft="@dimen/margin_left_20dp"
@@ -443,7 +443,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/email_id_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -461,6 +460,7 @@
                     customfontdemo:fontName="@string/font_circular_medium" />
 
                 <RelativeLayout
+                    android:id="@+id/email_id_layout"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/header"
                     android:layout_marginLeft="@dimen/margin_left_20dp"
@@ -520,7 +520,7 @@
                     android:orientation="vertical"
                     android:visibility="visible">
 
-                    <android.support.v7.widget.AppCompatAutoCompleteTextView
+                    <com.nic.ODFPlusMonitoring.Support.MyEditTextView
                         android:id="@+id/motivator_account_tv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -540,6 +540,116 @@
 
 
             </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_left_20dp"
+                android:layout_marginTop="@dimen/padding"
+                android:layout_marginRight="@dimen/margin_left_20dp"
+                android:text="Verify Your Account N0"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/_15sdp"
+                android:visibility="visible"
+                customfontdemo:fontName="@string/font_circular_medium" />
+
+            <RelativeLayout
+                android:id="@+id/verify_account_layout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/header"
+                android:layout_marginLeft="@dimen/margin_left_20dp"
+                android:layout_marginTop="@dimen/padding"
+                android:layout_marginRight="@dimen/margin_left_20dp"
+                android:background="@drawable/rectangle_box"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <com.nic.ODFPlusMonitoring.Support.MyEditTextView
+                    android:id="@+id/verify_motivator_account_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Verify Your Account No"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="15dp"
+                    android:background="@android:color/transparent"
+                    android:inputType="number"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_15sdp"
+                    android:visibility="visible"
+                    customfontdemo:fontName="@string/font_circular_book" />
+
+
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ifsc_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_left_20dp"
+                android:layout_marginTop="@dimen/padding"
+                android:layout_marginRight="@dimen/margin_left_20dp"
+                android:text="Enter IFSC Code"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/_15sdp"
+                android:visibility="visible"
+                customfontdemo:fontName="@string/font_circular_medium" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/header"
+                android:layout_marginLeft="@dimen/margin_left_20dp"
+                android:layout_marginTop="@dimen/padding"
+                android:layout_marginRight="@dimen/margin_left_20dp"
+                android:background="@drawable/rectangle_box"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <com.nic.ODFPlusMonitoring.Support.MyEditTextView
+                    android:id="@+id/motivator_ifsc_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter IFSC Code"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="15dp"
+                    android:background="@android:color/transparent"
+                    android:inputType="textPersonName"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_15sdp"
+                    android:imeOptions="actionDone"
+                    android:visibility="visible"
+                    customfontdemo:fontName="@string/font_circular_book" />
+
+                <ImageView
+                    android:id="@+id/tick"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:background="@mipmap/tick"
+                    android:focusable="true"
+                    android:visibility="gone"/>
+
+            </RelativeLayout>
+
+
+        </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/bank_layout"
@@ -569,7 +679,7 @@
                     android:orientation="vertical"
                     android:visibility="visible">
 
-                    <android.support.v7.widget.AppCompatAutoCompleteTextView
+                    <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
                         android:id="@+id/motivator_bank_tv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -618,7 +728,7 @@
                     android:orientation="vertical"
                     android:visibility="visible">
 
-                    <android.support.v7.widget.AppCompatAutoCompleteTextView
+                    <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
                         android:id="@+id/motivator_branch_tv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -639,54 +749,7 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/ifsc_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
 
-                <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_left_20dp"
-                    android:layout_marginTop="@dimen/padding"
-                    android:layout_marginRight="@dimen/margin_left_20dp"
-                    android:text="Enter IFSC Code"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/_15sdp"
-                    android:visibility="visible"
-                    customfontdemo:fontName="@string/font_circular_medium" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/header"
-                    android:layout_marginLeft="@dimen/margin_left_20dp"
-                    android:layout_marginTop="@dimen/padding"
-                    android:layout_marginRight="@dimen/margin_left_20dp"
-                    android:background="@drawable/rectangle_box"
-                    android:orientation="vertical"
-                    android:visibility="visible">
-
-                    <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
-                        android:id="@+id/motivator_ifsc_tv"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Enter IFSC Code"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerInParent="true"
-                        android:layout_marginLeft="15dp"
-                        android:background="@android:color/transparent"
-                        android:inputType="textPersonName"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/_15sdp"
-                        android:visibility="visible"
-                        customfontdemo:fontName="@string/font_circular_book" />
-
-
-                </RelativeLayout>
-
-
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

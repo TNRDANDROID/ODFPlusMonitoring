@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -19,25 +20,27 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Base64;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
@@ -89,11 +92,10 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
 
     private Button btn_register;
     private Handler handler = new Handler();
-    private MyEditTextView motivator_name, motivator_address, motivator_mobileNO, motivator_email_id, motivator_state_level_tv, motivator_position_tv;
-    private AppCompatAutoCompleteTextView motivator_bank_tv, motivator_account_tv, motivator_branch_tv;
-    private MyCustomTextView motivator_ifsc_tv;
+    private MyEditTextView motivator_name, motivator_address, motivator_mobileNO, motivator_email_id, motivator_state_level_tv, motivator_position_tv, motivator_account_tv, verify_motivator_account_tv, motivator_ifsc_tv;
+    private MyCustomTextView motivator_bank_tv, motivator_branch_tv;
     private static MyCustomTextView motivator_dob_tv;
-    private RelativeLayout dob_layout, edit_image;
+    private RelativeLayout dob_layout, edit_image, verify_account_layout, phone_no_layout, email_id_layout;
     private LinearLayout position_layout;
     private Spinner sp_block, sp_district, sp_village, sp_category;
     private PrefManager prefManager;
@@ -105,7 +107,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
     private List<ODFMonitoringListValue> BranchDetails = new ArrayList<>();
     private ProgressHUD progressHUD;
     private AutoSuggestAdapter autoSuggestAdapter;
-    private ImageView arrowImage,arrowImageUp,back_img;
+    private ImageView arrowImage, arrowImageUp, back_img, tick;
     private NestedScrollView scrollView;
     private CircleImageView profile_image,profile_image_preview;
     String pref_Block,pref_district, pref_Village;
@@ -153,18 +155,23 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         motivator_mobileNO = (MyEditTextView) findViewById(R.id.motivator_mobile_no);
         motivator_email_id = (MyEditTextView) findViewById(R.id.motivator_email_id);
         motivator_state_level_tv = (MyEditTextView) findViewById(R.id.motivator_state_level_tv);
-        motivator_account_tv = (AppCompatAutoCompleteTextView) findViewById(R.id.motivator_account_tv);
-        motivator_bank_tv = (AppCompatAutoCompleteTextView) findViewById(R.id.motivator_bank_tv);
-        motivator_branch_tv = (AppCompatAutoCompleteTextView) findViewById(R.id.motivator_branch_tv);
-        motivator_ifsc_tv = (MyCustomTextView) findViewById(R.id.motivator_ifsc_tv);
+        motivator_account_tv = (MyEditTextView) findViewById(R.id.motivator_account_tv);
+        verify_motivator_account_tv = (MyEditTextView) findViewById(R.id.verify_motivator_account_tv);
+        motivator_bank_tv = (MyCustomTextView) findViewById(R.id.motivator_bank_tv);
+        motivator_branch_tv = (MyCustomTextView) findViewById(R.id.motivator_branch_tv);
+        motivator_ifsc_tv = (MyEditTextView) findViewById(R.id.motivator_ifsc_tv);
         motivator_dob_tv = (MyCustomTextView) findViewById(R.id.motivator_dob_tv);
         motivator_position_tv = (MyEditTextView) findViewById(R.id.motivator_position_tv);
         scrollView = (NestedScrollView) findViewById(R.id.scroll_view) ;
         arrowImage = (ImageView) findViewById(R.id.arrow_image) ;
         arrowImageUp = (ImageView)findViewById(R.id.arrow_image_up) ;
+        tick = (ImageView) findViewById(R.id.tick);
         childlayout = (LinearLayout)findViewById(R.id.child_view);
         dob_layout = (RelativeLayout) findViewById(R.id.dob_layout);
         edit_image = (RelativeLayout) findViewById(R.id.edit_image);
+        verify_account_layout = (RelativeLayout) findViewById(R.id.verify_account_layout);
+        phone_no_layout = (RelativeLayout) findViewById(R.id.phone_no_layout);
+        email_id_layout = (RelativeLayout) findViewById(R.id.email_id_layout);
         position_layout = (LinearLayout) findViewById(R.id.position_layout);
         profile_image = (CircleImageView) findViewById(R.id.profile_image);
         profile_image_preview = (CircleImageView) findViewById(R.id.profile_image_preview);
@@ -174,6 +181,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         dob_layout.setOnClickListener(this);
         edit_image.setOnClickListener(this);
         back_img.setOnClickListener(this);
+        tick.setOnClickListener(this);
         btn_register.setOnClickListener(this);
 
 //        if (childlayout.getMeasuredHeight() > scrollView.getMeasuredHeight()) {
@@ -201,7 +209,6 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
 //        });
 //        getBankNameList();
 //        getBankBranchList();
-        autoCompleteApiBankName();
         sp_district.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -286,9 +293,186 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         });
         loadOfflineDistrictListDBValues();
         loadCategoryListDBValues();
+        textFieldValidation();
+    }
+
+    public void textFieldValidation() {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                motivator_account_tv.setTransformationMethod(new AsteriskPasswordTransformationMethod());
+
+            }
+        };
+        handler.postDelayed(runnable,5000);
+        verify_motivator_account_tv.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                if (!motivator_account_tv.getText().toString().equalsIgnoreCase(verify_motivator_account_tv.getText().toString())) {
+                    verify_account_layout.setBackgroundResource(R.drawable.red_rectangle_box);
+                } else {
+                    verify_account_layout.setBackgroundResource(R.drawable.rectangle_box);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!motivator_account_tv.getText().toString().equalsIgnoreCase(verify_motivator_account_tv.getText().toString())) {
+                    verify_account_layout.setBackgroundResource(R.drawable.red_rectangle_box);
+                } else {
+                    verify_account_layout.setBackgroundResource(R.drawable.rectangle_box);
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!motivator_account_tv.getText().toString().equalsIgnoreCase(verify_motivator_account_tv.getText().toString())) {
+                    verify_account_layout.setBackgroundResource(R.drawable.red_rectangle_box);
+                } else {
+                    verify_account_layout.setBackgroundResource(R.drawable.rectangle_box);
+                }
+            }
+        });
+
+
+        motivator_mobileNO.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (Utils.isValidMobile(motivator_mobileNO.getText().toString())) {
+                    phone_no_layout.setBackgroundResource(R.drawable.rectangle_box);
+                } else {
+                    phone_no_layout.setBackgroundResource(R.drawable.red_rectangle_box);
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+        });
+
+        motivator_email_id.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (Utils.isEmailValid(motivator_email_id.getText().toString())) {
+                    email_id_layout.setBackgroundResource(R.drawable.rectangle_box);
+                } else {
+                    email_id_layout.setBackgroundResource(R.drawable.red_rectangle_box);
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+        });
+
+        (motivator_ifsc_tv).setOnEditorActionListener(
+                new MyEditTextView.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                        if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                                actionId == EditorInfo.IME_ACTION_DONE ||
+                                event != null &&
+                                        event.getAction() == KeyEvent.ACTION_DOWN &&
+                                        event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                            if (event == null || !event.isShiftPressed()) {
+// the user is done typing.
+                                Log.d("ifsc_check", motivator_ifsc_tv.getText().toString());
+                                fetchBranchName(motivator_ifsc_tv.getText().toString());
+                                hide_keyboard();
+                                return true; // consume.
+                            }
+                        }
+                        return false; // pass on to other listeners.
+                    }
+                }
+        );
+        motivator_ifsc_tv.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+//You can identify which key pressed buy checking keyCode value with KeyEvent.KEYCODE_
+                if (keyCode == KeyEvent.KEYCODE_DEL) {
+//this is for backspace
+                    tick.setVisibility(View.GONE);
+                    motivator_branch_tv.setText("");
+                    motivator_bank_tv.setText("");
+                }
+                return false;
+            }
+        });
+        motivator_ifsc_tv.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                 if(!motivator_ifsc_tv.getText().toString().isEmpty()){
+                     tick.setVisibility(View.VISIBLE);
+                 }else{
+                     tick.setVisibility(View.GONE);
+                 }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+        });
 
     }
 
+    private void hide_keyboard() {
+        InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(motivator_ifsc_tv.getWindowToken(), 0);
+    }
+
+    public void fetchBranchName(String ifsc_code) {
+        String branchNameSql = "SELECT * FROM " + BANKLIST_BRANCH_TABLE_NAME + " WHERE ifsc = '" + ifsc_code + "'";
+        Log.d("branchNameSql", "" + branchNameSql);
+        Cursor branchNameList = getRawEvents(branchNameSql, null);
+        if (branchNameList.getCount() > 0) {
+            if (branchNameList.moveToFirst()) {
+                do {
+                    String branch = branchNameList.getString(branchNameList.getColumnIndexOrThrow(AppConstant.BRANCH_NAME));
+                    String branch_id = branchNameList.getString(branchNameList.getColumnIndexOrThrow(AppConstant.BRANCH_ID));
+                    Integer bank_id = branchNameList.getInt(branchNameList.getColumnIndexOrThrow(AppConstant.BANK_ID));
+                    prefManager.setKeyAutocompleteSelectedBranchID(Integer.valueOf(branch_id));
+                    prefManager.setKeyAutocompleteSelectedIfscCode(ifsc_code);
+                    prefManager.setKeyAutocompleteSelectedBankID(bank_id);
+                    motivator_branch_tv.setText(branch);
+                    fetchBankName(bank_id);
+                    Log.d("branch", "" + branch);
+                } while (branchNameList.moveToNext());
+            }
+        }
+    }
+
+    public void fetchBankName(Integer bank_id) {
+        String bankNameSql = "SELECT * FROM " + BANKLIST_TABLE_NAME + " WHERE bank_id = " + bank_id;
+        Log.d("bankNameSql", "" + bankNameSql);
+        Cursor bankNameList = getRawEvents(bankNameSql, null);
+        if (bankNameList.getCount() > 0) {
+            if (bankNameList.moveToFirst()) {
+                do {
+                    String bank_name = bankNameList.getString(bankNameList.getColumnIndexOrThrow(AppConstant.BANK_NAME));
+                    motivator_bank_tv.setText(bank_name);
+                    Log.d("bank_name", "" + bank_name);
+                } while (bankNameList.moveToNext());
+            }
+        }
+    }
     public void loadOfflineDistrictListDBValues() {
         Cursor DistrictList = getRawEvents("Select * from " + DISTRICT_TABLE_NAME, null);
         District.clear();
@@ -408,112 +592,12 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
             case R.id.back_img:
                 onBackPress();
                 break;
+            case R.id.tick:
+                fetchBranchName(motivator_ifsc_tv.getText().toString());
+                hide_keyboard();
+                break;
         }
     }
-
-    public void autoCompleteApiBankName() {
-        autoSuggestAdapter = new AutoSuggestAdapter(this,
-                android.R.layout.simple_dropdown_item_1line);
-        motivator_bank_tv.setThreshold(1);
-        motivator_bank_tv.setOnItemClickListener(
-                new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view,
-                                            final int position, long id) {
-                        String input = motivator_bank_tv.getText().toString();
-                        prefManager.setKeyAutocompleteSelectedBankName(input);
-                        Log.d("ODF", "" + (motivator_bank_tv.getText().toString()));
-                        //     Log.d("BANK_ID",""+BankDetails.get(position).getBank_Id());
-
-//                        String selection = (String) parent.getItemAtPosition(position);
-//                        int pos = -1;
-
-                        for (int i = 0; i < array.size(); i++) {
-                            Log.d("array",String.valueOf(array.get(i)));
-                            Log.d("arraysize",String.valueOf(array.size()));
-                            Log.d("arraylrngth",String.valueOf(BankDetails.size()));
-                            Log.d("arraylrngth",String.valueOf(BankDetails.get(i).getBank_Name()));
-                            getId(BankDetails.get(i).getBank_Id());
-                            break;
-                        }
-                    }
-                });
-
-        motivator_bank_tv.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int
-                    count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-                brancharray.clear();
-                motivator_branch_tv.setText("");
-                loadBankName(motivator_bank_tv.getText().toString());
-
-//            handler.removeMessages(TRIGGER_AUTO_COMPLETE);
-//            handler.sendEmptyMessageDelayed(TRIGGER_AUTO_COMPLETE,
-//                    AUTO_COMPLETE_DELAY);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-    }
-
-    public void getId(int id){
-        Log.d("branch_id",""+id);
-        prefManager.setKeyAutocompleteSelectedBankID(id);
-        autoCompleteApiBankBranchName();
-    }
-
-    public void autoCompleteApiBankBranchName() {
-        autoSuggestAdapter = new AutoSuggestAdapter(this,
-                android.R.layout.simple_dropdown_item_1line);
-        motivator_branch_tv.setThreshold(1);
-        motivator_branch_tv.setOnItemClickListener(
-                new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view,
-                                            int position, long id) {
-
-                        for (int i = 0; i < brancharray.size(); i++) {
-                            Log.d("arraylrngth",String.valueOf(BranchDetails.get(i).getIFSC_Code()));
-                            motivator_ifsc_tv.setText(BranchDetails.get(i).getIFSC_Code());
-                            prefManager.setKeyAutocompleteSelectedBranchID(BranchDetails.get(i).getBranch_Id());
-                            prefManager.setKeyAutocompleteSelectedIfscCode((BranchDetails.get(i).getIFSC_Code()));
-                            break;
-                        }
-                    }
-                });
-
-        motivator_branch_tv.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int
-                    count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-                brancharray.clear();
-                motivator_ifsc_tv.setText("");
-                loadBankBranchName(motivator_branch_tv.getText().toString());
-//            handler.removeMessages(TRIGGER_AUTO_COMPLETE);
-//            handler.sendEmptyMessageDelayed(TRIGGER_AUTO_COMPLETE,
-//                    AUTO_COMPLETE_DELAY);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-    }
-
 
     //The method for opening the registration page and another processes or checks for registering
     private void validateMotivatorDetails() {
@@ -528,38 +612,46 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                                         if (!motivator_email_id.getText().toString().isEmpty()) {
                                             if (Utils.isEmailValid(motivator_email_id.getText().toString())) {
                                                 if (!motivator_account_tv.getText().toString().isEmpty()) {
-                                                    if (!motivator_bank_tv.getText().toString().isEmpty()) {
-                                                        if (!motivator_branch_tv.getText().toString().isEmpty()) {
-                                                            if (!motivator_ifsc_tv.getText().toString().isEmpty()) {
-                                                                if (!motivator_dob_tv.getText().toString().isEmpty()) {
-                                                                    if (!motivator_state_level_tv.getText().toString().isEmpty()) {
-                                                                        if (!"Select Category".equalsIgnoreCase(Category.get(sp_category.getSelectedItemPosition()).getMotivatorCategoryName())) {
-                                                                            if ((prefManager.getSpinnerSelectedCategoryName()).equalsIgnoreCase("others")) {
-                                                                                if (!motivator_position_tv.getText().toString().isEmpty()) {
-                                                                                    signUP();
+                                                    if (!verify_motivator_account_tv.getText().toString().isEmpty()) {
+                                                        if (motivator_account_tv.getText().toString().equalsIgnoreCase(verify_motivator_account_tv.getText().toString())) {
+                                                            if (!motivator_bank_tv.getText().toString().isEmpty()) {
+                                                                if (!motivator_branch_tv.getText().toString().isEmpty()) {
+                                                                    if (!motivator_ifsc_tv.getText().toString().isEmpty()) {
+                                                                        if (!motivator_dob_tv.getText().toString().isEmpty()) {
+                                                                            if (!motivator_state_level_tv.getText().toString().isEmpty()) {
+                                                                                if (!"Select Category".equalsIgnoreCase(Category.get(sp_category.getSelectedItemPosition()).getMotivatorCategoryName())) {
+                                                                                    if ((prefManager.getSpinnerSelectedCategoryName()).equalsIgnoreCase("others")) {
+                                                                                        if (!motivator_position_tv.getText().toString().isEmpty()) {
+                                                                                            signUP();
+                                                                                        } else {
+                                                                                            Utils.showAlert(this, "Enter the Position ");
+                                                                                        }
+                                                                                    } else {
+                                                                                        signUP();
+                                                                                    }
                                                                                 } else {
-                                                                                    Utils.showAlert(this, "Enter the Position ");
+                                                                                    Utils.showAlert(this, "Select the Category ");
                                                                                 }
                                                                             } else {
-                                                                                signUP();
+                                                                                Utils.showAlert(this, "Enter the No Of State Level Training Attended ");
                                                                             }
                                                                         } else {
-                                                                            Utils.showAlert(this, "Select the Category ");
+                                                                            Utils.showAlert(this, "Select the Date Of Birth!");
                                                                         }
                                                                     } else {
-                                                                        Utils.showAlert(this, "Enter the No Of State Level Training Attended ");
+                                                                        Utils.showAlert(this, "Enter the IFSC Code!");
                                                                     }
                                                                 } else {
-                                                                    Utils.showAlert(this, "Select the Date Of Birth!");
+                                                                    Utils.showAlert(this, "Select the Branch Name!");
                                                                 }
                                                             } else {
-                                                                Utils.showAlert(this, "Enter the IFSC Code!");
+                                                                Utils.showAlert(this, "Select the Bank Name!");
                                                             }
                                                         } else {
-                                                            Utils.showAlert(this, "Select the Branch Name!");
+                                                            Utils.showAlert(RegisterScreen.this, "Account No and Verify Account No is not Same!");
                                                         }
                                                     } else {
-                                                        Utils.showAlert(this, "Select the Bank Name!");
+                                                        Utils.showAlert(this, "Enter the Verify Account No!");
                                                     }
                                                 } else {
                                                     Utils.showAlert(this, "Enter the Account No!");
@@ -596,66 +688,34 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         }
     }
 
+    public class AsteriskPasswordTransformationMethod extends PasswordTransformationMethod {
+        @Override
+        public CharSequence getTransformation(CharSequence source, View view) {
+            return new PasswordCharSequence(source);
+        }
 
+        private class PasswordCharSequence implements CharSequence {
+            private CharSequence mSource;
 
-    public void loadBankName(String text) {
-        array.clear();
-        String like_query = "SELECT * FROM " + BANKLIST_TABLE_NAME + " where bank_name LIKE '" + text + "%'";
-        Log.d("AutoSearchQuery", "" + like_query);
-        Cursor BankList = getRawEvents(like_query, null);
-        BankDetails.clear();
-        if (BankList.getCount() > 0) {
-            if (BankList.moveToFirst()) {
-                do {
-                    ODFMonitoringListValue odfMonitoringListValue = new ODFMonitoringListValue();
-                    Integer bank_id = BankList.getInt(BankList.getColumnIndexOrThrow(AppConstant.BANK_ID));
-                    String omc_name = BankList.getString(BankList.getColumnIndexOrThrow(AppConstant.OMC_NAME));
-                    String bank_name = BankList.getString(BankList.getColumnIndexOrThrow(AppConstant.BANK_NAME));
-                    odfMonitoringListValue.setBank_Id(bank_id);
-                    odfMonitoringListValue.setOMC_Name(omc_name);
-                    odfMonitoringListValue.setBank_Name(bank_name);
-                    array.add(bank_name);
-                    BankDetails.add(odfMonitoringListValue);
-                } while (BankList.moveToNext());
+            public PasswordCharSequence(CharSequence source) {
+                mSource = source; // Store char sequence
+            }
+
+            public char charAt(int index) {
+                return '*'; // This is the important part
+            }
+
+            public int length() {
+                return mSource.length(); // Return default
+            }
+
+            public CharSequence subSequence(int start, int end) {
+                return mSource.subSequence(start, end); // Return default
             }
         }
-        autoSuggestAdapter.setData(array);
-        autoSuggestAdapter.notifyDataSetChanged();
-        motivator_bank_tv.setAdapter(autoSuggestAdapter);
     }
 
-    public void loadBankBranchName(String text) {
-        Integer  selectedBank_id = prefManager.getKeyAutocompleteSelectedBankID();
-        String like_query = "SELECT * FROM " + BANKLIST_BRANCH_TABLE_NAME + " where bank_id = "+selectedBank_id+" and branch LIKE '" + text + "%'";
-        Log.d("AutoSearchId", "" + like_query);
-        Cursor BankList = getRawEvents(like_query, null);
-        brancharray.clear();
-        BranchDetails.clear();
-        if (BankList.getCount() > 0) {
-            if (BankList.moveToFirst()) {
-                do {
-                    ODFMonitoringListValue odfMonitoringListValue = new ODFMonitoringListValue();
-                    Integer bank_id  = BankList.getInt(BankList
-                            .getColumnIndexOrThrow(AppConstant.BANK_ID));
-                    Integer branch_id  =BankList.getInt(BankList
-                            .getColumnIndexOrThrow(AppConstant.BRANCH_ID));
-                    String branch_name  =   BankList.getString(BankList
-                            .getColumnIndexOrThrow(AppConstant.BRANCH_NAME));
-                    String ifsc_code =   BankList.getString(BankList
-                            .getColumnIndexOrThrow(AppConstant.IFSC_CODE));
-                    odfMonitoringListValue.setBank_Id(bank_id);
-                    odfMonitoringListValue.setBranch_Id(branch_id);
-                    odfMonitoringListValue.setBranch_Name(branch_name);
-                    odfMonitoringListValue.setIFSC_Code(ifsc_code);
-                    brancharray.add(branch_name);
-                    BranchDetails.add(odfMonitoringListValue);
-                } while (BankList.moveToNext());
-            }
-        }
-        autoSuggestAdapter.setData(brancharray);
-        autoSuggestAdapter.notifyDataSetChanged();
-        motivator_branch_tv.setAdapter(autoSuggestAdapter);
-    }
+
 
     public Cursor getRawEvents(String sql, String string) {
         Cursor cursor = db.rawQuery(sql, null);
@@ -893,7 +953,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         dataSet.put(AppConstant.BLOCK_CODE, prefManager.getKeySpinnerSelectedBlockcode());
         dataSet.put(AppConstant.PV_CODE, prefManager.getKeySpinnerSelectedPVcode());
         dataSet.put(AppConstant.KEY_MOTIVATOR_PHOTO, image_str.trim());
-        dataSet.put(AppConstant.KEY_REGISTER_ACC_NO, motivator_account_tv.getText().toString());
+        dataSet.put(AppConstant.KEY_REGISTER_ACC_NO, verify_motivator_account_tv.getText().toString());
         dataSet.put(AppConstant.BANK_ID, prefManager.getKeyAutocompleteSelectedBankID());
         dataSet.put(AppConstant.BRANCH_ID, prefManager.getKeyAutocompleteSelectedBranchID());
         dataSet.put(AppConstant.KEY_REGISTER_IFSC_CODE, prefManager.getKeyAutocompleteSelectedIfscCode());
