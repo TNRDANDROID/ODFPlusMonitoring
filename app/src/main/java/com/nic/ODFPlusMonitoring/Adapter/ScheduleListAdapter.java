@@ -4,10 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.ShapeDrawable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -67,6 +63,7 @@ public class ScheduleListAdapter extends RecyclerView.Adapter<ScheduleListAdapte
             schedule = (LinearLayout)itemView.findViewById(R.id.schedule);
             vertical_tv = (LinearLayout) itemView.findViewById(R.id.vertical_tv);
             district_card = (CardView) itemView.findViewById(R.id.district_card);
+            schedule_tv.setVisibility(View.GONE);
         }
 
 
@@ -80,16 +77,16 @@ public class ScheduleListAdapter extends RecyclerView.Adapter<ScheduleListAdapte
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
-//        if (position % 2 == 1) {
-//            holder.district_card.setBackgroundColor(Color.parseColor("#C900BFA5"));
-//            holder.vertical_tv.setBackgroundResource(R.drawable.blue_background);
-//            holder.schedule_tv.setBackgroundResource(R.drawable.white_background);
-//
-//        } else {
-//            holder.district_card.setBackgroundColor(Color.parseColor("#C900BFA5"));
-//            holder.vertical_tv.setBackgroundResource(R.drawable.blue_background);
-//            holder.schedule_tv.setBackgroundResource(R.drawable.white_background);
-//        }
+        if (position % 2 == 1) {
+            holder.vertical_tv.setBackgroundResource(R.drawable.gradient_diff);
+            holder.district_card.setBackgroundResource(R.drawable.gradient_blue);
+
+
+        } else {
+            holder.vertical_tv.setBackgroundResource(R.drawable.gradient_pink);
+            holder.district_card.setBackgroundResource(R.drawable.gradient);
+
+        }
 //        int remainder = holder.getAdapterPosition() % holder.androidColors.length;
 //        mView.setCardBackgroundColor(Color.parseColor(holder.androidColors.get(remainder)));
 //        int randomAndroidColor = holder.androidColors[new Random().nextInt(holder.androidColors.length)];
@@ -101,14 +98,14 @@ public class ScheduleListAdapter extends RecyclerView.Adapter<ScheduleListAdapte
 //        } else if (background instanceof ColorDrawable) {
 //            ((ColorDrawable)background).setColor(randomAndroidColor);
 //
-        int randomAndroidColor = holder.androidColors[new Random().nextInt(holder.androidColors.length)];
-        holder.district_card.setBackgroundColor(randomAndroidColor);
+//        int randomAndroidColor = holder.androidColors[new Random().nextInt(holder.androidColors.length)];
+//        holder.district_card.setBackgroundColor(randomAndroidColor);
 
         String from_date = scheduleListValues.get(position).getScheduleFromDate();
         String to_date = scheduleListValues.get(position).getScheduletoDate();
 
 
-        holder.schedule_tv.setText("Schedule "+scheduleListValues.get(position).getScheduleId());
+//        holder.schedule_tv.setText("Schedule "+scheduleListValues.get(position).getScheduleId());
         holder.schedule_description_tv.setText(scheduleListValues.get(position).getScheduleDescription());
         holder.from_date_tv.setText(Utils.formatDate(from_date));
         holder.to_date_tv.setText(Utils.formatDate(to_date));

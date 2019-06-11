@@ -5,4 +5,9 @@
         android:centerColor="#fe6732"
         android:endColor="#fe2a5c"
         android:angle="360"/>
+    <corners
+        android:bottomLeftRadius="5dp"
+        android:bottomRightRadius="5dp"
+        android:topLeftRadius="5dp"
+        android:topRightRadius="5dp" />
 </shape>

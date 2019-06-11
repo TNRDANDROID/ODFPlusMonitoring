@@ -26,7 +26,7 @@
                 android:layout_marginRight="15dp"
 
                 android:layout_marginBottom="15dp"
-
+                card_view:cardCornerRadius="7dp"
                 card_view:cardBackgroundColor="#C900BFA5"
                 card_view:cardElevation="5dp">
 
@@ -45,7 +45,7 @@
                             android:id="@+id/vertical_tv"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:background="@drawable/blue_background"
+                            android:background="@drawable/gradient_pink"
                             android:gravity="center"
                             android:orientation="vertical">
 
@@ -136,7 +136,7 @@
                                         android:padding="10dp"
                                         android:text="Clean India"
                                         android:textAlignment="inherit"
-                                        android:textColor="#000"
+                                        android:textColor="@android:color/white"
                                         android:textSize="18sp"
                                         customfontdemo:fontName="@string/font_circular_book" />
                                 </LinearLayout>
