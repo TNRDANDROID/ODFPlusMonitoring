@@ -461,6 +461,9 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                         activityPhotosValue.setLongitude(jsonArray.getJSONObject(i).getString("location_long"));
                         activityPhotosValue.setType(jsonArray.getJSONObject(i).getString("activity_type"));
                         activityPhotosValue.setImageRemark(jsonArray.getJSONObject(i).getString(AppConstant.KEY_IMAGE_REMARK));
+                        activityPhotosValue.setDistictCode(jsonArray.getJSONObject(i).getInt(AppConstant.DISTRICT_CODE));
+                        activityPhotosValue.setBlockCode(jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE));
+                        activityPhotosValue.setPvCode(jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE));
 
                         byte[] decodedString = Base64.decode(jsonArray.getJSONObject(i).getString(AppConstant.KEY_IMAGE), Base64.DEFAULT);
                         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);

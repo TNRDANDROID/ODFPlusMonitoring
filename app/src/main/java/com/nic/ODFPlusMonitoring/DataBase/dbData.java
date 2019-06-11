@@ -511,6 +511,9 @@ public class dbData {
         values.put(AppConstant.KEY_LONGITUDE,odfMonitoringListValue.getLongitude());
         values.put(AppConstant.KEY_TYPE,odfMonitoringListValue.getType());
         values.put(AppConstant.KEY_IMAGE_REMARK,odfMonitoringListValue.getImageRemark());
+        values.put(AppConstant.DISTRICT_CODE,odfMonitoringListValue.getDistictCode());
+        values.put(AppConstant.BLOCK_CODE,odfMonitoringListValue.getBlockCode());
+        values.put(AppConstant.PV_CODE,odfMonitoringListValue.getPvCode());
 
         Bitmap bitmap = odfMonitoringListValue.getImage();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -525,12 +528,12 @@ public class dbData {
         return odfMonitoringListValue;
     }
 
-    public ArrayList<ODFMonitoringListValue> selectActivityPhoto(String schedule_id,String schedule_activity_id) {
+    public ArrayList<ODFMonitoringListValue> selectActivityPhoto(String dcode,String bcode, String pvcode,String schedule_id,String schedule_activity_id) {
 
         ArrayList<ODFMonitoringListValue> cards = new ArrayList<>();
         Cursor cursor = null;
-        String selection = "schedule_id = ? and schedule_activity_id = ?";
-        String[] selectionArgs = new String[]{schedule_id,schedule_activity_id};
+        String selection = "dcode = ? and bcode = ? and pvcode = ? and schedule_id = ? and schedule_activity_id = ?";
+        String[] selectionArgs = new String[]{dcode,bcode,pvcode,schedule_id,schedule_activity_id};
 
         try {
             cursor = db.query(DBHelper.SCHEDULED_ACTIVITY_PHOTOS,
@@ -555,6 +558,12 @@ public class dbData {
                             .getColumnIndexOrThrow(AppConstant.KEY_IMAGE_REMARK)));
                     card.setType(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_TYPE)));
+                    card.setDistictCode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.DISTRICT_CODE)));
+                    card.setBlockCode(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.BLOCK_CODE)));
+                    card.setPvCode(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.PV_CODE)));
 
                     card.setImage(decodedByte);
 

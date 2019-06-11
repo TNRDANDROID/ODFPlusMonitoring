@@ -159,7 +159,7 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
             }
         });
         dbData.open();
-        ArrayList<ODFMonitoringListValue> activityImageOnline = dbData.selectActivityPhoto(schedule_id,schedule_activity_id);
+        ArrayList<ODFMonitoringListValue> activityImageOnline = dbData.selectActivityPhoto(dcode,bcode,pvcode,schedule_id,schedule_activity_id);
 
         if(activityImageOnline.size() > 0) {
             holder.view_online_images.setVisibility(View.VISIBLE);
