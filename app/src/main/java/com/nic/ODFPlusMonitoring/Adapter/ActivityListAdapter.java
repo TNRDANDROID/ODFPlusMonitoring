@@ -1,6 +1,7 @@
 package com.nic.ODFPlusMonitoring.Adapter;
 
 import android.app.Activity;
+import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -103,12 +104,12 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
                             Utils.showAlert((Activity) context,"Already Captured");
                         }
                         else {
-                            cameraScreen(position,"Start");
+                            cameraScreen(position,"Start","1");
                         }
                     }
                 }
                 else {
-                    cameraScreen(position,"Start");
+                    cameraScreen(position,"Start","1");
                 }
 
 
@@ -129,12 +130,12 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
                             Utils.showAlert((Activity) context,"Already Captured");
                         }
                         else {
-                            cameraScreen(position,"End");
+                            cameraScreen(position,"End","1");
                         }
                     }
                 }
                 else {
-                    cameraScreen(position,"End");
+                    cameraScreen(position,"End","1");
                 }
             }
         });
@@ -176,10 +177,28 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
             }
         });
 
+        final Integer no_of_photos = activityListValues.get(position).getNoOfPhotos();
+
+        if(no_of_photos > 2) {
+            holder.multiple_photo_layout.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.multiple_photo_layout.setVisibility(View.GONE);
+        }
+
         holder.multiple_photo_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cameraScreen(position,"Start");
+
+                ArrayList<ODFMonitoringListValue> activityImage = dbData.selectImageActivity(dcode,bcode,pvcode,schedule_id,activity_id,"Multiple");
+
+                if(activityImage.size() > 0 && activityImage.size() == (no_of_photos - 2)) {
+                    Utils.showAlert((Activity) context,"Limit Exceed");
+                }
+                else {
+                    cameraScreen(position,"Multiple",String.valueOf(activityImage.size()+1));
+                }
+
             }
         });
 
@@ -206,10 +225,11 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
         return activityListValues.size();
     }
 
-    public void cameraScreen(int pos,String type){
+    public void cameraScreen(int pos,String type,String serial_number){
         Activity activity = (Activity) context;
         Intent intent = new Intent(context,CameraScreen.class);
         intent.putExtra(AppConstant.KEY_TYPE, type);
+        intent.putExtra(AppConstant.KEY_SERIAL_NUMBER, serial_number);
         intent.putExtra(AppConstant.KEY_ACTIVITY_ID, String.valueOf(activityListValues.get(pos).getActivityId()));
         intent.putExtra(AppConstant.KEY_SCHEDULE_ID, String.valueOf(activityListValues.get(pos).getScheduleId()));
         activity.startActivity(intent);

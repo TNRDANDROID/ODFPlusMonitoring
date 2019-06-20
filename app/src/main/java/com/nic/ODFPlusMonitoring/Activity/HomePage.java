@@ -154,6 +154,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                         activityJson.put(AppConstant.KEY_TYPE, saveActivityLists.get(i).getType());
                         activityJson.put(AppConstant.KEY_DATE_TIME, saveActivityLists.get(i).getDateTime());
                         activityJson.put(AppConstant.KEY_IMAGE_REMARK, saveActivityLists.get(i).getImageRemark());
+                        activityJson.put(AppConstant.KEY_SERIAL_NUMBER, saveActivityLists.get(i).getSerialNo());
 
                         Bitmap bitmap = saveActivityLists.get(i).getImage();
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -378,8 +379,8 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                     JSONArray activityArray = jsonArray.getJSONObject(i).getJSONArray(AppConstant.KEY_T_SCHEDULE_ACTIVITY);
                     new InsertScheduleActivityTask().execute(activityArray);
 
-                    JSONArray photosArray = jsonArray.getJSONObject(i).getJSONArray(AppConstant.KEY_T_SCHEDULE_ACTIVITY_PHOTOS);
-                    new InsertActivityPhotosTask().execute(photosArray);
+//                    JSONArray photosArray = jsonArray.getJSONObject(i).getJSONArray(AppConstant.KEY_T_SCHEDULE_ACTIVITY_PHOTOS);
+//                    new InsertActivityPhotosTask().execute(photosArray);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -433,6 +434,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                         scheduleActivityValue.setActivityId(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_ACTIVITY_ID));
                         scheduleActivityValue.setActivityName(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ACTIVITY_NAME));
                         scheduleActivityValue.setPlaceOfActivity(jsonArray.getJSONObject(i).getString(AppConstant.KEY_PLACE_OF_ACTIVITY));
+                        scheduleActivityValue.setNoOfPhotos(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_NO_OF_PHOTOS));
 
                         dbData.insertScheduleActivity(scheduleActivityValue);
                     } catch (JSONException e) {

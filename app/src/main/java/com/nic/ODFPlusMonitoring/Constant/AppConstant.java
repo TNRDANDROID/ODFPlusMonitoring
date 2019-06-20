@@ -95,12 +95,14 @@ public class AppConstant {
     public static String KEY_ACTIVITY_ID = "activity_id";
     public static String KEY_PLACE_OF_ACTIVITY = "place_of_activity";
     public static String KEY_ACTIVITY_NAME = "activity_name";
+    public static String KEY_NO_OF_PHOTOS = "no_of_photos";
     public static String KEY_TYPE = "type";
     public static String KEY_LATITUDE = "lat";
     public static String KEY_LONGITUDE = "long";
     public static String KEY_IMAGE = "image";
     public static String KEY_IMAGE_REMARK = "remark";
     public static String KEY_DATE_TIME = "datetime";
+    public static String KEY_SERIAL_NUMBER = "serial_number";
 
     public static String KEY_TRACK_DATA = "track_data";
     public static String KEY_ACTIVITY_IMAGE_SAVE = "activity_image_save";

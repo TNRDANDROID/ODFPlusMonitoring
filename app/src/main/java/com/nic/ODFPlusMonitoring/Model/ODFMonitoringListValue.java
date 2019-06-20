@@ -51,6 +51,8 @@ public class ODFMonitoringListValue {
     private Integer ActivityId;
     private String ActivityName;
     private String placeOfActivity;
+    private Integer noOfPhotos;
+    private Integer serialNo;
 
     private String type;
     private String imageRemark;
@@ -110,6 +112,22 @@ public class ODFMonitoringListValue {
 
     public void setPlaceOfActivity(String placeOfActivity) {
         this.placeOfActivity = placeOfActivity;
+    }
+
+    public Integer getNoOfPhotos() {
+        return noOfPhotos;
+    }
+
+    public void setNoOfPhotos(Integer noOfPhotos) {
+        this.noOfPhotos = noOfPhotos;
+    }
+
+    public Integer getSerialNo() {
+        return serialNo;
+    }
+
+    public void setSerialNo(Integer serialNo) {
+        this.serialNo = serialNo;
     }
 
     public Integer getVillageLinkId() {

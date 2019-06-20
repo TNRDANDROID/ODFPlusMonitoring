@@ -468,6 +468,8 @@ public class dbData {
                             .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_NAME)));
                     card.setPlaceOfActivity(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_PLACE_OF_ACTIVITY)));
+                    card.setNoOfPhotos(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_NO_OF_PHOTOS)));
 
                     cards.add(card);
                 }
@@ -490,6 +492,7 @@ public class dbData {
         values.put(AppConstant.KEY_ACTIVITY_ID,odfMonitoringListValue.getActivityId());
         values.put(AppConstant.KEY_ACTIVITY_NAME,odfMonitoringListValue.getActivityName());
         values.put(AppConstant.KEY_PLACE_OF_ACTIVITY,odfMonitoringListValue.getPlaceOfActivity());
+        values.put(AppConstant.KEY_NO_OF_PHOTOS,odfMonitoringListValue.getNoOfPhotos());
 
         long id = db.insert(DBHelper.SCHEDULED_ACTIVITY,null,values);
         Log.d("Inserted_id_sche_Activ",String.valueOf(id));
@@ -626,6 +629,8 @@ public class dbData {
                             .getColumnIndexOrThrow(AppConstant.KEY_DATE_TIME)));
                     card.setImageRemark(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_IMAGE_REMARK)));
+                    card.setSerialNo(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_SERIAL_NUMBER)));
                     card.setImage(decodedByte);
 
                     cards.add(card);
