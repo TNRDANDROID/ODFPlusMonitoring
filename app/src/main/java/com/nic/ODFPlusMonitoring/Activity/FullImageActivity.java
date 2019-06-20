@@ -8,8 +8,10 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
@@ -22,6 +24,7 @@ import com.nic.ODFPlusMonitoring.Adapter.FullImageAdapter;
 import com.nic.ODFPlusMonitoring.Adapter.ScheduleListAdapter;
 import com.nic.ODFPlusMonitoring.Constant.AppConstant;
 import com.nic.ODFPlusMonitoring.DataBase.dbData;
+import com.nic.ODFPlusMonitoring.Fragment.SlideshowDialogFragment;
 import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
@@ -56,7 +59,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         home_img.setOnClickListener(this);
 
 
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getApplicationContext(),2);
         image_preview_recyclerview.setLayoutManager(mLayoutManager);
         image_preview_recyclerview.setItemAnimator(new DefaultItemAnimator());
         image_preview_recyclerview.setHasFixedSize(true);
@@ -111,10 +114,28 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         }
 
         @Override
-        protected void onPostExecute(ArrayList<ODFMonitoringListValue> imageList) {
+        protected void onPostExecute(final ArrayList<ODFMonitoringListValue> imageList) {
             super.onPostExecute(imageList);
             fullImageAdapter = new FullImageAdapter(FullImageActivity.this,
                     imageList, dbData);
+            image_preview_recyclerview.addOnItemTouchListener(new FullImageAdapter.RecyclerTouchListener(getApplicationContext(), image_preview_recyclerview, new FullImageAdapter.ClickListener() {
+                @Override
+                public void onClick(View view, int position) {
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("images", imageList);
+                    bundle.putInt("position", position);
+
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    SlideshowDialogFragment newFragment = SlideshowDialogFragment.newInstance();
+                    newFragment.setArguments(bundle);
+                    newFragment.show(ft, "slideshow");
+                }
+
+                @Override
+                public void onLongClick(View view, int position) {
+
+                }
+            }));
             image_preview_recyclerview.setAdapter(fullImageAdapter);
         }
     }
