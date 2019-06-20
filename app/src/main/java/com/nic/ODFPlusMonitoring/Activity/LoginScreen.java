@@ -18,6 +18,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
@@ -50,11 +51,12 @@ import java.util.Map;
 
 public class LoginScreen extends AppCompatActivity implements View.OnClickListener, Api.ServerResponseListener {
 
-    private Button btn_sign_in,btn_sign_up;
+    private Button btn_sign_in;
     private String name, pass, randString;
 
     private MyEditTextView userName;
     private MyEditTextView passwordEditText;
+    private LinearLayout sign_up;
     private int setPType;
     private ImageView redEye;
     public static DBHelper dbHelper;
@@ -89,11 +91,11 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         userName = (MyEditTextView) findViewById(R.id.user_name);
         redEye = (ImageView) findViewById(R.id.red_eye);
         btn_sign_in = (Button) findViewById(R.id.btn_sign_in);
-        btn_sign_up = (Button) findViewById(R.id.btn_sign_up);
+        sign_up = (LinearLayout) findViewById(R.id.sign_up);
         passwordEditText = (MyEditTextView) findViewById(R.id.passwordEditText);
 
         btn_sign_in.setOnClickListener(this);
-        btn_sign_up.setOnClickListener(this);
+        sign_up.setOnClickListener(this);
 
         passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
@@ -149,7 +151,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             case R.id.btn_sign_in:
                 checkLoginScreen();
                 break;
-            case R.id.btn_sign_up:
+            case R.id.sign_up:
                 ClickSignUp();
                 break;
             case R.id.red_eye:

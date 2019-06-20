@@ -60,7 +60,7 @@ public class FullImageAdapter extends RecyclerView.Adapter<FullImageAdapter.MyVi
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
         holder.description.setText(imagePreviewlistvalues.get(position).getImageRemark());
         holder.preview_Full_imageview.setImageBitmap(imagePreviewlistvalues.get(position).getImage());
-        holder.title.setText(imagePreviewlistvalues.get(position).getType()+"Activity");
+        holder.title.setText(imagePreviewlistvalues.get(position).getType()+" Activity");
 
 
 

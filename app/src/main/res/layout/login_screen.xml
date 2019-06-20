@@ -139,40 +139,65 @@ android:layout_marginTop="@dimen/_100sdp"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginLeft="@dimen/margin"
                     android:layout_marginRight="@dimen/margin"
-                    android:background="@drawable/add_button"
+                    android:background="@drawable/rectangle_box"
                     android:text="Sign in"
                     android:clickable="true"
-                    android:textAllCaps="false"
-                    android:textColor="@android:color/white"
-                    android:textSize="@dimen/menu_title_size" />
+                    android:textAllCaps="true"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_12sdp"
+                    />
 
-                <Button
-                    android:id="@+id/btn_sign_up"
-                    android:layout_width="120dp"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginLeft="@dimen/margin"
-                    android:layout_marginRight="@dimen/margin"
-                    android:background="@drawable/add_button_new"
-                    android:text="Sign up"
-                    android:clickable="true"
-                    android:textAllCaps="false"
-                    android:textColor="@android:color/white"
-                    android:textSize="@dimen/menu_title_size" />
+
 
 
             </LinearLayout>
 
-            <ImageView
-                android:layout_width="170dp"
-                android:layout_height="13dp"
+
+            <LinearLayout
+                android:id="@+id/sign_up"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:orientation="horizontal">
+
+            <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="@dimen/_13sdp"
+                android:text="New User ?"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/_15sdp"
+                android:textStyle="bold" />
+                <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="-26dp"
+                    android:layout_gravity="center"
+                    android:padding="@dimen/_13sdp"
+                    android:text="Register !"
+                    android:textAllCaps="true"
+                    android:textAlignment="center"
+                    android:textColor="#E00201"
+                    android:textSize="@dimen/_15sdp"
+                    android:textStyle="bold" />
+            <!--<Button
+                android:id="@+id/btn_sign_up"
+                android:layout_width="120dp"
+                android:layout_height="35dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="@dimen/margin"
                 android:layout_marginRight="@dimen/margin"
-                android:text="Sign in"
+                android:background="@drawable/add_button_new"
+                android:text="Sign up"
+                android:clickable="true"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"
-                android:textSize="@dimen/menu_title_size" />
+                android:textSize="@dimen/menu_title_size" />-->
+            </LinearLayout>
         </LinearLayout>
 
 

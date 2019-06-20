@@ -252,6 +252,7 @@
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
+            android:visibility="gone"
             customfontdemo:fontName="@string/font_circular_medium" />
 
 

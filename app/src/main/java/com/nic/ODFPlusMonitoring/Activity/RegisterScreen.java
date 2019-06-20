@@ -44,6 +44,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.bumptech.glide.util.Util;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -456,6 +457,8 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                     Log.d("branch", "" + branch);
                 } while (branchNameList.moveToNext());
             }
+        }else{
+            Utils.showAlert(this,"Enter the valid IFSC!");
         }
     }
 

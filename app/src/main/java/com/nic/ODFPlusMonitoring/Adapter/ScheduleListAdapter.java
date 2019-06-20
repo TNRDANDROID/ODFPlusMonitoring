@@ -117,12 +117,16 @@ public class ScheduleListAdapter extends RecyclerView.Adapter<ScheduleListAdapte
                     Date from =  new SimpleDateFormat("yyyy-MM-dd").parse(scheduleListValues.get(position).getScheduleFromDate());
                     Date to =  new SimpleDateFormat("yyyy-MM-dd").parse(scheduleListValues.get(position).getScheduletoDate());
                     Date current =  new SimpleDateFormat("yyyy-MM-dd").parse(Utils.getCurrentDate());
+// Date current = new SimpleDateFormat("yyyy-MM-dd").parse("2019-06-30");
 
-                    if (from.compareTo(current) * current.compareTo(to) >= 0) {
+                    if(from.after(current)){
+                        Utils.showAlert((Activity) context,"Your Schedule is not Started");
+                    }
+                    else if (from.compareTo(current) * current.compareTo(to) >= 0) {
                         openActivity(position);
                     }
                     else {
-                        Utils.showAlert((Activity) context,"Expired");
+                        Utils.showAlert((Activity) context,"Your Schedule is Expired");
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();

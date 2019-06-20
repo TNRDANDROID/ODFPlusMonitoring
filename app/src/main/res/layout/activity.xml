@@ -121,14 +121,14 @@
                         android:orientation="horizontal">
 
                         <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
-
+                            android:id="@+id/mul"
                             style="@style/TextAppearance.AppCompat.Subhead"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
                             android:layout_toLeftOf="@+id/dummy3"
                             android:padding="@dimen/_12sdp"
-                            android:text=" "
+                            android:text="Mul"
                             android:textColor="@android:color/black"
                             customfontdemo:fontName="@string/font_circular_medium" />
 

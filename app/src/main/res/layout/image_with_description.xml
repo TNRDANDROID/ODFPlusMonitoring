@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/parent_linear_layout"
     xmlns:customfontdemo="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -52,6 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true">
+
 
             <RelativeLayout
                 android:id="@+id/image_description"
@@ -138,14 +138,32 @@
 
 
             </RelativeLayout>
+            <LinearLayout
+                android:id="@+id/parent_linear_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/image_description"
+                android:orientation="vertical"/>
 
             <LinearLayout
                 android:id="@+id/inner_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/image_description"
+                android:layout_below="@+id/parent_linear_layout"
                 android:orientation="vertical">
 
+                <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+                    android:id="@+id/add"
+                    android:layout_width="100dp"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:layout_gravity="end"
+                    android:layout_margin="@dimen/margin"
+                    android:background="@drawable/rectangle_box"
+                    android:text="Add Photo"
+                    android:textAllCaps="false"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/black"/>
 
 
             <Button
@@ -154,14 +172,13 @@
                 android:layout_height="40dp"
                 android:layout_margin="5dp"
                 android:layout_gravity="center_horizontal"
-                android:background="@drawable/add_button_new"
+                android:background="@drawable/rectangle_box"
                 android:text="SAVE IMAGE"
                 android:textAllCaps="false"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/black" />
             </LinearLayout>
 
         </RelativeLayout>
-
 
     </ScrollView>
 

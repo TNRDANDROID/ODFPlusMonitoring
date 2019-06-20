@@ -49,7 +49,7 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private MyCustomTextView activity_name, view_online_images, view_offline_images;
+        private MyCustomTextView activity_name, view_online_images, view_offline_images, mul;
         private RelativeLayout start_layout, end_layout;
         private LinearLayout schedule;
         private ImageView sportsImage;
@@ -58,6 +58,7 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
             super(itemView);
             sportsImage = (ImageView)itemView.findViewById(R.id.sportsImage);
             activity_name = (MyCustomTextView) itemView.findViewById(R.id.activity_name);
+            mul = (MyCustomTextView) itemView.findViewById(R.id.mul);
             view_online_images = (MyCustomTextView) itemView.findViewById(R.id.view_online_images);
             view_offline_images = (MyCustomTextView) itemView.findViewById(R.id.view_offline_images);
             start_layout = (RelativeLayout) itemView.findViewById(R.id.start_layout);
@@ -172,6 +173,13 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
             @Override
             public void onClick(View v) {
                 viewOfflineImages(schedule_id,schedule_activity_id,"Online");
+            }
+        });
+
+        holder.mul.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cameraScreen(position,"Start");
             }
         });
 
