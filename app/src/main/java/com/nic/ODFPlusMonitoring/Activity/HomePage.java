@@ -51,12 +51,17 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     private ShimmerRecyclerView recyclerView;
     JSONObject datasetActivity = new JSONObject();
     private MyCustomTextView sync;
+    private String isHome;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         setContentView(R.layout.home);
+        Bundle bundle = this.getIntent().getExtras();
+        if (bundle != null) {
+            isHome = bundle.getString("Home");
+        }
         intializeUI();
     }
 
@@ -69,7 +74,9 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         sync.setOnClickListener(this);
 
         if(Utils.isOnline()){
-            getMotivatorSchedule();
+            if(!isHome.equalsIgnoreCase("Home")){
+                getMotivatorSchedule();
+            }
         }
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -481,5 +488,11 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
             }
             return null;
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        syncButtonVisibility();
     }
 }

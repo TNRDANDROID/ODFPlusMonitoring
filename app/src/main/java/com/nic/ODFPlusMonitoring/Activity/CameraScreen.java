@@ -374,6 +374,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     public void homePage() {
         Intent intent = new Intent(this, HomePage.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("Home", "Home");
         startActivity(intent);
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);

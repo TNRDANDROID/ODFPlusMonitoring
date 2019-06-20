@@ -653,7 +653,9 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
     private void showHomeScreen() {
         Intent intent = new Intent(LoginScreen.this,HomePage.class);
+        intent.putExtra("Home", "Login");
         startActivity(intent);
+        finish();
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
