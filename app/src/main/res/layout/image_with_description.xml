@@ -163,7 +163,8 @@
                     android:text="Add Photo"
                     android:textAllCaps="false"
                     android:textAlignment="center"
-                    android:textColor="@android:color/black"/>
+                    android:textColor="@android:color/black"
+                    android:visibility="gone"/>
 
 
             <Button

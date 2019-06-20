@@ -115,42 +115,34 @@
                     android:orientation="vertical">
 
                     <RelativeLayout
-
+                        android:id="@+id/multiple_photo_layout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:visibility="gone">
 
                         <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
-                            android:id="@+id/mul"
+                            android:id="@+id/mulTitle"
                             style="@style/TextAppearance.AppCompat.Subhead"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:layout_toLeftOf="@+id/dummy3"
                             android:padding="@dimen/_12sdp"
-                            android:text="Mul"
-                            android:textColor="@android:color/black"
-                            customfontdemo:fontName="@string/font_circular_medium" />
+                            android:text="Multiple"
+                            android:textSize="16sp"
+
+                            android:textColor="#000080"
+                            customfontdemo:fontName="@string/font_circular_bold" />
+
+
 
                         <ImageView
-                            android:id="@+id/dummy3"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:layout_centerInParent="true"
                             android:layout_gravity="end"
-                            android:layout_toLeftOf="@+id/end_camera2"
-                            android:text="Take Photo" />
 
-
-                        <ImageView
-                            android:id="@+id/end_camera2"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerInParent="true"
-                            android:layout_gravity="end"
-                            android:layout_marginRight="@dimen/_12sdp"
+                            android:layout_toRightOf="@+id/mulTitle"
                             android:gravity="end"
+                            android:src="@drawable/camera_icon"
                             android:text="Take Photo" />
 
                     </RelativeLayout>
