@@ -8,6 +8,7 @@
     android:background="?android:selectableItemBackground">
 
     <RelativeLayout
+        android:id="@+id/activity_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

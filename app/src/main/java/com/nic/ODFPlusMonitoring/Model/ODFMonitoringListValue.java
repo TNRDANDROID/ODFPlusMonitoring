@@ -10,7 +10,7 @@ import java.util.Date;
 
 public class ODFMonitoringListValue {
 
-    private int distictCode;
+    private String distictCode;
     private String districtName;
 
     private String blockCode;
@@ -57,6 +57,23 @@ public class ODFMonitoringListValue {
     private String type;
     private String imageRemark;
     private String dateTime;
+    private String imageAvailable;
+    private String activityStatus;
+
+    public String getActivityStatus() {
+        return activityStatus;
+    }
+
+    public void setActivityStatus(String activityStatus) {
+        this.activityStatus = activityStatus;
+    }
+    public String getImageAvailable() {
+        return imageAvailable;
+    }
+
+    public void setImageAvailable(String imageAvailable) {
+        this.imageAvailable = imageAvailable;
+    }
 
     public String getType() {
         return type;
@@ -287,11 +304,11 @@ public class ODFMonitoringListValue {
     }
 
 
-    public int getDistictCode() {
+    public String getDistictCode() {
         return distictCode;
     }
 
-    public void setDistictCode(int distictCode) {
+    public void setDistictCode(String distictCode) {
         this.distictCode = distictCode;
     }
 

@@ -142,7 +142,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_marginTop="@dimen/_230sdp"
-                android:text="No Projects Found!"
+                android:text="No Activity Found!"
                 android:textAlignment="center"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/_16sdp"

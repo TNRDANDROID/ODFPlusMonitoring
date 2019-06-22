@@ -54,6 +54,7 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
         private RelativeLayout start_layout, end_layout,multiple_photo_layout;
         private LinearLayout schedule;
         private ImageView sportsImage;
+        RelativeLayout activityLayout;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -64,6 +65,8 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
             start_layout = (RelativeLayout) itemView.findViewById(R.id.start_layout);
             end_layout = (RelativeLayout) itemView.findViewById(R.id.end_layout);
             multiple_photo_layout = (RelativeLayout) itemView.findViewById(R.id.multiple_photo_layout);
+            activityLayout = (RelativeLayout) itemView.findViewById(R.id.activity_layout);
+
         }
 
 
@@ -165,8 +168,15 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
 
         if(activityImageOnline.size() > 0) {
             holder.view_online_images.setVisibility(View.VISIBLE);
-        }
-        else {
+//            for (int k = 0;k<activityImageOnline.size();k++) {
+//                if(activityListValues.get(position).getImageAvailable().equalsIgnoreCase("Y")){
+//                    holder.view_online_images.setVisibility(View.VISIBLE);
+//                }
+//                else {
+//
+//                }
+//            }
+        }else {
             holder.view_online_images.setVisibility(View.GONE);
         }
 
@@ -202,6 +212,31 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
             }
         });
 
+        final String activity_status = activityListValues.get(position).getActivityStatus();
+
+        if(activity_status.equalsIgnoreCase("y")) {
+//            for ( int i = 0; i < holder.activityLayout.getChildCount();  i++ ){
+//                View view = holder.activityLayout.getChildAt(i);
+//                view.setEnabled(false); // Or whatever you want to do with the view.
+//            }
+            holder.start_layout.setEnabled(false);
+            holder.end_layout.setEnabled(false);
+            holder.multiple_photo_layout.setEnabled(false);
+        }
+        else if(activity_status.equalsIgnoreCase("N")){
+            holder.start_layout.setEnabled(true);
+            holder.end_layout.setEnabled(true);
+            holder.multiple_photo_layout.setEnabled(true);
+        }
+
+        holder.activityLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(activity_status.equalsIgnoreCase("y")) {
+                   Utils.showAlert((Activity) context,"Activity Completed");
+                }
+            }
+        });
     }
 
     public void viewOfflineImages(String schedule_id,String id,String OnOffType) {

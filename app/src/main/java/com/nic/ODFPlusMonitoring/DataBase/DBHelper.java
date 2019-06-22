@@ -86,8 +86,12 @@ public class DBHelper extends SQLiteOpenHelper {
                 + "schedule_activity_id INTEGER," +
                 "schedule_id INTEGER," +
                 "activity_id INTEGER," +
+                "activity_status TEXT," +
                 "activity_name TEXT," +
                 "no_of_photos INTEGER," +
+                "dcode INTEGER," +
+                "bcode INTEGER," +
+                "pvcode INTEGER," +
                 "place_of_activity TEXT)");
 
         db.execSQL("CREATE TABLE " + SCHEDULED_ACTIVITY_PHOTOS + " ("
@@ -99,6 +103,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "lat TEXT," +
                 "long TEXT," +
                 "type TEXT," +
+                "image_available TEXT," +
                 "image BLOB," +
                 "remark TEXT)");
 

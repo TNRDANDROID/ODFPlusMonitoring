@@ -67,7 +67,7 @@ public class dbData {
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
                     ODFMonitoringListValue card = new ODFMonitoringListValue();
-                    card.setDistictCode(cursor.getInt(cursor
+                    card.setDistictCode(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.DISTRICT_CODE)));
                     card.setDistrictName(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.DISTRICT_NAME)));
@@ -111,7 +111,7 @@ public class dbData {
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
                     ODFMonitoringListValue card = new ODFMonitoringListValue();
-                    card.setDistictCode(cursor.getInt(cursor
+                    card.setDistictCode(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.DISTRICT_CODE)));
                     card.setBlockCode(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.BLOCK_CODE)));
@@ -158,7 +158,7 @@ public class dbData {
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
                     ODFMonitoringListValue card = new ODFMonitoringListValue();
-                    card.setDistictCode(cursor.getInt(cursor
+                    card.setDistictCode(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.DISTRICT_CODE)));
                     card.setBlockCode(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.BLOCK_CODE)));
@@ -403,7 +403,7 @@ public class dbData {
                             .getColumnIndexOrThrow(AppConstant.KEY_SCHEDULE_ID)));
                     card.setMotivatorId(cursor.getInt(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_MOTIVATOR_ID)));
-                    card.setDistictCode(cursor.getInt(cursor
+                    card.setDistictCode(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.DISTRICT_CODE)));
                     card.setBlockCode(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.BLOCK_CODE)));
@@ -445,12 +445,12 @@ public class dbData {
         db.execSQL("delete from "+ DBHelper.SCHEDULE_VILLAGE);
     }
     /********************* t_scheduled_activity table *********************************/
-    public ArrayList<ODFMonitoringListValue> selectScheduleActivity(String schedule_id) {
+    public ArrayList<ODFMonitoringListValue> selectScheduleActivity(String schedule_id,String dcode,String bcode,String pvcode) {
 
         ArrayList<ODFMonitoringListValue> cards = new ArrayList<>();
         Cursor cursor = null;
-        String selection = "schedule_id = ?";
-        String[] selectionArgs = new String[]{schedule_id};
+        String selection = "schedule_id = ? and dcode = ? and bcode = ? and pvcode = ?";
+        String[] selectionArgs = new String[]{schedule_id,dcode,bcode,pvcode};
 
         try {
             cursor = db.query(DBHelper.SCHEDULED_ACTIVITY,
@@ -470,8 +470,46 @@ public class dbData {
                             .getColumnIndexOrThrow(AppConstant.KEY_PLACE_OF_ACTIVITY)));
                     card.setNoOfPhotos(cursor.getInt(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_NO_OF_PHOTOS)));
-
+                    card.setDistictCode(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.DISTRICT_CODE)));
+                    card.setBlockCode(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.BLOCK_CODE)));
+                    card.setPvCode(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.PV_CODE)));
+                    card.setActivityStatus(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_STATUS)));
                     cards.add(card);
+                }
+            }
+
+            cursor = db.query(DBHelper.SCHEDULED_ACTIVITY,
+                    new String[] {"*"},"(dcode is Null OR dcode = '' AND\n" +
+                            "bcode is Null OR dcode = ''  AND\n" +
+                            "pvcode is Null OR dcode = '' and  schedule_id = ?)" , new String[] {schedule_id}, null, null, null);
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    ODFMonitoringListValue card1 = new ODFMonitoringListValue();
+                    card1.setScheduleActivityId(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_SCHEDULE_ACTIVITY_ID)));
+                    card1.setScheduleId(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_SCHEDULE_ID)));
+                    card1.setActivityId(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_ID)));
+                    card1.setActivityName(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_NAME)));
+                    card1.setPlaceOfActivity(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_PLACE_OF_ACTIVITY)));
+                    card1.setNoOfPhotos(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_NO_OF_PHOTOS)));
+                    card1.setDistictCode(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.DISTRICT_CODE)));
+                    card1.setBlockCode(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.BLOCK_CODE)));
+                    card1.setPvCode(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.PV_CODE)));
+                    card1.setActivityStatus(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_STATUS)));
+                    cards.add(card1);
                 }
             }
         } catch (Exception e){
@@ -493,6 +531,10 @@ public class dbData {
         values.put(AppConstant.KEY_ACTIVITY_NAME,odfMonitoringListValue.getActivityName());
         values.put(AppConstant.KEY_PLACE_OF_ACTIVITY,odfMonitoringListValue.getPlaceOfActivity());
         values.put(AppConstant.KEY_NO_OF_PHOTOS,odfMonitoringListValue.getNoOfPhotos());
+        values.put(AppConstant.DISTRICT_CODE,odfMonitoringListValue.getDistictCode());
+        values.put(AppConstant.BLOCK_CODE,odfMonitoringListValue.getBlockCode());
+        values.put(AppConstant.PV_CODE,odfMonitoringListValue.getPvCode());
+        values.put(AppConstant.KEY_ACTIVITY_STATUS,odfMonitoringListValue.getActivityStatus());
 
         long id = db.insert(DBHelper.SCHEDULED_ACTIVITY,null,values);
         Log.d("Inserted_id_sche_Activ",String.valueOf(id));
@@ -517,14 +559,7 @@ public class dbData {
         values.put(AppConstant.DISTRICT_CODE,odfMonitoringListValue.getDistictCode());
         values.put(AppConstant.BLOCK_CODE,odfMonitoringListValue.getBlockCode());
         values.put(AppConstant.PV_CODE,odfMonitoringListValue.getPvCode());
-
-        Bitmap bitmap = odfMonitoringListValue.getImage();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
-        byte[] imageInByte = baos.toByteArray();
-        String image_str = Base64.encodeToString(imageInByte, Base64.DEFAULT);
-
-        values.put(AppConstant.KEY_IMAGE,image_str);
+        values.put(AppConstant.KEY_IMAGE_AVAILABLE,odfMonitoringListValue.getImageAvailable());
 
         long id = db.insert(DBHelper.SCHEDULED_ACTIVITY_PHOTOS,null,values);
         Log.d("Inserted_id_Activ_photo",String.valueOf(id));
@@ -544,9 +579,6 @@ public class dbData {
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
 
-                    byte[] photo = cursor.getBlob(cursor.getColumnIndexOrThrow(AppConstant.KEY_IMAGE));
-                    byte[] decodedString = Base64.decode(photo, Base64.DEFAULT);
-                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
 
                     ODFMonitoringListValue card = new ODFMonitoringListValue();
                     card.setScheduleActivityId(cursor.getInt(cursor
@@ -561,14 +593,14 @@ public class dbData {
                             .getColumnIndexOrThrow(AppConstant.KEY_IMAGE_REMARK)));
                     card.setType(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_TYPE)));
-                    card.setDistictCode(cursor.getInt(cursor
+                    card.setDistictCode(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.DISTRICT_CODE)));
                     card.setBlockCode(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.BLOCK_CODE)));
                     card.setPvCode(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.PV_CODE)));
-
-                    card.setImage(decodedByte);
+                    card.setImageAvailable(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_IMAGE_AVAILABLE)));
 
                     cards.add(card);
                 }
@@ -613,7 +645,7 @@ public class dbData {
                             .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_ID)));
                     card.setScheduleId(cursor.getInt(cursor
                             .getColumnIndex(AppConstant.KEY_SCHEDULE_ID)));
-                    card.setDistictCode(cursor.getInt(cursor
+                    card.setDistictCode(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.DISTRICT_CODE)));
                     card.setBlockCode(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.BLOCK_CODE)));
@@ -681,7 +713,7 @@ public class dbData {
                             .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_ID)));
                     card.setScheduleId(cursor.getInt(cursor
                             .getColumnIndex(AppConstant.KEY_SCHEDULE_ID)));
-                    card.setDistictCode(cursor.getInt(cursor
+                    card.setDistictCode(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.DISTRICT_CODE)));
                     card.setBlockCode(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.BLOCK_CODE)));
@@ -722,5 +754,6 @@ public class dbData {
         deleteScheduleVillageTable();
         deleteScheduleActivityTable();
         deleteActivityPhotos();
+        deleteSavedActivity();
     }
 }

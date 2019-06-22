@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -20,8 +21,12 @@ import android.view.View;
 import android.widget.ImageView;
 
 
+import com.android.volley.VolleyError;
 import com.nic.ODFPlusMonitoring.Adapter.FullImageAdapter;
 import com.nic.ODFPlusMonitoring.Adapter.ScheduleListAdapter;
+import com.nic.ODFPlusMonitoring.Api.Api;
+import com.nic.ODFPlusMonitoring.Api.ApiService;
+import com.nic.ODFPlusMonitoring.Api.ServerResponse;
 import com.nic.ODFPlusMonitoring.Constant.AppConstant;
 import com.nic.ODFPlusMonitoring.DataBase.dbData;
 import com.nic.ODFPlusMonitoring.Fragment.SlideshowDialogFragment;
@@ -29,12 +34,18 @@ import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
 import com.nic.ODFPlusMonitoring.Support.MyCustomTextView;
+import com.nic.ODFPlusMonitoring.Utils.UrlGenerator;
+import com.nic.ODFPlusMonitoring.Utils.Utils;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class FullImageActivity extends AppCompatActivity implements View.OnClickListener {
+public class FullImageActivity extends AppCompatActivity implements View.OnClickListener,Api.ServerResponseListener {
     private ImageView toolBarLeft_icon, toolBarRight_icon;
     private RecyclerView image_preview_recyclerview;
     private PrefManager prefManager;
@@ -42,6 +53,10 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     private MyCustomTextView title_tv;
     private ImageView back_img,home_img;
     private dbData dbData = new dbData(this);
+    private  String schedule_id;
+    private static  ArrayList<ODFMonitoringListValue> activityImage = new ArrayList<>();
+    final Handler handler = new Handler();
+    public String OnOffType;
 
 
     @Override
@@ -58,6 +73,9 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         back_img.setOnClickListener(this);
         home_img.setOnClickListener(this);
 
+        schedule_id = getIntent().getStringExtra(AppConstant.KEY_SCHEDULE_ID);
+        OnOffType = getIntent().getStringExtra("OnOffType");
+
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getApplicationContext(),2);
         image_preview_recyclerview.setLayoutManager(mLayoutManager);
@@ -67,8 +85,15 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         image_preview_recyclerview.setFocusable(false);
         image_preview_recyclerview.setAdapter(fullImageAdapter);
 
+        if(OnOffType.equalsIgnoreCase("Online")){
+            if (Utils.isOnline()) {
+                getOnlineImage();
+            }
+        }
+        else {
+            new fetchImagetask().execute();
+        }
 
-        new fetchImagetask().execute();
     }
 
 
@@ -90,22 +115,16 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
             ArrayList<ODFMonitoringListValue>> {
         @Override
         protected ArrayList<ODFMonitoringListValue> doInBackground(Void... params) {
-            ArrayList<ODFMonitoringListValue> activityImage = new ArrayList<>();
-            String schedule_id = getIntent().getStringExtra(AppConstant.KEY_SCHEDULE_ID);
+
             final String dcode = prefManager.getDistrictCode();
             final String bcode = prefManager.getBlockCode();
             final String pvcode = prefManager.getPvCode();
             String id = "";
-            String OnOffType = getIntent().getStringExtra("OnOffType");
 
-            if(OnOffType.equalsIgnoreCase("Online")){
-                id = getIntent().getStringExtra(AppConstant.KEY_SCHEDULE_ACTIVITY_ID);
-                dbData.open();
-                activityImage = dbData.selectActivityPhoto(dcode,bcode,pvcode,schedule_id,id);
-            }
-            else if(OnOffType.equalsIgnoreCase("Offline")){
+            if(OnOffType.equalsIgnoreCase("Offline")){
                 id = getIntent().getStringExtra(AppConstant.KEY_ACTIVITY_ID);
                 dbData.open();
+                activityImage = new ArrayList<>();
                 activityImage = dbData.selectImageActivity(dcode,bcode,pvcode,schedule_id,id,"");
             }
 
@@ -116,27 +135,108 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         @Override
         protected void onPostExecute(final ArrayList<ODFMonitoringListValue> imageList) {
             super.onPostExecute(imageList);
-            fullImageAdapter = new FullImageAdapter(FullImageActivity.this,
-                    imageList, dbData);
-            image_preview_recyclerview.addOnItemTouchListener(new FullImageAdapter.RecyclerTouchListener(getApplicationContext(), image_preview_recyclerview, new FullImageAdapter.ClickListener() {
-                @Override
-                public void onClick(View view, int position) {
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("images", imageList);
-                    bundle.putInt("position", position);
+            setAdapter();
+        }
+    }
 
-                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                    SlideshowDialogFragment newFragment = SlideshowDialogFragment.newInstance();
-                    newFragment.setArguments(bundle);
-                    newFragment.show(ft, "slideshow");
+    public void setAdapter(){
+        fullImageAdapter = new FullImageAdapter(FullImageActivity.this,
+                activityImage, dbData);
+        image_preview_recyclerview.addOnItemTouchListener(new FullImageAdapter.RecyclerTouchListener(getApplicationContext(), image_preview_recyclerview, new FullImageAdapter.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("images", activityImage);
+                bundle.putInt("position", position);
+
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                SlideshowDialogFragment newFragment = SlideshowDialogFragment.newInstance();
+                newFragment.setArguments(bundle);
+                newFragment.show(ft, "slideshow");
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
+        image_preview_recyclerview.setAdapter(fullImageAdapter);
+    }
+
+    public void getOnlineImage() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("OnlineImage", Api.Method.POST, UrlGenerator.getMotivatorSchedule(), ImagesJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public JSONObject ImagesJsonParams() throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), ImagesListJsonParams().toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("utils_ImageEncrydataSet", "" + authKey);
+        return dataSet;
+    }
+
+    public JSONObject ImagesListJsonParams() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_ACTIVITY_IMAGE_VIEW);
+        dataSet.put(AppConstant.KEY_SCHEDULE_ID,schedule_id);
+        dataSet.put(AppConstant.KEY_SCHEDULE_ACTIVITY_ID, getIntent().getStringExtra(AppConstant.KEY_SCHEDULE_ACTIVITY_ID));
+        Log.d("utils_imageDataset", "" + dataSet);
+        return dataSet;
+    }
+
+    @Override
+    public void OnMyResponse(ServerResponse serverResponse) {
+        try {
+            String urlType = serverResponse.getApi();
+            JSONObject responseObj = serverResponse.getJsonResponse();
+
+            if ("OnlineImage".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    generateImageArrayList(jsonObject.getJSONArray(AppConstant.JSON_DATA));
+                }
+                Log.d("resp_OnlineImage", "" + responseDecryptedBlockKey);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void OnError(VolleyError volleyError) {
+
+    }
+
+    public void generateImageArrayList(JSONArray jsonArray){
+        if(jsonArray.length() > 0){
+            activityImage = new ArrayList<>();
+            for(int i = 0; i < jsonArray.length(); i++ ) {
+                try {
+                    ODFMonitoringListValue imageOnline = new ODFMonitoringListValue();
+                    imageOnline.setImageRemark(jsonArray.getJSONObject(i).getString(AppConstant.KEY_IMAGE_REMARK));
+                    imageOnline.setDateTime(jsonArray.getJSONObject(i).getString("ins_date"));
+                    imageOnline.setType(jsonArray.getJSONObject(i).getString("activity_type"));
+
+                    byte[] decodedString = Base64.decode(jsonArray.getJSONObject(i).getString(AppConstant.KEY_IMAGE), Base64.DEFAULT);
+                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+                    imageOnline.setImage(decodedByte);
+
+                    activityImage.add(imageOnline);
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
 
-                @Override
-                public void onLongClick(View view, int position) {
+            }
 
-                }
-            }));
-            image_preview_recyclerview.setAdapter(fullImageAdapter);
+            setAdapter();
         }
     }
 

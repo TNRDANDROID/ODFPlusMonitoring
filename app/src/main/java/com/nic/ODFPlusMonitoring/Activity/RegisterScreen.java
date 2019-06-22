@@ -223,7 +223,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                 pref_district = District.get(position).getDistrictName();
                 prefManager.setDistrictName(pref_district);
 
-                blockFilterSpinner((District.get(position).getDistictCode()));
+                blockFilterSpinner(Integer.valueOf(District.get(position).getDistictCode()));
                 prefManager.setDistrictCode(District.get(position).getDistictCode());
 
 
@@ -488,7 +488,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                     ODFMonitoringListValue districtList = new ODFMonitoringListValue();
                     String districtCode = DistrictList.getString(DistrictList.getColumnIndexOrThrow(AppConstant.DISTRICT_CODE));
                     String districtName = DistrictList.getString(DistrictList.getColumnIndexOrThrow(AppConstant.DISTRICT_NAME));
-                    districtList.setDistictCode(Integer.parseInt(districtCode));
+                    districtList.setDistictCode(districtCode);
                     districtList.setDistrictName(districtName);
                     District.add(districtList);
                 } while (DistrictList.moveToNext());
@@ -513,7 +513,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                     String districtCode = BlockList.getString(BlockList.getColumnIndexOrThrow(AppConstant.DISTRICT_CODE));
                     String blockCode = BlockList.getString(BlockList.getColumnIndexOrThrow(AppConstant.BLOCK_CODE));
                     String blockName = BlockList.getString(BlockList.getColumnIndexOrThrow(AppConstant.BLOCK_NAME));
-                    blockList.setDistictCode(Integer.parseInt(districtCode));
+                    blockList.setDistictCode(districtCode);
                     blockList.setBlockCode(blockCode);
                     blockList.setBlockName(blockName);
                     Block.add(blockList);

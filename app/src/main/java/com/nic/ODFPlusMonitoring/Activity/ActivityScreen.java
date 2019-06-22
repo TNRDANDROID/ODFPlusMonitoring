@@ -45,7 +45,7 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
     private ImageView back_img,home_img;
     ArrayList<ODFMonitoringListValue> scheduleVillageList = new ArrayList<>();
     ArrayList<ODFMonitoringListValue> activityList = new ArrayList<>();
-    private MyCustomTextView activity_tv;
+    private MyCustomTextView activity_tv,not_found_tv;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,6 +59,7 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
         scheduleVillage_sp = (Spinner) findViewById(R.id.village_spinner);
         activityRecycler = (RecyclerView) findViewById(R.id.activity_list);
         activity_tv = (MyCustomTextView) findViewById(R.id.activity_tv);
+        not_found_tv = (MyCustomTextView) findViewById(R.id.not_found_tv);
         back_img = (ImageView) findViewById(R.id.back_img);
         home_img = (ImageView) findViewById(R.id.home_img);
 
@@ -103,7 +104,8 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
         protected ArrayList<ODFMonitoringListValue> doInBackground(String... params) {
             dbData.open();
             activityList = new ArrayList<>();
-            activityList = dbData.selectScheduleActivity(params[0]);
+            activityList = dbData.selectScheduleActivity(params[0],prefManager.getDistrictCode(),prefManager.getBlockCode(),prefManager.getPvCode());
+
             return activityList;
         }
 
@@ -114,6 +116,14 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
                     activityList, dbData);
            // habitation_tv.setVisibility(View.VISIBLE);
             activityRecycler.setAdapter(activityListAdapter);
+            if(activityList.size() > 0 ){
+                not_found_tv.setVisibility(View.GONE);
+            }
+            else {
+                not_found_tv.setVisibility(View.VISIBLE);
+                activityListAdapter.notifyDataSetChanged();
+            }
+
         }
     }
 
@@ -131,7 +141,7 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
             ODFMonitoringListValue villageList = new ODFMonitoringListValue();
 
             Integer scheduleId = scheduleVillage.get(i).getScheduleId();
-            Integer dcode = scheduleVillage.get(i).getDistictCode();
+            String dcode = scheduleVillage.get(i).getDistictCode();
             String bcode = scheduleVillage.get(i).getBlockCode();
             String pvcode = scheduleVillage.get(i).getPvCode();
             String pvname = scheduleVillage.get(i).getPvName();

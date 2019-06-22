@@ -386,8 +386,9 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                     JSONArray activityArray = jsonArray.getJSONObject(i).getJSONArray(AppConstant.KEY_T_SCHEDULE_ACTIVITY);
                     new InsertScheduleActivityTask().execute(activityArray);
 
-//                    JSONArray photosArray = jsonArray.getJSONObject(i).getJSONArray(AppConstant.KEY_T_SCHEDULE_ACTIVITY_PHOTOS);
-//                    new InsertActivityPhotosTask().execute(photosArray);
+                    JSONArray photosArray = jsonArray.getJSONObject(i).getJSONArray(AppConstant.KEY_T_SCHEDULE_ACTIVITY_PHOTOS);
+
+                    new InsertActivityPhotosTask().execute(photosArray);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -410,7 +411,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                         schedulevillageValue.setVillageLinkId(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_SCHEDULE_VILLAGE_LINK_ID));
                         schedulevillageValue.setScheduleId(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_SCHEDULE_ID));
                         schedulevillageValue.setMotivatorId(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_MOTIVATOR_ID));
-                        schedulevillageValue.setDistictCode(jsonArray.getJSONObject(i).getInt(AppConstant.DISTRICT_CODE));
+                        schedulevillageValue.setDistictCode(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE));
                         schedulevillageValue.setBlockCode(jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE));
                         schedulevillageValue.setPvCode(jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE));
                         schedulevillageValue.setPvName(jsonArray.getJSONObject(i).getString(AppConstant.PV_NAME));
@@ -442,6 +443,10 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                         scheduleActivityValue.setActivityName(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ACTIVITY_NAME));
                         scheduleActivityValue.setPlaceOfActivity(jsonArray.getJSONObject(i).getString(AppConstant.KEY_PLACE_OF_ACTIVITY));
                         scheduleActivityValue.setNoOfPhotos(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_NO_OF_PHOTOS));
+                        scheduleActivityValue.setDistictCode(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE));
+                        scheduleActivityValue.setBlockCode(jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE));
+                        scheduleActivityValue.setPvCode(jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE));
+                        scheduleActivityValue.setActivityStatus(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ACTIVITY_STATUS));
 
                         dbData.insertScheduleActivity(scheduleActivityValue);
                     } catch (JSONException e) {
@@ -470,14 +475,11 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                         activityPhotosValue.setLongitude(jsonArray.getJSONObject(i).getString("location_long"));
                         activityPhotosValue.setType(jsonArray.getJSONObject(i).getString("activity_type"));
                         activityPhotosValue.setImageRemark(jsonArray.getJSONObject(i).getString(AppConstant.KEY_IMAGE_REMARK));
-                        activityPhotosValue.setDistictCode(jsonArray.getJSONObject(i).getInt(AppConstant.DISTRICT_CODE));
+                        activityPhotosValue.setDistictCode(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE));
                         activityPhotosValue.setBlockCode(jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE));
                         activityPhotosValue.setPvCode(jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE));
+                        activityPhotosValue.setImageAvailable(jsonArray.getJSONObject(i).getString(AppConstant.KEY_IMAGE_AVAILABLE));
 
-                        byte[] decodedString = Base64.decode(jsonArray.getJSONObject(i).getString(AppConstant.KEY_IMAGE), Base64.DEFAULT);
-                        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-
-                        activityPhotosValue.setImage(decodedByte);
 
                         dbData.insertActivityPhotos(activityPhotosValue);
                     } catch (JSONException e) {

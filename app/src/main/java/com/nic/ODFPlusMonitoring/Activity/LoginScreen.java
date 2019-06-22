@@ -453,7 +453,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                     for (int i = 0; i < jsonArray.length(); i++) {
                         ODFMonitoringListValue districtListValue = new ODFMonitoringListValue();
                         try {
-                            districtListValue.setDistictCode(jsonArray.getJSONObject(i).getInt(AppConstant.DISTRICT_CODE));
+                            districtListValue.setDistictCode(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE));
                             districtListValue.setDistrictName(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_NAME));
 
                             dbData.insertDistrict(districtListValue);
@@ -483,7 +483,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                     for (int i = 0; i < jsonArray.length(); i++) {
                         ODFMonitoringListValue blocktListValue = new ODFMonitoringListValue();
                         try {
-                            blocktListValue.setDistictCode(jsonArray.getJSONObject(i).getInt(AppConstant.DISTRICT_CODE));
+                            blocktListValue.setDistictCode(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE));
                             blocktListValue.setBlockCode(jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE));
                             blocktListValue.setBlockName(jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_NAME));
 
@@ -514,7 +514,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                     for (int i = 0; i < jsonArray.length(); i++) {
                         ODFMonitoringListValue villageListValue = new ODFMonitoringListValue();
                         try {
-                            villageListValue.setDistictCode(jsonArray.getJSONObject(i).getInt(AppConstant.DISTRICT_CODE));
+                            villageListValue.setDistictCode(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE));
                             villageListValue.setBlockCode(jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE));
                             villageListValue.setPvCode(jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE));
                             villageListValue.setPvName(jsonArray.getJSONObject(i).getString(AppConstant.PV_NAME));

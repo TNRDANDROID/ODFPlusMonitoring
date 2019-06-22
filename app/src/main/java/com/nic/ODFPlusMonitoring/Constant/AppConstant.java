@@ -103,6 +103,7 @@ public class AppConstant {
     public static String KEY_IMAGE_REMARK = "remark";
     public static String KEY_DATE_TIME = "datetime";
     public static String KEY_SERIAL_NUMBER = "serial_number";
+    public static String KEY_ACTIVITY_STATUS = "activity_status";
 
     public static String KEY_TRACK_DATA = "track_data";
     public static String KEY_ACTIVITY_IMAGE_SAVE = "activity_image_save";
@@ -110,6 +111,8 @@ public class AppConstant {
     /******************* t_scheduled_activity_photos **********************/
 
     public static String KEY_T_SCHEDULE_ACTIVITY_PHOTOS = "t_scheduled_activity_photos";
+    public static String KEY_IMAGE_AVAILABLE = "image_available";
+    public static String KEY_ACTIVITY_IMAGE_VIEW = "activity_image_view";
 
 
 
