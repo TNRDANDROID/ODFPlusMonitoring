@@ -1,4 +1,7 @@
 apply plugin: 'com.android.application'
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
     compileSdkVersion 28
@@ -10,6 +13,24 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+            v2SigningEnabled false
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            def version = variant.versionName
+            def date = new Date()
+            def formattedDate = date.format('ddMMyy')
+            outputFileName = "ODFPlusMonitoring_${variant.buildType.name}_v${version}_${formattedDate}.apk"
+        }
+    }
     buildTypes {
         debug {
             debuggable true
@@ -17,14 +38,23 @@ android {
             signingConfig signingConfigs.debug
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-        release {
+        production {
+            debuggable false
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            shrinkResources false
+            signingConfig signingConfigs.debug
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                    'proguard-rules.pro'
         }
     }
     dexOptions {
         javaMaxHeapSize "4g"
         jumboMode = true
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
     }
 }
 

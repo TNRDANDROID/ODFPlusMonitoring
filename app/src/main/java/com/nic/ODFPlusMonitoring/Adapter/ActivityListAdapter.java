@@ -1,7 +1,6 @@
 package com.nic.ODFPlusMonitoring.Adapter;
 
 import android.app.Activity;
-import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -80,7 +79,7 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
-
+        final String activity_status = activityListValues.get(position).getActivityStatus();
         holder.activity_name.setText(activityListValues.get(position).getActivityName());
         if(position %2 == 1)
         {
@@ -95,52 +94,57 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
         holder.start_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!activity_status.equalsIgnoreCase("y")) {
+                    final String activity_id = String.valueOf(activityListValues.get(position).getActivityId());
+                    final String schedule_id = String.valueOf(activityListValues.get(position).getScheduleId());
 
-                final String activity_id = String.valueOf(activityListValues.get(position).getActivityId());
-                final String schedule_id = String.valueOf(activityListValues.get(position).getScheduleId());
+                    ArrayList<ODFMonitoringListValue> activityImage = dbData.selectImageActivity(dcode, bcode, pvcode, schedule_id, activity_id, "Start");
 
-                ArrayList<ODFMonitoringListValue> activityImage = dbData.selectImageActivity(dcode,bcode,pvcode,schedule_id,activity_id,"Start");
-
-                if(activityImage.size() > 0) {
-                    for (int i=0;i<activityImage.size();i++){
-                        if(activityImage.get(i).getType().equalsIgnoreCase("start")){
-                            Utils.showAlert((Activity) context,"Already Captured");
+                    if (activityImage.size() > 0) {
+                        for (int i = 0; i < activityImage.size(); i++) {
+                            if (activityImage.get(i).getType().equalsIgnoreCase("start")) {
+                                Utils.showAlert((Activity) context, "Already Captured");
+                            } else {
+                                cameraScreen(position, "Start", "1");
+                            }
                         }
-                        else {
-                            cameraScreen(position,"Start","1");
-                        }
+                    } else {
+                        cameraScreen(position, "Start", "1");
                     }
-                }
-                else {
-                    cameraScreen(position,"Start","1");
-                }
 
 
+                } else {
+                    Utils.showAlert((Activity) context, "Activity Completed");
+                }
             }
         });
 
         holder.end_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String activity_id = String.valueOf(activityListValues.get(position).getActivityId());
-                final String schedule_id = String.valueOf(activityListValues.get(position).getScheduleId());
+                if (!activity_status.equalsIgnoreCase("y")) {
 
-                ArrayList<ODFMonitoringListValue> activityImage = dbData.selectImageActivity(dcode,bcode,pvcode,schedule_id,activity_id,"End");
+                    final String activity_id = String.valueOf(activityListValues.get(position).getActivityId());
+                    final String schedule_id = String.valueOf(activityListValues.get(position).getScheduleId());
 
-                if(activityImage.size() > 0) {
-                    for (int i=0;i<activityImage.size();i++){
-                        if(activityImage.get(i).getType().equalsIgnoreCase("end")){
-                            Utils.showAlert((Activity) context,"Already Captured");
+                    ArrayList<ODFMonitoringListValue> activityImage = dbData.selectImageActivity(dcode, bcode, pvcode, schedule_id, activity_id, "End");
+
+                    if (activityImage.size() > 0) {
+                        for (int i = 0; i < activityImage.size(); i++) {
+                            if (activityImage.get(i).getType().equalsIgnoreCase("end")) {
+                                Utils.showAlert((Activity) context, "Already Captured");
+                            } else {
+                                cameraScreen(position, "End", "1");
+                            }
                         }
-                        else {
-                            cameraScreen(position,"End","1");
-                        }
+                    } else {
+                        cameraScreen(position, "End", "1");
                     }
-                }
-                else {
-                    cameraScreen(position,"End","1");
+                } else {
+                    Utils.showAlert((Activity) context, "Activity Completed");
                 }
             }
+
         });
 
         dbData.open();
@@ -199,29 +203,31 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
         holder.multiple_photo_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!activity_status.equalsIgnoreCase("y")) {
+                    ArrayList<ODFMonitoringListValue> activityImage = dbData.selectImageActivity(dcode, bcode, pvcode, schedule_id, activity_id, "Multiple");
 
-                ArrayList<ODFMonitoringListValue> activityImage = dbData.selectImageActivity(dcode,bcode,pvcode,schedule_id,activity_id,"Multiple");
+                    if (activityImage.size() > 0 && activityImage.size() == (no_of_photos - 2)) {
+                        Utils.showAlert((Activity) context, "Limit Exceed");
+                    } else {
+                        cameraScreen(position, "Multiple", String.valueOf(activityImage.size() + 1));
+                    }
 
-                if(activityImage.size() > 0 && activityImage.size() == (no_of_photos - 2)) {
-                    Utils.showAlert((Activity) context,"Limit Exceed");
+                } else {
+                    Utils.showAlert((Activity) context, "Activity Completed");
                 }
-                else {
-                    cameraScreen(position,"Multiple",String.valueOf(activityImage.size()+1));
-                }
-
             }
         });
 
-        final String activity_status = activityListValues.get(position).getActivityStatus();
+
 
         if(activity_status.equalsIgnoreCase("y")) {
 //            for ( int i = 0; i < holder.activityLayout.getChildCount();  i++ ){
 //                View view = holder.activityLayout.getChildAt(i);
 //                view.setEnabled(false); // Or whatever you want to do with the view.
 //            }
-            holder.start_layout.setEnabled(false);
-            holder.end_layout.setEnabled(false);
-            holder.multiple_photo_layout.setEnabled(false);
+//            holder.start_layout.setEnabled(false);
+//            holder.end_layout.setEnabled(false);
+//            holder.multiple_photo_layout.setEnabled(false);
         }
         else if(activity_status.equalsIgnoreCase("N")){
             holder.start_layout.setEnabled(true);
