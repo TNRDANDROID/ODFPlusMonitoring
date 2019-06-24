@@ -116,8 +116,8 @@ public class ScheduleListAdapter extends RecyclerView.Adapter<ScheduleListAdapte
                 try {
                     Date from =  new SimpleDateFormat("yyyy-MM-dd").parse(scheduleListValues.get(position).getScheduleFromDate());
                     Date to =  new SimpleDateFormat("yyyy-MM-dd").parse(scheduleListValues.get(position).getScheduletoDate());
-//                    Date current =  new SimpleDateFormat("yyyy-MM-dd").parse(Utils.getCurrentDate());
- Date current = new SimpleDateFormat("yyyy-MM-dd").parse("2019-06-23");
+                    Date current =  new SimpleDateFormat("yyyy-MM-dd").parse(Utils.getCurrentDate());
+// Date current = new SimpleDateFormat("yyyy-MM-dd").parse("2019-06-23");
 
                     if(from.after(current)){
                         Utils.showAlert((Activity) context,"Your Schedule is not Started");

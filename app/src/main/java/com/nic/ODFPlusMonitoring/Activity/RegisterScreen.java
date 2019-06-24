@@ -223,7 +223,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                 pref_district = District.get(position).getDistrictName();
                 prefManager.setDistrictName(pref_district);
 
-                blockFilterSpinner(Integer.valueOf(District.get(position).getDistictCode()));
+                blockFilterSpinner(District.get(position).getDistictCode());
                 prefManager.setDistrictCode(District.get(position).getDistictCode());
 
 
@@ -497,7 +497,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         sp_district.setAdapter(new CommonAdapter(this, District, "DistrictList"));
     }
 
-    public void blockFilterSpinner(int filterBlock) {
+    public void blockFilterSpinner(String filterBlock) {
 
         String blocksql = "SELECT * FROM " + BLOCK_TABLE_NAME + " WHERE dcode = " + filterBlock;
         Log.d("blocksql", blocksql);
