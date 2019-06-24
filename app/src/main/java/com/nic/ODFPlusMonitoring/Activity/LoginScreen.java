@@ -3,6 +3,7 @@ package com.nic.ODFPlusMonitoring.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
@@ -31,6 +32,7 @@ import com.nic.ODFPlusMonitoring.DataBase.dbData;
 import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
+import com.nic.ODFPlusMonitoring.Support.MyCustomTextView;
 import com.nic.ODFPlusMonitoring.Support.MyEditTextView;
 import com.nic.ODFPlusMonitoring.Support.ProgressHUD;
 import com.nic.ODFPlusMonitoring.Utils.UrlGenerator;
@@ -62,6 +64,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     public static DBHelper dbHelper;
     public static SQLiteDatabase db;
     JSONObject jsonObject;
+    private MyCustomTextView versionNumber;
 
     String sb;
     private PrefManager prefManager;
@@ -93,6 +96,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         btn_sign_in = (Button) findViewById(R.id.btn_sign_in);
         sign_up = (LinearLayout) findViewById(R.id.sign_up);
         passwordEditText = (MyEditTextView) findViewById(R.id.passwordEditText);
+        versionNumber = (MyCustomTextView) findViewById(R.id.tv_version_number);
 
         btn_sign_in.setOnClickListener(this);
         sign_up.setOnClickListener(this);
@@ -113,7 +117,13 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         setPType = 1;
         redEye.setOnClickListener(this);
 
-
+        try {
+            String versionName = getPackageManager()
+                    .getPackageInfo(getPackageName(), 0).versionName;
+            versionNumber.setText("Version" + " " + versionName);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public void showPassword() {

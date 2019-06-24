@@ -30,6 +30,6 @@ public class UrlGenerator {
     }
 
     public static String getMotivatorSchedule() {
-        return "https://www.tnrd.gov.in/project/webservices_forms/odf/odf_services_test.php";
+        return "https://www.tnrd.gov.in/project/webservices_forms/odf/odf_services.php";
     }
 }

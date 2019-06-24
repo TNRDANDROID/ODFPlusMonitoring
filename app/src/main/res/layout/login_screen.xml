@@ -203,7 +203,19 @@ android:layout_marginTop="@dimen/_100sdp"
 
     </LinearLayout>
 
-
+    <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+        android:id="@+id/tv_version_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="@dimen/_34sdp"
+        android:padding="@dimen/_13sdp"
+        android:text="adaadadadad"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/_15sdp"
+        android:textStyle="bold" />
     <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
         android:id="@+id/textView1"
         android:layout_width="match_parent"
