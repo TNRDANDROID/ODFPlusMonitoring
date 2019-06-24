@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 import com.nic.ODFPlusMonitoring.R;
+import com.nic.ODFPlusMonitoring.Utils.Utils;
 
 import java.util.ArrayList;
 
@@ -91,7 +92,9 @@ public class SlideshowDialogFragment extends DialogFragment {
         ODFMonitoringListValue image = images.get(position);
         lblTitle.setText(image.getType()+" Activity");
         lblDescription.setText(image.getImageRemark());
-        lblDate.setText(image.getDateTime());
+        String date = Utils.parseDateForChart(image.getDateTime());
+        Log.d("parsed_date",date);
+        lblDate.setText(date);
     }
 
     @Override

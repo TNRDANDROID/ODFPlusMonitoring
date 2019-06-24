@@ -282,7 +282,7 @@ public class Utils {
 
 
     public static String parseDateForChart(String time) {
-        String inputPattern = "MM/dd/yyyy HH:mm:ss";
+        String inputPattern = "yyyy-MM-dd HH:mm:ss";
         String outputPattern = "dd MMM'T'yy, h:mm a";
         SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern, Locale.US);
         SimpleDateFormat outputFormat = new SimpleDateFormat(outputPattern, Locale.US);

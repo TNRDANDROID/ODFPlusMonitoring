@@ -278,7 +278,19 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.logout:
-                closeApplication();
+
+                dbData.open();
+                ArrayList<ODFMonitoringListValue> activityCount = dbData.getSavedActivity();
+                if(!Utils.isOnline()) {
+                    Utils.showAlert(this,getResources().getString(R.string.no_internet));
+                }else {
+                    if (!(activityCount.size() > 0 )) {
+                        closeApplication();
+                    }else{
+                        Utils.showAlert(this,"Sync all the data before logout!");
+                    }
+                }
+
                 break;
 
             case R.id.sync:
