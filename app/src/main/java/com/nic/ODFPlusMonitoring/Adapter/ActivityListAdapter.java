@@ -243,14 +243,21 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
         Activity activity = (Activity) context;
         Intent intent = new Intent(context, FullImageActivity.class);
         intent.putExtra(AppConstant.KEY_SCHEDULE_ID,schedule_id);
+        intent.putExtra("OnOffType",OnOffType);
         if(OnOffType.equalsIgnoreCase("Offline")){
             intent.putExtra(AppConstant.KEY_ACTIVITY_ID,id);
+            activity.startActivity(intent);
         }
         else if(OnOffType.equalsIgnoreCase("Online")) {
             intent.putExtra(AppConstant.KEY_SCHEDULE_ACTIVITY_ID,id);
+            if(Utils.isOnline()){
+                activity.startActivity(intent);
+            }else {
+                Utils.showAlert(activity,"Your Internet seems to be Offline.Images can be viewed only in Online mode.");
+            }
         }
-        intent.putExtra("OnOffType",OnOffType);
-        activity.startActivity(intent);
+
+
         activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
