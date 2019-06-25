@@ -118,9 +118,11 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
             activityRecycler.setAdapter(activityListAdapter);
             if(activityList.size() > 0 ){
                 not_found_tv.setVisibility(View.GONE);
+                activity_tv.setVisibility(View.VISIBLE);
             }
             else {
                 not_found_tv.setVisibility(View.VISIBLE);
+                activity_tv.setVisibility(View.GONE);
                 activityListAdapter.notifyDataSetChanged();
             }
 
