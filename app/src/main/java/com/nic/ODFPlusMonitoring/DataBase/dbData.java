@@ -729,6 +729,8 @@ public class dbData {
                             .getColumnIndexOrThrow(AppConstant.KEY_DATE_TIME)));
                     card.setImageRemark(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_IMAGE_REMARK)));
+                    card.setActivityName(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_NAME)));
                     card.setImage(decodedByte);
 
                     cards.add(card);

@@ -50,6 +50,7 @@ public class PrefManager {
     private static final String KEY_AUTOCOMPLETE_SELECTED_BRANCH_ID = "autocomplete_selected_branch_id";
     private static final String KEY_AUTOCOMPLETE_SELECTED_IFSC_CODE = "autocomplete_selected_ifsc_code";
     private static final String KEY_SPINNER_SELECTED_CATEGORY_NAME = "spinner_selected_category_name";
+    private static final String KEY_ACTIVITY_NAME= "activity_name";
 
 
     private static final String IMEI = "imei";
@@ -344,5 +345,12 @@ public class PrefManager {
     public String getSpinnerSelectedCategoryName() {
         return pref.getString(KEY_SPINNER_SELECTED_CATEGORY_NAME, null);
     }
+    public void setActivityName(String userName) {
+        editor.putString(KEY_ACTIVITY_NAME, userName);
+        editor.commit();
+    }
 
+    public String   getActivityName() {
+        return pref.getString(KEY_ACTIVITY_NAME, null);
+    }
 }

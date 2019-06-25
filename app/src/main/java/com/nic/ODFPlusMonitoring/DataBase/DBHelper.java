@@ -121,6 +121,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "type TEXT," +
                 "serial_number INTEGER," +
                 "datetime TEXT," +
+                "activity_name TEXT," +
                 "remark TEXT)");
     }
 

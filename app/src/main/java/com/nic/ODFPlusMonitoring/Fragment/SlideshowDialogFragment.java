@@ -29,7 +29,7 @@ public class SlideshowDialogFragment extends DialogFragment {
     private ArrayList<ODFMonitoringListValue> images;
     private ViewPager viewPager;
     private MyViewPagerAdapter myViewPagerAdapter;
-    private TextView lblCount, lblTitle, lblDescription,lblDate;
+    private TextView lblCount, lblTitle, lblDescription,lblDate,lblType;
     private int selectedPosition = 0;
 
    public static SlideshowDialogFragment newInstance() {
@@ -45,6 +45,7 @@ public class SlideshowDialogFragment extends DialogFragment {
         lblCount = (TextView) v.findViewById(R.id.lbl_count);
         lblTitle = (TextView) v.findViewById(R.id.title);
         lblDescription = (TextView) v.findViewById(R.id.description);
+        lblType = (TextView) v.findViewById(R.id.type);
         lblDate = (TextView) v.findViewById(R.id.date);
 
         images = (ArrayList<ODFMonitoringListValue>) getArguments().getSerializable("images");
@@ -90,10 +91,15 @@ public class SlideshowDialogFragment extends DialogFragment {
         lblCount.setText((position + 1) + " of " + images.size());
 
         ODFMonitoringListValue image = images.get(position);
-        lblTitle.setText(image.getType()+" Activity");
-        lblDescription.setText(image.getImageRemark());
+        lblTitle.setText(image.getActivityName());
+        if(!image.getImageRemark().equalsIgnoreCase("")){
+            lblDescription.setVisibility(View.VISIBLE);
+            lblDescription.setText(image.getImageRemark());
+        }else{
+            lblDescription.setVisibility(View.GONE);
+        }
+        lblType.setText(image.getType());
         String date = Utils.parseDateForChart(image.getDateTime());
-        Log.d("parsed_date",date);
         lblDate.setText(date);
     }
 

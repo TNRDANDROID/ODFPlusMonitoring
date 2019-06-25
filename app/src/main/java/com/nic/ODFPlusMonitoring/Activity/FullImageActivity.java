@@ -221,6 +221,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                 try {
                     ODFMonitoringListValue imageOnline = new ODFMonitoringListValue();
                     imageOnline.setImageRemark(jsonArray.getJSONObject(i).getString(AppConstant.KEY_IMAGE_REMARK));
+                    imageOnline.setActivityName(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ACTIVITY_NAME));
                     imageOnline.setDateTime(jsonArray.getJSONObject(i).getString("ins_date"));
                     imageOnline.setType(jsonArray.getJSONObject(i).getString("activity_type"));
 

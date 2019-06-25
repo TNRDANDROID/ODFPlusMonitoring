@@ -204,12 +204,12 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
             @Override
             public void onClick(View v) {
                 if (!activity_status.equalsIgnoreCase("y")) {
-                    ArrayList<ODFMonitoringListValue> activityImage = dbData.selectImageActivity(dcode, bcode, pvcode, schedule_id, activity_id, "Multiple");
+                    ArrayList<ODFMonitoringListValue> activityImage = dbData.selectImageActivity(dcode, bcode, pvcode, schedule_id, activity_id, "Middle");
 
                     if (activityImage.size() > 0 && activityImage.size() == (no_of_photos - 2)) {
                         Utils.showAlert((Activity) context, "Limit Exceed");
                     } else {
-                        cameraScreen(position, "Multiple", String.valueOf(activityImage.size() + 1));
+                        cameraScreen(position, "Middle", String.valueOf(activityImage.size() + 1));
                     }
 
                 } else {
@@ -280,6 +280,7 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
         intent.putExtra(AppConstant.KEY_SERIAL_NUMBER, serial_number);
         intent.putExtra(AppConstant.KEY_ACTIVITY_ID, String.valueOf(activityListValues.get(pos).getActivityId()));
         intent.putExtra(AppConstant.KEY_SCHEDULE_ID, String.valueOf(activityListValues.get(pos).getScheduleId()));
+        intent.putExtra(AppConstant.KEY_ACTIVITY_NAME, activityListValues.get(pos).getActivityName());
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
