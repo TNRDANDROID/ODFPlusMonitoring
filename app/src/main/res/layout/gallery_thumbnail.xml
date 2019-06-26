@@ -2,13 +2,14 @@
 <com.nic.ODFPlusMonitoring.Support.SquareLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/black"
+    android:background="@android:color/white"
     android:orientation="vertical">
 
     <ImageView
         android:id="@+id/thumbnail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:padding="@dimen/_1sdp"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop" />
 </com.nic.ODFPlusMonitoring.Support.SquareLayout>
