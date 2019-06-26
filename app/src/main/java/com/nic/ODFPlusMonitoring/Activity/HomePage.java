@@ -282,7 +282,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                 dbData.open();
                 ArrayList<ODFMonitoringListValue> activityCount = dbData.getSavedActivity();
                 if(!Utils.isOnline()) {
-                    Utils.showAlert(this,getResources().getString(R.string.no_internet));
+                    Utils.showAlert(this,"Logging out while offline may leads to loss of data!");
                 }else {
                     if (!(activityCount.size() > 0 )) {
                         closeApplication();
