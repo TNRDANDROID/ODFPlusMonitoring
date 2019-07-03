@@ -160,16 +160,13 @@
                     <RelativeLayout
                         android:id="@+id/end_layout"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:layout_height="wrap_content">
 
                         <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
                             android:id="@+id/end"
                             style="@style/TextAppearance.AppCompat.Subhead"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:layout_toLeftOf="@+id/dummy2"
                             android:padding="@dimen/_12sdp"
                             android:text="End"
                             android:textSize="16sp"
@@ -183,19 +180,17 @@
                             android:layout_height="20dp"
                             android:layout_centerInParent="true"
                             android:layout_gravity="end"
-                            android:layout_toLeftOf="@+id/end_camera"
+                            android:layout_toRightOf="@+id/end"
                             android:gravity="end"
                             android:text="Take Photo" />
 
-
                         <ImageView
-                            android:id="@+id/end_camera"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
-                            android:layout_alignParentEnd="true"
                             android:layout_centerInParent="true"
                             android:layout_gravity="end"
-                            android:layout_marginRight="@dimen/_12sdp"
+
+                            android:layout_toRightOf="@+id/dummy2"
                             android:gravity="end"
                             android:src="@drawable/camera_icon"
                             android:text="Take Photo" />

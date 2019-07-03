@@ -10,7 +10,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
+import android.hardware.Camera;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,6 +29,7 @@ import android.text.method.PasswordTransformationMethod;
 import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
@@ -44,7 +48,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
-import com.bumptech.glide.util.Util;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -72,6 +75,8 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -127,6 +132,8 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
     private static final int PERMISSION_REQUEST_CODE = 200;
     private static String imageStoragePath;
     public static final int BITMAP_SAMPLE_SIZE = 8;
+    private ExifInterface exifObject;
+
 
 
     @Override
@@ -301,7 +308,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                motivator_account_tv.setTransformationMethod(new AsteriskPasswordTransformationMethod());
+//                motivator_account_tv.setTransformationMethod(new AsteriskPasswordTransformationMethod());
 
             }
         };
@@ -477,7 +484,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         }
     }
     public void loadOfflineDistrictListDBValues() {
-        Cursor DistrictList = getRawEvents("Select * from " + DISTRICT_TABLE_NAME, null);
+        Cursor DistrictList = getRawEvents("Select * from " + DISTRICT_TABLE_NAME + " order by dname asc", null);
         District.clear();
         ODFMonitoringListValue ODFMonitoringListValue = new ODFMonitoringListValue();
         ODFMonitoringListValue.setDistrictName("Select District");
@@ -499,7 +506,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
 
     public void blockFilterSpinner(String filterBlock) {
 
-        String blocksql = "SELECT * FROM " + BLOCK_TABLE_NAME + " WHERE dcode = " + filterBlock;
+        String blocksql = "SELECT * FROM " + BLOCK_TABLE_NAME + " WHERE dcode = " + filterBlock + " order by bname asc";
         Log.d("blocksql", blocksql);
         Cursor BlockList = getRawEvents(blocksql, null);
         Block.clear();
@@ -871,11 +878,73 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
             // hide video preview
             Bitmap bitmap = CameraUtils.optimizeBitmap(BITMAP_SAMPLE_SIZE, imageStoragePath);
             profile_image_preview.setVisibility(View.GONE);
+//            int CameraEyeValue = setPhotoOrientation(0, bitmap); // CameraID = 1 : front 0:back
+            Matrix mtx = new Matrix();
+            // As Front camera is Mirrored so Fliping the Orientation
+
+            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.N_MR1 || Build.VERSION.SDK_INT == Build.VERSION_CODES.N ) {
+                mtx.postRotate(90);
+            } else {
+                mtx.postRotate(0);
+            }
+Log.d("buildversion",""+Build.VERSION.SDK_INT);
+Log.d("buildversion",""+Build.VERSION_CODES.N);
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), mtx, true);
             profile_image.setImageBitmap(bitmap);
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
     }
+
+    public int setPhotoOrientation(int cameraId, Bitmap bitmap) {
+        android.hardware.Camera.CameraInfo info = new android.hardware.Camera.CameraInfo();
+        android.hardware.Camera.getCameraInfo(cameraId, info);
+
+        try {
+            Uri uri = getImageUri(this, bitmap);
+            InputStream in = getApplicationContext().getContentResolver().openInputStream(uri);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                exifObject = new ExifInterface(in);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int orientation = exifObject.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
+        int degrees = 0;
+        switch (orientation) {
+            case Surface.ROTATION_0:
+                degrees = 0;
+                break;
+            case Surface.ROTATION_90:
+                degrees = 90;
+                break;
+            case Surface.ROTATION_180:
+                degrees = 180;
+                break;
+            case Surface.ROTATION_270:
+                degrees = 270;
+                break;
+        }
+
+        int result;
+        // do something for phones running an SDK before lollipop
+        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+            result = (info.orientation + degrees) % 360;
+            result = (360 - result) % 360; // compensate the mirror
+        } else { // back-facing
+            result = (info.orientation - degrees + 360) % 360;
+        }
+
+        return result;
+    }
+
+    private Uri getImageUri(Context context, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = imageStoragePath;
+        return Uri.parse(path);
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
