@@ -882,7 +882,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
             Matrix mtx = new Matrix();
             // As Front camera is Mirrored so Fliping the Orientation
 
-            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.N_MR1 || Build.VERSION.SDK_INT == Build.VERSION_CODES.N ) {
+            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.N_MR1 || Build.VERSION.SDK_INT == Build.VERSION_CODES.N || Build.VERSION.SDK_INT == Build.VERSION_CODES.M ) {
                 mtx.postRotate(90);
             } else {
                 mtx.postRotate(0);
