@@ -75,4 +75,16 @@
         android:background="@drawable/syn"
         android:visibility="gone"
         customfontdemo:fontName="@string/font_circular_medium" />
+
+    <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:padding="8dp"
+        android:text="Sofware Designed &amp; Developed by NIC"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/_14sdp"
+        customfontdemo:fontName="@string/font_circular_medium" />
 </RelativeLayout>
