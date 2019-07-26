@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.LocationListener;
@@ -311,6 +312,17 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
             Bitmap bitmap = CameraUtils.optimizeBitmap(BITMAP_SAMPLE_SIZE, imageStoragePath);
             image_view_preview.setVisibility(View.GONE);
             imageView.setVisibility(View.VISIBLE);
+            Matrix mtx = new Matrix();
+            // As Front camera is Mirrored so Fliping the Orientation
+
+            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.N_MR1 || Build.VERSION.SDK_INT == Build.VERSION_CODES.N ) {
+                mtx.postRotate(90);
+            } else {
+                mtx.postRotate(0);
+            }
+            Log.d("buildversion",""+Build.VERSION.SDK_INT);
+            Log.d("buildversion",""+Build.VERSION_CODES.N);
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), mtx, true);
             imageView.setImageBitmap(bitmap);
         } catch (NullPointerException e) {
             e.printStackTrace();
