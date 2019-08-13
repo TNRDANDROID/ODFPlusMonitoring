@@ -83,6 +83,7 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static com.bumptech.glide.load.resource.bitmap.TransformationUtils.rotateImage;
 import static com.nic.ODFPlusMonitoring.DataBase.DBHelper.BANKLIST_BRANCH_TABLE_NAME;
 import static com.nic.ODFPlusMonitoring.DataBase.DBHelper.BANKLIST_TABLE_NAME;
 import static com.nic.ODFPlusMonitoring.DataBase.DBHelper.BLOCK_TABLE_NAME;
@@ -878,73 +879,39 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
             // hide video preview
             Bitmap bitmap = CameraUtils.optimizeBitmap(BITMAP_SAMPLE_SIZE, imageStoragePath);
             profile_image_preview.setVisibility(View.GONE);
-//            int CameraEyeValue = setPhotoOrientation(0, bitmap); // CameraID = 1 : front 0:back
-            Matrix mtx = new Matrix();
-            // As Front camera is Mirrored so Fliping the Orientation
-
-            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.N_MR1 || Build.VERSION.SDK_INT == Build.VERSION_CODES.N || Build.VERSION.SDK_INT == Build.VERSION_CODES.M ) {
-                mtx.postRotate(90);
-            } else {
-                mtx.postRotate(0);
+            ExifInterface ei = null;
+            try {
+                ei = new ExifInterface(imageStoragePath);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-Log.d("buildversion",""+Build.VERSION.SDK_INT);
-Log.d("buildversion",""+Build.VERSION_CODES.N);
-            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), mtx, true);
-            profile_image.setImageBitmap(bitmap);
+            int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_UNDEFINED);
+
+            Bitmap rotatedBitmap = null;
+            switch(orientation) {
+
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    rotatedBitmap = rotateImage(bitmap, 90);
+                    break;
+
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    rotatedBitmap = rotateImage(bitmap, 180);
+                    break;
+
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    rotatedBitmap = rotateImage(bitmap, 270);
+                    break;
+
+                case ExifInterface.ORIENTATION_NORMAL:
+                default:
+                    rotatedBitmap = bitmap;
+            }
+            profile_image.setImageBitmap(rotatedBitmap);
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
     }
-
-    public int setPhotoOrientation(int cameraId, Bitmap bitmap) {
-        android.hardware.Camera.CameraInfo info = new android.hardware.Camera.CameraInfo();
-        android.hardware.Camera.getCameraInfo(cameraId, info);
-
-        try {
-            Uri uri = getImageUri(this, bitmap);
-            InputStream in = getApplicationContext().getContentResolver().openInputStream(uri);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                exifObject = new ExifInterface(in);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        int orientation = exifObject.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
-        int degrees = 0;
-        switch (orientation) {
-            case Surface.ROTATION_0:
-                degrees = 0;
-                break;
-            case Surface.ROTATION_90:
-                degrees = 90;
-                break;
-            case Surface.ROTATION_180:
-                degrees = 180;
-                break;
-            case Surface.ROTATION_270:
-                degrees = 270;
-                break;
-        }
-
-        int result;
-        // do something for phones running an SDK before lollipop
-        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-            result = (info.orientation + degrees) % 360;
-            result = (360 - result) % 360; // compensate the mirror
-        } else { // back-facing
-            result = (info.orientation - degrees + 360) % 360;
-        }
-
-        return result;
-    }
-
-    private Uri getImageUri(Context context, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = imageStoragePath;
-        return Uri.parse(path);
-    }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

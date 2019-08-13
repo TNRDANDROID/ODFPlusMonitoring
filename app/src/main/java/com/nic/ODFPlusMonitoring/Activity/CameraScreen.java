@@ -9,11 +9,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
-import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,14 +24,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
@@ -51,12 +45,11 @@ import com.nic.ODFPlusMonitoring.Session.PrefManager;
 import com.nic.ODFPlusMonitoring.Support.MyEditTextView;
 import com.nic.ODFPlusMonitoring.Support.MyLocationListener;
 import com.nic.ODFPlusMonitoring.Utils.CameraUtils;
-import com.nic.ODFPlusMonitoring.Utils.FontCache;
 import com.nic.ODFPlusMonitoring.Utils.Utils;
-import com.nic.ODFPlusMonitoring.DataBase.dbData;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,6 +57,7 @@ import es.dmoral.toasty.Toasty;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.CAMERA;
+import static com.bumptech.glide.load.resource.bitmap.TransformationUtils.rotateImage;
 
 public class CameraScreen extends AppCompatActivity implements View.OnClickListener, Api.ServerResponseListener {
 
@@ -312,18 +306,35 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
             Bitmap bitmap = CameraUtils.optimizeBitmap(BITMAP_SAMPLE_SIZE, imageStoragePath);
             image_view_preview.setVisibility(View.GONE);
             imageView.setVisibility(View.VISIBLE);
-            Matrix mtx = new Matrix();
-            // As Front camera is Mirrored so Fliping the Orientation
-
-            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.N_MR1 || Build.VERSION.SDK_INT == Build.VERSION_CODES.N ) {
-                mtx.postRotate(90);
-            } else {
-                mtx.postRotate(0);
+            ExifInterface ei = null;
+            try {
+                ei = new ExifInterface(imageStoragePath);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            Log.d("buildversion",""+Build.VERSION.SDK_INT);
-            Log.d("buildversion",""+Build.VERSION_CODES.N);
-            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), mtx, true);
-            imageView.setImageBitmap(bitmap);
+            int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_UNDEFINED);
+
+            Bitmap rotatedBitmap = null;
+            switch(orientation) {
+
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    rotatedBitmap = rotateImage(bitmap, 90);
+                    break;
+
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    rotatedBitmap = rotateImage(bitmap, 180);
+                    break;
+
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    rotatedBitmap = rotateImage(bitmap, 270);
+                    break;
+
+                case ExifInterface.ORIENTATION_NORMAL:
+                default:
+                    rotatedBitmap = bitmap;
+            }
+            imageView.setImageBitmap(rotatedBitmap);
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
