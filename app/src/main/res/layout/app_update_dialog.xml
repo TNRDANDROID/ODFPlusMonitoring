@@ -33,6 +33,7 @@
         android:orientation="vertical">
 
         <ImageView
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -47,7 +48,7 @@
             android:gravity="center"
             android:lineSpacingExtra="5dp"
             android:padding="@dimen/padding"
-            android:text="You need to update Road Assets Tracking Monitoring"
+            android:text="You need to update ODF Plus Monitoring"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
             customfontdemo:fontName="@string/font_circular_medium" />
 
@@ -59,7 +60,7 @@
             android:gravity="center"
             android:lineSpacingExtra="5dp"
             android:padding="@dimen/padding"
-            android:text="This version of Road Assets Tracking Monitoring is no longer supported. Please go to Official Site and install new version"
+            android:text="This version of ODF Plus Monitoring is no longer supported. Please go to Official Site and install new version"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
             customfontdemo:fontName="@string/font_normal" />
 
@@ -73,13 +74,15 @@
                 android:id="@+id/btn_cancel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/rectangle_box"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:padding="@dimen/padding"
                 android:text="Cancel"
                 android:textColor="@android:color/black"
                 android:visibility="gone"
-                customfontdemo:fontName="@string/font_normal" />
+                customfontdemo:fontName="@string/font_circular_medium" />
 
             <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
                 android:id="@+id/btn_ok"
@@ -88,11 +91,11 @@
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/margin"
                 android:layout_weight="1"
-                android:background="@drawable/add_button"
+                android:background="@drawable/rectangle_box"
                 android:gravity="center"
                 android:padding="@dimen/padding"
                 android:text="UPDATE"
-                android:textColor="@android:color/white"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/menu_title_size"
                 customfontdemo:fontName="@string/font_circular_medium" />
         </LinearLayout>

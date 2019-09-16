@@ -10,6 +10,7 @@ import com.nic.ODFPlusMonitoring.Api.ServerResponse;
 import com.nic.ODFPlusMonitoring.Constant.AppConstant;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
 import com.nic.ODFPlusMonitoring.Utils.UrlGenerator;
+import com.nic.ODFPlusMonitoring.Utils.Utils;
 
 
 import org.json.JSONException;
@@ -44,18 +45,11 @@ public class AppVersionHelper implements Api.ServerResponseListener {
         Map<String, String> params = new HashMap<>();
 
         params.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_VERSION_CHECK);
-        params.put(AppConstant.KEY_APP_CODE, "I");
+        params.put(AppConstant.KEY_APP_CODE, "OD");
 
         return params;
     }
 
-    public static JSONObject versionCheck() throws JSONException {
-        JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_VERSION_CHECK);
-        dataSet.put(AppConstant.KEY_APP_CODE, "I");
-        Log.d("versionCheck", "" + dataSet);
-        return dataSet;
-    }
 
     @Override
     public void OnMyResponse(ServerResponse serverResponse) {
@@ -67,7 +61,7 @@ public class AppVersionHelper implements Api.ServerResponseListener {
             if ("versionCheck".equals(urlType) && responseObj != null) {
                 String version = responseObj.getString("version");
 
-                if (responseObj.getString(AppConstant.KEY_APP_CODE).equalsIgnoreCase("I") && (!version.equalsIgnoreCase("1") )) {
+                if (responseObj.getString(AppConstant.KEY_APP_CODE).equalsIgnoreCase("OD") && (!version.equalsIgnoreCase(Utils.getVersionName(mContext)))) {
                     myListener.onAppVersionCallback("Update");
                 } else {
                     myListener.onAppVersionCallback("Don't update");

@@ -7,9 +7,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.nic.ODFPlusMonitoring.BuildConfig;
 import com.nic.ODFPlusMonitoring.Helper.AppVersionHelper;
 import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
+import com.nic.ODFPlusMonitoring.Utils.Utils;
 
 public class SplashScreen extends AppCompatActivity implements
         AppVersionHelper.myAppVersionInterface {
@@ -24,13 +26,16 @@ public class SplashScreen extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_screen);
         prefManager = new PrefManager(this);
-        showSignInScreen();
-//        if (Utils.isOnline()) {
-//           checkAppVersion();
-//        } else {
-//            showSignInScreen();
-//
-//        }
+        if (BuildConfig.BUILD_TYPE.equalsIgnoreCase("production")) {
+            if (Utils.isOnline()) {
+                checkAppVersion();
+            } else {
+                showSignInScreen();
+
+            }
+        } else {
+            showSignInScreen();
+        }
     }
 
 
