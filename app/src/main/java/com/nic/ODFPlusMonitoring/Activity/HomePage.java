@@ -3,7 +3,6 @@ package com.nic.ODFPlusMonitoring.Activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -52,6 +51,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     JSONObject datasetActivity = new JSONObject();
     private MyCustomTextView sync;
     private String isHome;
+    public static HomePage homePage;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -502,6 +502,10 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
             }
             return null;
         }
+    }
+
+    public static HomePage getInstance() {
+        return homePage;
     }
 
     @Override
