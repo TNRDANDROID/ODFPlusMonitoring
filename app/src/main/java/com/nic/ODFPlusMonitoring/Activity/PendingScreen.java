@@ -171,7 +171,7 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-                    Utils.showAlert(this, "Activity Image Saved");
+                    Utils.showAlert(this, "Your Activity is Synchronized to the server!");
                     ODFMonitoringListValue value = prefManager.getLocalSaveDeletedKeyList();
                     pendingScreenAdapter.notifyDataSetChanged();
                     long id = db.delete(DBHelper.SAVE_ACTIVITY,"dcode = ? and bcode = ? and pvcode = ? and schedule_id = ? and activity_id = ?",new String[] {value.getDistictCode(),value.getBlockCode(),value.getPvCode(), String.valueOf(value.getScheduleId()), String.valueOf(value.getActivityId())});
