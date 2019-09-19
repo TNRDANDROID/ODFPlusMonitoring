@@ -104,7 +104,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
 
     public void syncButtonVisibility() {
         dbData.open();
-        ArrayList<ODFMonitoringListValue> activityCount = dbData.getSavedActivity();
+        ArrayList<ODFMonitoringListValue> activityCount = dbData.getSavedActivity("count",new ODFMonitoringListValue());
 
         if (activityCount.size() > 0) {
             sync.setVisibility(View.VISIBLE);
@@ -145,96 +145,6 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         syncButtonVisibility();
     }
 
-    public class toUploadActivityTask extends AsyncTask<Void, Void,
-            JSONObject> {
-        @Override
-        protected JSONObject doInBackground(Void... params) {
-            try {
-                dbData.open();
-                ArrayList<ODFMonitoringListValue> saveActivityLists = dbData.getSavedActivity();
-                JSONArray saveAcivityArray = new JSONArray();
-                if (saveActivityLists.size() > 0) {
-                    for (int i = 0; i < saveActivityLists.size(); i++) {
-                        JSONObject activityJson = new JSONObject();
-                        activityJson.put(AppConstant.KEY_MOTIVATOR_ID, saveActivityLists.get(i).getMotivatorId());
-                        activityJson.put(AppConstant.KEY_SCHEDULE_ID, saveActivityLists.get(i).getScheduleId());
-                        activityJson.put(AppConstant.KEY_ACTIVITY_ID, saveActivityLists.get(i).getActivityId());
-                        activityJson.put(AppConstant.KEY_SCHEDULE_MASTER_ID, saveActivityLists.get(i).getScheduleMasterId());
-                        activityJson.put(AppConstant.DISTRICT_CODE, String.valueOf(saveActivityLists.get(i).getDistictCode()));
-                        activityJson.put(AppConstant.BLOCK_CODE, saveActivityLists.get(i).getBlockCode());
-                        activityJson.put(AppConstant.PV_CODE, saveActivityLists.get(i).getPvCode());
-                        activityJson.put(AppConstant.KEY_LATITUDE, saveActivityLists.get(i).getLatitude());
-                        activityJson.put(AppConstant.KEY_LONGITUDE, saveActivityLists.get(i).getLongitude());
-                        activityJson.put(AppConstant.KEY_TYPE, saveActivityLists.get(i).getType());
-                        activityJson.put(AppConstant.KEY_DATE_TIME, saveActivityLists.get(i).getDateTime());
-                        activityJson.put(AppConstant.KEY_IMAGE_REMARK, saveActivityLists.get(i).getImageRemark());
-                        activityJson.put(AppConstant.KEY_SERIAL_NUMBER, saveActivityLists.get(i).getSerialNo());
-
-                        Bitmap bitmap = saveActivityLists.get(i).getImage();
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
-                        byte[] imageInByte = baos.toByteArray();
-                        String image_str = Base64.encodeToString(imageInByte, Base64.DEFAULT);
-
-                        activityJson.put(AppConstant.KEY_IMAGE,image_str);
-
-                        saveAcivityArray.put(activityJson);
-                    }
-                }
-
-                datasetActivity = new JSONObject();
-                try {
-                    datasetActivity.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_ACTIVITY_IMAGE_SAVE);
-                    datasetActivity.put(AppConstant.KEY_TRACK_DATA, saveAcivityArray);
-
-//                    String authKey = datasetTrack.toString();
-//                    int maxLogSize = 2000;
-//                    for (int i = 0; i <= authKey.length() / maxLogSize; i++) {
-//                        int start = i * maxLogSize;
-//                        int end = (i + 1) * maxLogSize;
-//                        end = end > authKey.length() ? authKey.length() : end;
-//                        Log.v("to_send_plain", authKey.substring(start, end));
-//                    }
-//
-//                    String authKey1 = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), saveLatLongData.toString());
-//
-//                    for(int i = 0; i <= authKey1.length() / maxLogSize; i++) {
-//                        int start = i * maxLogSize;
-//                        int end = (i+1) * maxLogSize;
-//                        end = end > authKey.length() ? authKey1.length() : end;
-//                        Log.v("to_send_encryt", authKey1.substring(start, end));
-//                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return datasetActivity;
-        }
-
-        protected void onPostExecute(JSONObject dataset) {
-            super.onPostExecute(dataset);
-            syncData();
-        }
-    }
-
-    public void syncData() {
-        try {
-            new ApiService(this).makeJSONObjectRequest("saveActivityImage", Api.Method.POST, UrlGenerator.getMotivatorSchedule(), saveActivityistJsonParams(), "not cache", this);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public JSONObject saveActivityistJsonParams() throws JSONException {
-        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), datasetActivity.toString());
-        JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
-        dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("saveActivityImage", "" + authKey);
-        return dataSet;
-    }
 
     @Override
     public void OnMyResponse(ServerResponse serverResponse) {
@@ -258,19 +168,6 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                         Log.v("to_send_plain", authKey.substring(start, end));
                     }
             }
-            if ("saveActivityImage".equals(urlType) && responseObj != null) {
-                String key = responseObj.getString(AppConstant.ENCODE_DATA);
-                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
-                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
-                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-                    Utils.showAlert(this, "Activity Image Saved");
-                    dbData.open();
-                    dbData.deleteSavedActivity();
-                    getMotivatorSchedule();
-                    syncButtonVisibility();
-                }
-                Log.d("savedImage", "" + responseDecryptedBlockKey);
-            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -287,7 +184,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
             case R.id.logout:
 
                 dbData.open();
-                ArrayList<ODFMonitoringListValue> activityCount = dbData.getSavedActivity();
+                ArrayList<ODFMonitoringListValue> activityCount = dbData.getSavedActivity("count",new ODFMonitoringListValue());
                 if(!Utils.isOnline()) {
                     Utils.showAlert(this,"Logging out while offline may leads to loss of data!");
                 }else {

@@ -102,7 +102,6 @@ public class PendingScreenAdapter extends RecyclerView.Adapter<PendingScreenAdap
                     roadListValue.setPvCode(pvcode);
                     roadListValue.setScheduleId(scheduleId);
                     roadListValue.setActivityId(activityId);
-                    roadListValue.setScheduleMasterId(scheduleMasterId);
 //                    prefManager.setDistrictCode(dcode);
 //                    prefManager.setBlockCode(bcode);
 //                    prefManager.setPvCode(pvcode);
@@ -110,6 +109,7 @@ public class PendingScreenAdapter extends RecyclerView.Adapter<PendingScreenAdap
 //                    prefManager.setKeyPmgsyHabcode(String.valueOf(activityId));
 //                    prefManager.setKeyPmgsyHabcode(String.valueOf(scheduleMasterId));
 //                    prefManager.setKeyPmgsyDeleteId(String.valueOf(position));
+                    prefManager.setDeletedkeyList(roadListValue);
                    new toUploadActivityTask().execute(roadListValue);
                 } else {
                     Activity activity = (Activity) context;
@@ -123,10 +123,10 @@ public class PendingScreenAdapter extends RecyclerView.Adapter<PendingScreenAdap
     public class toUploadActivityTask extends AsyncTask<ODFMonitoringListValue, Void,
             JSONObject> {
         @Override
-        protected JSONObject doInBackground(ODFMonitoringListValue... odfMonitoringListValues) {
+        protected JSONObject doInBackground(ODFMonitoringListValue... values) {
             try {
                 dbData.open();
-                ArrayList<ODFMonitoringListValue> saveActivityLists = dbData.getSavedActivity();
+                ArrayList<ODFMonitoringListValue> saveActivityLists = dbData.getSavedActivity("upload",values[0]);
                 JSONArray saveAcivityArray = new JSONArray();
                 if (saveActivityLists.size() > 0) {
                     for (int i = 0; i < saveActivityLists.size(); i++) {

@@ -4,9 +4,17 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.nic.ODFPlusMonitoring.Constant.AppConstant;
+import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -51,11 +59,13 @@ public class PrefManager {
     private static final String KEY_AUTOCOMPLETE_SELECTED_IFSC_CODE = "autocomplete_selected_ifsc_code";
     private static final String KEY_SPINNER_SELECTED_CATEGORY_NAME = "spinner_selected_category_name";
     private static final String KEY_ACTIVITY_NAME= "activity_name";
+    private static final String KEY_DELETE_JSON = "deleteJson";
 
 
     private static final String IMEI = "imei";
     private static final String MOTIVATOR_ID = "motivator_id";
     private static final String SCHEDULE_MASTER_ID = "schedule_master_id";
+    private static final String KEY_JSON_OBJECT_DELETED_KEY= "KEY_JSON_OBJECT_DELETED_KEY";
 
 
     public PrefManager(Context context) {
@@ -352,5 +362,23 @@ public class PrefManager {
 
     public String   getActivityName() {
         return pref.getString(KEY_ACTIVITY_NAME, null);
+    }
+
+    public void setDeletedkeyList(ODFMonitoringListValue localSaveHaccp) {
+        Gson gson = new Gson();
+        String json = gson.toJson(localSaveHaccp);
+        editor.putString(KEY_JSON_OBJECT_DELETED_KEY, json);
+        editor.commit();
+    }
+
+    public String getLocalSaveDeletedKeyString() {
+        return pref.getString(KEY_JSON_OBJECT_DELETED_KEY, null);
+    }
+
+    public ODFMonitoringListValue getLocalSaveDeletedKeyList() {
+        Type listType = new TypeToken<ODFMonitoringListValue>() {
+        }.getType();
+        ODFMonitoringListValue CCPListNew = new Gson().fromJson(getLocalSaveDeletedKeyString(), listType);
+        return CCPListNew;
     }
 }
