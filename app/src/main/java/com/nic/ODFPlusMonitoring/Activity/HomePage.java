@@ -17,6 +17,9 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import com.android.volley.VolleyError;
@@ -31,7 +34,7 @@ import com.nic.ODFPlusMonitoring.Dialog.MyDialog;
 import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
-import com.nic.ODFPlusMonitoring.Support.MyCustomTextView;
+import com.nic.ODFPlusMonitoring.Support.ProgressHUD;
 import com.nic.ODFPlusMonitoring.Utils.UrlGenerator;
 import com.nic.ODFPlusMonitoring.Utils.Utils;
 
@@ -44,14 +47,15 @@ import java.util.ArrayList;
 
 public class HomePage extends AppCompatActivity implements Api.ServerResponseListener, View.OnClickListener, MyDialog.myOnClickListener {
     private PrefManager prefManager;
-    private ImageView logout;
+    private ImageView logout, refresh_icon;
     public dbData dbData = new dbData(this);
     private ScheduleListAdapter scheduleListAdapter;
     private ShimmerRecyclerView recyclerView;
     JSONObject datasetActivity = new JSONObject();
-    private MyCustomTextView sync;
+    private Button sync;
     private String isHome;
     public static HomePage homePage;
+    private ProgressHUD progressHUD;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,11 +71,14 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
 
     public void intializeUI() {
         prefManager = new PrefManager(this);
+        homePage = this;
         logout = (ImageView) findViewById(R.id.logout);
-        sync = (MyCustomTextView) findViewById(R.id.sync);
+        refresh_icon = (ImageView) findViewById(R.id.refresh_icon);
+        sync = (Button) findViewById(R.id.sync);
         recyclerView = (ShimmerRecyclerView) findViewById(R.id.scheduleList);
         logout.setOnClickListener(this);
         sync.setOnClickListener(this);
+        refresh_icon.setOnClickListener(this);
 
         if(Utils.isOnline()){
             if(!isHome.equalsIgnoreCase("Home")){
@@ -294,11 +301,19 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                 break;
 
             case R.id.sync:
-                if(Utils.isOnline()){
-                    new toUploadActivityTask().execute();
-                }
-                else {
-                    Utils.showAlert(this,"Please Turn on Your Mobile Data to Upload");
+//                if(Utils.isOnline()){
+//                    new toUploadActivityTask().execute();
+//                }
+//                else {
+//                    Utils.showAlert(this,"Please Turn on Your Mobile Data to Upload");
+//                }
+                openPendingScreen();
+                break;
+            case R.id.refresh_icon:
+                if (Utils.isOnline()) {
+                    refreshScreenCallApi();
+                } else {
+                    Utils.showAlert(this, getResources().getString(R.string.no_internet));
                 }
                 break;
         }
@@ -313,6 +328,20 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
     }
 
+    public void refreshScreenCallApi() {
+//        setAnimationView();
+        fetchApi();
+    }
+
+    public void fetchApi() {
+        getMotivatorSchedule();
+    }
+
+    public void openPendingScreen() {
+        Intent intent = new Intent(this, PendingScreen.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+    }
 
     private void closeApplication() {
         new MyDialog(this).exitDialog(this, "Are you sure you want to Logout?", "Logout");
@@ -406,6 +435,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                     e.printStackTrace();
                 }
             }
+            new fetchScheduletask().execute();
         }
 
     }
@@ -502,8 +532,34 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
             }
             return null;
         }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+//                progressHUD.cancel();
+
+            clearAnimations();
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            setAnimationView();
+//            progressHUD = ProgressHUD.show(HomePage.this, "Downloading", true, false, null);
+        }
     }
 
+    public void setAnimationView() {
+        Animation rotation = AnimationUtils.loadAnimation(this, R.anim.rotate);
+        rotation.setRepeatCount(Animation.INFINITE);
+        refresh_icon.startAnimation(rotation);
+    }
+
+    public void clearAnimations() {
+        refresh_icon.clearAnimation();
+    }
     public static HomePage getInstance() {
         return homePage;
     }

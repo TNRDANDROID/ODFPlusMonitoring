@@ -84,7 +84,6 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
 
         back_img.setOnClickListener(this);
         home_img.setOnClickListener(this);
-        sync_data.setOnClickListener(this);
         new fetchpendingtask().execute();
     }
 
@@ -130,7 +129,8 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
         protected ArrayList<ODFMonitoringListValue> doInBackground(JSONObject... params) {
             dbData.open();
             pendingList = new ArrayList<>();
-            pendingList = dbData.getSavedActivity();
+            pendingList = dbData.getPendingActivity();
+            Log.d("pending_count", String.valueOf(pendingList.size()));
             return pendingList;
         }
 
