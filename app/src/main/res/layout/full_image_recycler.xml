@@ -13,14 +13,14 @@
         android:background="@color/colorPrimary">
 
         <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+            android:id="@+id/title_tv"
+            style="@style/font_circular_bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:layout_marginTop="@dimen/margin"
-            android:text="View Image"
+            android:text="View Activity Image"
             android:textColor="@android:color/black"
-            android:textSize="18sp"
-            customfontdemo:fontName="@string/font_circular_medium" />
+            android:textSize="@dimen/_15sdp" />
 
         <ImageView
             android:id="@+id/back_img"
