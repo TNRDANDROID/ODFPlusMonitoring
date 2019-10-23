@@ -481,7 +481,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         }
     }
     public void loadOfflineDistrictListDBValues() {
-        Cursor DistrictList = getRawEvents("Select * from " + DISTRICT_TABLE_NAME + " order by dname asc", null);
+        Cursor DistrictList = getRawEvents("Select * from " + DISTRICT_TABLE_NAME + " WHERE dcode != 29 order by dname asc", null);
         District.clear();
         ODFMonitoringListValue ODFMonitoringListValue = new ODFMonitoringListValue();
         ODFMonitoringListValue.setDistrictName("Select District");
