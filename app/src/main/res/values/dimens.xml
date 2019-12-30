@@ -21,6 +21,7 @@
     <dimen name="settings_frame_layout_height">80dp</dimen>
     <dimen name="settings_edit_layout">25dp</dimen>
     <dimen name="settings_edit_layout_inner">30dp</dimen>
+    <dimen name="headerTextSize">28sp</dimen>
 
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="dots_height">30dp</dimen>

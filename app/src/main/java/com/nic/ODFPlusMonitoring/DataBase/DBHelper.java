@@ -20,6 +20,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String SCHEDULED_ACTIVITY = "t_scheduled_activity";
     public static final String SCHEDULED_ACTIVITY_PHOTOS = "t_scheduled_activity_photos";
     public static final String SAVE_ACTIVITY = "save_activity";
+    public static final String MOTIVATOR_PROFILE = "motivator_profile";
 
     private Context context;
 
@@ -123,6 +124,18 @@ public class DBHelper extends SQLiteOpenHelper {
                 "datetime TEXT," +
                 "activity_name TEXT," +
                 "remark TEXT)");
+
+        db.execSQL("CREATE TABLE " + MOTIVATOR_PROFILE + " ("
+                + "motivator_name TEXT," +
+                "dcode INTEGER," +
+                "bcode INTEGER," +
+                "mobile_no INTEGER," +
+                "image BLOB," +
+                "motivator_email TEXT," +
+                "motivator_address TEXT," +
+                "motivator_bank_name TEXT," +
+                "motivator_branch_name TEXT," +
+                "motivator_dob TEXT)");
     }
 
     @Override
@@ -140,6 +153,7 @@ public class DBHelper extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + SCHEDULE_VILLAGE);
             db.execSQL("DROP TABLE IF EXISTS " + SCHEDULED_ACTIVITY_PHOTOS);
             db.execSQL("DROP TABLE IF EXISTS " + SAVE_ACTIVITY);
+            db.execSQL("DROP TABLE IF EXISTS " + MOTIVATOR_PROFILE);
             onCreate(db);
         }
     }

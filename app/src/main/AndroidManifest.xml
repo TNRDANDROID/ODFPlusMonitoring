@@ -119,6 +119,13 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateUnchanged|adjustPan" />
 
+        <activity
+            android:name=".Activity.ViewEditProfileScreen"
+            android:label="@string/motivator_profile"
+            android:theme="@style/AppTheme.ProfileTheme"
+            android:screenOrientation="portrait"
+              />
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.nic.ODFPlusMonitoring.provider"

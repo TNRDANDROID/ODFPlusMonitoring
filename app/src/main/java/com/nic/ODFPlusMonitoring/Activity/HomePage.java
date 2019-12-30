@@ -17,10 +17,13 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.android.volley.VolleyError;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
@@ -34,6 +37,7 @@ import com.nic.ODFPlusMonitoring.Dialog.MyDialog;
 import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
+import com.nic.ODFPlusMonitoring.Support.BottomSheetFragment;
 import com.nic.ODFPlusMonitoring.Support.ProgressHUD;
 import com.nic.ODFPlusMonitoring.Utils.UrlGenerator;
 import com.nic.ODFPlusMonitoring.Utils.Utils;
@@ -42,13 +46,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class HomePage extends AppCompatActivity implements Api.ServerResponseListener, View.OnClickListener, MyDialog.myOnClickListener {
     private PrefManager prefManager;
     private ImageView logout, refresh_icon;
     public dbData dbData = new dbData(this);
+    private LinearLayout profile_layout;
+    Handler myHandler = new Handler();
     private ScheduleListAdapter scheduleListAdapter;
     private ShimmerRecyclerView recyclerView;
     JSONObject datasetActivity = new JSONObject();
@@ -56,6 +61,8 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     private String isHome;
     public static HomePage homePage;
     private ProgressHUD progressHUD;
+    private Animation animation;
+    private ImageView arrowImage;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,13 +80,15 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         prefManager = new PrefManager(this);
         homePage = this;
         logout = (ImageView) findViewById(R.id.logout);
+        arrowImage = (ImageView) findViewById(R.id.arrow_image_up);
         refresh_icon = (ImageView) findViewById(R.id.refresh_icon);
+        profile_layout = (LinearLayout) findViewById(R.id.profile_layout);
         sync = (Button) findViewById(R.id.sync);
         recyclerView = (ShimmerRecyclerView) findViewById(R.id.scheduleList);
         logout.setOnClickListener(this);
         sync.setOnClickListener(this);
         refresh_icon.setOnClickListener(this);
-
+        profile_layout.setOnClickListener(this);
         if(Utils.isOnline()){
             if(!isHome.equalsIgnoreCase("Home")){
                 getMotivatorSchedule();
@@ -99,7 +108,17 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                 new fetchScheduletask().execute();
             }
         }, 2000);
+        profile_layout.setAlpha(0);
+        final Runnable profileView = new Runnable() {
+            @Override
+            public void run() {
+                profile_layout.setAlpha(1);
+                profile_layout.startAnimation(AnimationUtils.loadAnimation(HomePage.this, R.anim.text_view_move));
 
+            }
+        };
+        myHandler.postDelayed(profileView, 700);
+        showArrowImage();
     }
 
     public void syncButtonVisibility() {
@@ -130,13 +149,17 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
             scheduleListAdapter = new ScheduleListAdapter(HomePage.this,
                                scheduleList, dbData);
             recyclerView.setAdapter(scheduleListAdapter);
-            recyclerView.showShimmerAdapter();
-            recyclerView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    loadCards();
-                }
-            }, 2000);
+            if (scheduleList.size() > 0) {
+                recyclerView.showShimmerAdapter();
+            } else {
+                recyclerView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadCards();
+                    }
+                }, 2000);
+            }
+
         }
     }
     private void loadCards() {
@@ -157,6 +180,9 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     loadMotivatorScheduleList(jsonObject.getJSONArray(AppConstant.JSON_DATA));
+                } else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD") && jsonObject.getString("MESSAGE").equalsIgnoreCase("NO_RECORD")) {
+                    Utils.showAlert(this, "No Record Found!");
+                    clearAnimations();
                 }
                 Log.d("MotivatorSchedule", "" + responseDecryptedBlockKey);
                 String authKey = responseDecryptedBlockKey;
@@ -208,16 +234,25 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                 break;
             case R.id.refresh_icon:
                 if (Utils.isOnline()) {
+                    setAnimationView();
                     refreshScreenCallApi();
                 } else {
                     Utils.showAlert(this, getResources().getString(R.string.no_internet));
                 }
+                break;
+            case R.id.profile_layout:
+                openMotivatorProfileView();
                 break;
         }
 
 
     }
 
+    public void openMotivatorProfileView() {
+        Intent intent = new Intent(this, ViewEditProfileScreen.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+    }
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -465,5 +500,22 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     protected void onResume() {
         super.onResume();
         syncButtonVisibility();
+    }
+
+    public void showArrowImage() {
+        arrowImage.setVisibility(View.VISIBLE);
+        animation = new AlphaAnimation((float) 0.5, 0); // Change alpha from fully visible to invisible
+        animation.setDuration(500); // duration - half a second
+        animation.setInterpolator(new LinearInterpolator()); // do not alter
+        animation.setRepeatCount(Animation.INFINITE); // Repeat animation
+        animation.setRepeatMode(Animation.REVERSE); // Reverse animation at the
+        arrowImage.startAnimation(animation);
+        arrowImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                BottomSheetFragment bottom= new BottomSheetFragment();
+                bottom.show(getSupportFragmentManager(),bottom.getTag());
+            }
+        });
     }
 }

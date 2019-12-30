@@ -51,13 +51,15 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-    <com.cooltechworks.views.shimmer.ShimmerRecyclerView xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/scheduleList"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/_5sdp"
-        app:shimmer_demo_layout="@layout/layout_demo"
-        app:shimmer_demo_shimmer_color="#8FFFFFFF" />
+
+            <com.cooltechworks.views.shimmer.ShimmerRecyclerView xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/scheduleList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_5sdp"
+                app:shimmer_demo_layout="@layout/layout_demo"
+                app:shimmer_demo_shimmer_color="#8FFFFFFF" />
+
 
     <!--<android.support.v7.widget.RecyclerView-->
         <!--android:id="@+id/scheduleList"-->
@@ -87,22 +89,30 @@
                 android:textSize="@dimen/_12sdp"
                 />
 
-    <!--<com.nic.ODFPlusMonitoring.Support.MyCustomTextView-->
-        <!--android:id="@+id/sync"-->
-        <!--android:layout_width="110dp"-->
-        <!--android:layout_height="40dp"-->
-        <!--android:layout_margin="5dp"-->
-        <!--android:layout_below="@+id/scheduleList"-->
-        <!--android:layout_centerInParent="true"-->
-        <!--android:padding="8dp"-->
-        <!--android:text="Sync Data"-->
-        <!--android:textAlignment="center"-->
-        <!--android:textColor="@android:color/white"-->
-        <!--android:textSize="@dimen/_14sdp"-->
-        <!--android:visibility="gone"-->
-        <!--android:background="@drawable/gradient"-->
-        <!--customfontdemo:fontName="@string/font_circular_medium" />-->
+            <LinearLayout
+                android:id="@+id/profile_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/sync"
+                android:background="@drawable/white_background_two_corners"
+                android:orientation="horizontal"
+                android:padding="@dimen/_5sdp">
 
+
+                <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+                    android:id="@+id/district_tv"
+                    style="@style/font_circular_book"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="View Motivator Profile"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_15sdp" />
+
+
+            </LinearLayout>
     <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -115,6 +125,18 @@
         android:textSize="@dimen/_14sdp"
         android:visibility="gone"
         customfontdemo:fontName="@string/font_circular_medium" />
+
+            <ImageView
+                android:id="@+id/arrow_image_up"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentBottom="true"
+                android:layout_below="@id/profile_layout"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/edit_text_padding"
+                android:rotation="180"
+                android:src="@drawable/double_down_arroe"
+                android:visibility="gone" />
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>
 </RelativeLayout>

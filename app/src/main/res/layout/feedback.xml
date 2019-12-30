@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/gradient_blue">
+
+        <RelativeLayout
+            android:id="@+id/header_layout"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize">
+
+
+            <ImageView
+                android:id="@+id/logout"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:layout_marginRight="@dimen/_10sdp"
+                android:background="@drawable/ic_close_black_24dp"
+                android:backgroundTint="@color/white" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/header_layout">
+
+            <TextView
+                android:id="@+id/title"
+                style="@style/font_circular_medium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_10sdp"
+                android:text="Send us your feedback!"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/title"
+                android:lineSpacingExtra="@dimen/_5sdp"
+                android:padding="@dimen/_10sdp"
+                android:text="Do you have a suggestion or found some bug?\nlet us know in the field below"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                android:textColor="@color/white" />
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/subtitle"
+                android:lineSpacingExtra="@dimen/_5sdp"
+                android:padding="@dimen/_5sdp"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                android:textColor="@color/white" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/feedback"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/header"
+
+        android:background="#f5f9fb"
+        android:padding="@dimen/_10sdp">
+
+        <EditText
+            android:id="@+id/feedback_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:background="@android:color/transparent"
+            android:ellipsize="start"
+            android:gravity="start"
+            android:hint="Describe your experience here... "
+            android:lines="7" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/radio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/feedback"
+        android:layout_marginStart="@dimen/_15sdp"
+        android:layout_marginTop="@dimen/padding">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2.2"
+                android:gravity="center"
+
+
+                android:orientation="vertical">
+
+                <RelativeLayout
+
+                    android:layout_width="100dp"
+                    android:layout_height="@dimen/header"
+                    android:layout_gravity="center"
+
+                    android:orientation="horizontal">
+
+
+                    <RadioButton
+                        android:id="@+id/bug"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerInParent="true"
+                        android:checked="false"
+
+                        android:text="Bug"
+
+                        android:textColor="@android:color/black"
+                        android:textSize="13sp" />
+
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <RelativeLayout
+
+                    android:layout_width="100dp"
+                    android:layout_height="@dimen/header"
+                    android:layout_below="@+id/hab_layout"
+                    android:layout_gravity="center"
+
+                    android:layout_marginEnd="@dimen/_5sdp"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/suggestions"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerInParent="true"
+                        android:text="Suggestion"
+                        android:textColor="@android:color/black"
+                        android:textSize="13sp" />
+
+
+                </RelativeLayout>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <RelativeLayout
+
+                    android:layout_width="100dp"
+                    android:layout_height="@dimen/header"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal">
+
+
+                    <RadioButton
+                        android:id="@+id/others"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_centerHorizontal="true"
+                        android:text="others"
+                        android:textColor="@android:color/black"
+                        android:textSize="13sp" />
+
+
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:id="@+id/submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/_25sdp">
+
+        <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+            android:id="@+id/btn_ok"
+            style="@style/font_circular_medium"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/_13sdp"
+            android:layout_marginEnd="@dimen/_13sdp"
+            android:background="@drawable/gradient_blue"
+            android:gravity="center"
+            android:text="Send Feedback"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+
+
+</RelativeLayout>

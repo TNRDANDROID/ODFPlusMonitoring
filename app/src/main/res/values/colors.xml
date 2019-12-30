@@ -8,6 +8,12 @@
     <color name="yellow">#fff5f504</color>
     <color name="red">#B71C1C</color>
 
+    <color name="profilePrimaryDark">#FF3B30</color>
+    <color name="profileAccentColor">#F7F7F7</color>
+    <color name="whiteTextColor">#fff</color>
+    <color name="profileBackground">#fff</color>
+    <color name="blackTextColor">#000</color>
+    <color name="profileEditTextColor">#707070</color>
 
     <color name="blue_background">#242b35</color>
     <color name="border_line">#252b34</color>
