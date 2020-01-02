@@ -57,12 +57,13 @@
             <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
                 android:id="@+id/activity_type_name"
                 style="@style/TextAppearance.AppCompat.Headline"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="-10dp"
                 android:padding="@dimen/_8sdp"
                 android:text="Special Activity"
+                android:textAlignment="textEnd"
                 android:textSize="20sp"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark" />
         </RelativeLayout>
