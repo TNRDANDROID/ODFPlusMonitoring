@@ -49,7 +49,7 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private MyCustomTextView activity_name, view_online_images, view_offline_images, mul;
+        private MyCustomTextView activity_name, view_online_images, view_offline_images, activity_type_name;
         private RelativeLayout start_layout, end_layout,multiple_photo_layout;
         private LinearLayout schedule;
         private ImageView sportsImage;
@@ -59,6 +59,7 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
             super(itemView);
             sportsImage = (ImageView)itemView.findViewById(R.id.sportsImage);
             activity_name = (MyCustomTextView) itemView.findViewById(R.id.activity_name);
+            activity_type_name = (MyCustomTextView) itemView.findViewById(R.id.activity_type_name);
             view_online_images = (MyCustomTextView) itemView.findViewById(R.id.view_online_images);
             view_offline_images = (MyCustomTextView) itemView.findViewById(R.id.view_offline_images);
             start_layout = (RelativeLayout) itemView.findViewById(R.id.start_layout);
@@ -81,6 +82,7 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final String activity_status = activityListValues.get(position).getActivityStatus();
         holder.activity_name.setText(activityListValues.get(position).getActivityName());
+        holder.activity_type_name.setText(activityListValues.get(position).getActivityTypeName());
         if(position %2 == 1)
         {
             holder.sportsImage.setImageResource(R.drawable.img_cycling);
@@ -126,24 +128,30 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
 
                     final String activity_id = String.valueOf(activityListValues.get(position).getActivityId());
                     final String schedule_id = String.valueOf(activityListValues.get(position).getScheduleId());
+                    ArrayList<ODFMonitoringListValue> activityImage1 = dbData.selectImageActivity(dcode, bcode, pvcode, schedule_id, activity_id, "Start");
 
-                    ArrayList<ODFMonitoringListValue> activityImage = dbData.selectImageActivity(dcode, bcode, pvcode, schedule_id, activity_id, "End");
-
-                    if (activityImage.size() > 0) {
-                        for (int i = 0; i < activityImage.size(); i++) {
-                            if (activityImage.get(i).getType().equalsIgnoreCase("end")) {
-                                Utils.showAlert((Activity) context, "Already Captured");
-                            } else {
-                                cameraScreen(position, "End", "1");
-                            }
-                        }
+                    if (activityImage1.size() <= 0) {
+                        Utils.showAlert((Activity) context, "Please Capture Image for Start Activity");
                     } else {
-                        cameraScreen(position, "End", "1");
+                        ArrayList<ODFMonitoringListValue> activityImage = dbData.selectImageActivity(dcode, bcode, pvcode, schedule_id, activity_id, "End");
+
+                        if (activityImage.size() > 0) {
+                            for (int i = 0; i < activityImage.size(); i++) {
+                                if (activityImage.get(i).getType().equalsIgnoreCase("end")) {
+                                    Utils.showAlert((Activity) context, "Already Captured");
+                                } else {
+                                    cameraScreen(position, "End", "1");
+                                }
+                            }
+                        } else {
+                            cameraScreen(position, "End", "1");
+                        }
                     }
-                } else {
-                    Utils.showAlert((Activity) context, "Activity Completed");
+                }else {
+                        Utils.showAlert((Activity) context, "Activity Completed");
+                    }
                 }
-            }
+
 
         });
 
@@ -204,12 +212,18 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
             @Override
             public void onClick(View v) {
                 if (!activity_status.equalsIgnoreCase("y")) {
-                    ArrayList<ODFMonitoringListValue> activityImage = dbData.selectImageActivity(dcode, bcode, pvcode, schedule_id, activity_id, "Middle");
+                    ArrayList<ODFMonitoringListValue> activityImage1 = dbData.selectImageActivity(dcode, bcode, pvcode, schedule_id, activity_id, "Start");
 
-                    if (activityImage.size() > 0 && activityImage.size() == (no_of_photos - 2)) {
-                        Utils.showAlert((Activity) context, "Limit Exceed");
+                    if (activityImage1.size() <= 0) {
+                        Utils.showAlert((Activity) context, "Please Capture Image for Start Activity");
                     } else {
-                        cameraScreen(position, "Middle", String.valueOf(activityImage.size() + 1));
+                        ArrayList<ODFMonitoringListValue> activityImage = dbData.selectImageActivity(dcode, bcode, pvcode, schedule_id, activity_id, "Middle");
+
+                        if (activityImage.size() > 0 && activityImage.size() == (no_of_photos - 2)) {
+                            Utils.showAlert((Activity) context, "Limit Exceed");
+                        } else {
+                            cameraScreen(position, "Middle", String.valueOf(activityImage.size() + 1));
+                        }
                     }
 
                 } else {

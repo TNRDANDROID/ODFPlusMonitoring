@@ -36,16 +36,17 @@
         <ImageView
             android:id="@+id/logout"
             android:layout_width="30dp"
-            android:layout_height="40dp"
+            android:layout_height="30dp"
             android:layout_centerInParent="true"
             android:src="@drawable/ic_signout"
+            android:layout_marginRight="@dimen/_10sdp"
             android:layout_alignParentEnd="true"/>
 
     </RelativeLayout>
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@+id/header_layout">
 
         <RelativeLayout
@@ -75,9 +76,10 @@
                 android:id="@+id/sync"
                 android:layout_width="120dp"
                 android:layout_height="35dp"
-                android:layout_marginBottom="@dimen/margin"
                 android:layout_below="@+id/scheduleList"
-                android:layout_centerInParent="true"
+                android:layout_centerHorizontal="true"
+
+                android:layout_marginTop="@dimen/_70sdp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="@dimen/margin"
                 android:layout_marginRight="@dimen/margin"
@@ -90,13 +92,14 @@
                 />
 
             <LinearLayout
-                android:id="@+id/profile_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/sync"
+                android:layout_below="@+id/scheduleList"
+                android:layout_marginTop="@dimen/_50sdp"
                 android:background="@drawable/white_background_two_corners"
                 android:orientation="horizontal"
-                android:padding="@dimen/_5sdp">
+                android:padding="@dimen/_5sdp"
+                android:visibility="gone">
 
 
                 <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
@@ -126,17 +129,55 @@
         android:visibility="gone"
         customfontdemo:fontName="@string/font_circular_medium" />
 
-            <ImageView
-                android:id="@+id/arrow_image_up"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_alignParentBottom="true"
-                android:layout_below="@id/profile_layout"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/edit_text_padding"
-                android:rotation="180"
-                android:src="@drawable/double_down_arroe"
-                android:visibility="gone" />
+
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>
+
+    <LinearLayout
+        android:id="@+id/profile_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginEnd="@dimen/_17sdp"
+         android:layout_marginBottom="@dimen/_30sdp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/pro_img"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:layout_margin="9dp"
+            android:background="@drawable/circle"
+            android:src="@mipmap/avatar" />
+
+        <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+            android:id="@+id/pro_tv"
+            style="@style/font_circular_bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="View Profile"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/menu_title_size" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/arrow_image_up"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="@dimen/_17sdp"
+         android:layout_marginBottom="@dimen/_50sdp"
+        android:background="@drawable/ic_feedback_black_24dp"
+        android:backgroundTint="#9e1392"
+        android:visibility="gone" />
 </RelativeLayout>

@@ -10,12 +10,18 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.SwitchCompat;
+import android.text.InputFilter;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
@@ -25,11 +31,17 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.Scroller;
 
+import com.nic.ODFPlusMonitoring.Activity.ActivityScreen;
+import com.nic.ODFPlusMonitoring.Activity.HomePage;
 import com.nic.ODFPlusMonitoring.Application.NICApplication;
 import com.nic.ODFPlusMonitoring.BuildConfig;
 import com.nic.ODFPlusMonitoring.Constant.AppConstant;
@@ -37,6 +49,7 @@ import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
 import com.nic.ODFPlusMonitoring.Support.MyCustomTextView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -75,6 +88,8 @@ public class Utils {
     private static String CIPHER_NAME = "AES/CBC/PKCS5PADDING";
     private static int CIPHER_KEY_LEN = 16; //128 bits
     private static PrefManager prefManager;
+    static JSONObject datasetActivity = new JSONObject();
+    static String feedback_reason = "";
 
     private static void initializeSharedPreference() {
         sharedPreferences = NICApplication.getGlobalContext()
@@ -1102,6 +1117,13 @@ public class Utils {
         return dataSet;
     }
 
+    public static JSONObject motivatorProfileJsonParams() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_MOTIVATOR_PROFILE);
+        Log.d("object", "" + dataSet);
+        return dataSet;
+    }
+
     public static String formatDate (String date){
         String initDateFormat = "yyyy-MM-dd";
         String endDateFormat = "dd-MM-yyyy";
@@ -1147,4 +1169,173 @@ public class Utils {
         Date date = new Date();
         return formatter.format(date);
     }
+
+    public static void showNameChangeDialog(final Activity activity, final String type, String name, final String dcode, final String bcode, final String pvcode, final String scheduleId) {
+        prefManager = new PrefManager(activity);
+
+        final BottomSheetDialog dialog = new BottomSheetDialog(activity,
+                R.style.UIChangeAppTheme);
+
+        BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback = new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                    dialog.dismiss();
+                }
+
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+            }
+        };
+
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        View inflatedView = View.inflate(activity, R.layout.feedback1, null);
+        dialog.setContentView(inflatedView);
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();
+        lp.dimAmount = 0.7f;
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        dialog.show();
+        ImageView cancel = (ImageView) inflatedView.findViewById(R.id.cancel);
+        final RadioButton bug = (RadioButton) inflatedView.findViewById(R.id.bug);
+        final RadioButton sugggestions = (RadioButton) inflatedView.findViewById(R.id.suggestions);
+        final RadioButton others = (RadioButton) inflatedView.findViewById(R.id.others);
+        final EditText feedback = (EditText) inflatedView.findViewById(R.id.feedback_tv);
+        final MyCustomTextView btnOk = (MyCustomTextView) inflatedView.findViewById(R.id.btn_ok);
+
+
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) ((View) inflatedView.getParent()).getLayoutParams();
+        CoordinatorLayout.Behavior behavior = params.getBehavior();
+
+        if (behavior != null && behavior instanceof BottomSheetBehavior) {
+            ((BottomSheetBehavior) behavior).setBottomSheetCallback(mBottomSheetBehaviorCallback);
+        }
+
+        if (params.getBehavior() instanceof BottomSheetBehavior) {
+            ((BottomSheetBehavior) params.getBehavior()).setBottomSheetCallback(mBottomSheetBehaviorCallback);
+        }
+
+        bug.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    feedback_reason = "Bug";
+                    sugggestions.setChecked(false);
+                    others.setChecked(false);
+
+                }
+            }
+        });
+        sugggestions.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    feedback_reason = "Suggestions";
+                    bug.setChecked(false);
+                    others.setChecked(false);
+                }
+            }
+        });
+        others.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    feedback_reason = "Others";
+                    bug.setChecked(false);
+                    sugggestions.setChecked(false);
+                }
+
+            }
+        });
+        int maxLength = 250;
+        feedback.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
+        feedback.setScroller(new Scroller(activity));
+        feedback.setVerticalScrollBarEnabled(true);
+
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        btnOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isOnline()) {
+                    if (!(feedback.getText().toString().equalsIgnoreCase(""))) {
+                        if ((bug.isChecked()) || (sugggestions.isChecked()) || (others.isChecked()) || (!feedback_reason.equalsIgnoreCase(""))) {
+                            datasetActivity = new JSONObject();
+                            try {
+                                JSONArray saveAcivityArray = new JSONArray();
+                                if (type.equalsIgnoreCase("General")) {
+                                    JSONObject activityJson = new JSONObject();
+                                    activityJson.put("feedback", feedback.getText().toString());
+                                    activityJson.put("feedback_reason", feedback_reason);
+                                    saveAcivityArray.put(activityJson);
+                                    datasetActivity.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_ACTIVITY_FEEDBACK);
+                                    datasetActivity.put(AppConstant.KEY_TRACK_DATA, saveAcivityArray);
+
+                                    HomePage.getInstance().motivatorFeedback(datasetActivity);
+                                    dialog.dismiss();
+                                } else if (type.equalsIgnoreCase("ScheduleWiseFeedback")) {
+                                    JSONObject activityJson = new JSONObject();
+                                    activityJson.put("feedback", feedback.getText().toString());
+                                    activityJson.put("feedback_reason", feedback_reason);
+                                    datasetActivity.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_ACTIVITY_SCHEDULE_FEEDBACK);
+                                    activityJson.put(AppConstant.DISTRICT_CODE, dcode);
+                                    activityJson.put(AppConstant.BLOCK_CODE, bcode);
+                                    activityJson.put(AppConstant.PV_CODE, pvcode);
+                                    activityJson.put(AppConstant.KEY_SCHEDULE_ID, scheduleId);
+                                    saveAcivityArray.put(activityJson);
+                                    datasetActivity.put(AppConstant.KEY_TRACK_DATA, saveAcivityArray);
+                                    ActivityScreen.getInstance().motivatorScheduleFeedback(datasetActivity);
+                                    dialog.dismiss();
+                                }
+
+                                String authKey = datasetActivity.toString();
+                                int maxLogSize = 2000;
+                                for (int i = 0; i <= authKey.length() / maxLogSize; i++) {
+                                    int start = i * maxLogSize;
+                                    int end = (i + 1) * maxLogSize;
+                                    end = end > authKey.length() ? authKey.length() : end;
+                                    Log.v("to_send_plain", authKey.substring(start, end));
+                                }
+
+//                                    String authKey1 = Utils.encrypt(prefManager.getUserPassKey(), activity.getResources().getString(R.string.init_vector), datasetActivity.toString());
+//
+//                                    for (int i = 0; i <= authKey1.length() / maxLogSize; i++) {
+//                                        int start = i * maxLogSize;
+//                                        int end = (i + 1) * maxLogSize;
+//                                        end = end > authKey.length() ? authKey1.length() : end;
+//                                        Log.v("to_send_encryt", authKey1.substring(start, end));
+//                                    }
+
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        } else {
+                            Utils.showAlert(activity, "Select Bug/Suggestion!");
+                        }
+                    } else {
+                        Utils.showAlert(activity, "Describe your Experience!");
+                    }
+                } else {
+
+                }
+            }
+        });
+
+
+    }
+
+
 }

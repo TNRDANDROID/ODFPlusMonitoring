@@ -1,4 +1,4 @@
-package com.nic.ODFPlusMonitoring.Support;
+package com.nic.ODFPlusMonitoring.Fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -6,9 +6,14 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
+import android.text.InputFilter;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.Scroller;
 
 import com.nic.ODFPlusMonitoring.R;
 
@@ -41,6 +46,10 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
         super.setupDialog(dialog, style);
         View inflatedView = View.inflate(getContext(), R.layout.feedback1, null);
         ImageView cancel = (ImageView) inflatedView.findViewById(R.id.cancel);
+        final RadioButton bug = (RadioButton) inflatedView.findViewById(R.id.bug);
+        final RadioButton sugggestions = (RadioButton) inflatedView.findViewById(R.id.suggestions);
+        final RadioButton others = (RadioButton) inflatedView.findViewById(R.id.others);
+        final EditText feedback = (EditText) inflatedView.findViewById(R.id.feedback_tv);
         dialog.setContentView(inflatedView);
 
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) ((View) inflatedView.getParent()).getLayoutParams();
@@ -65,12 +74,49 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
 
         params.height = screenHeight;
         parent.setLayoutParams(params);
+        bug.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    sugggestions.setChecked(false);
+                    others.setChecked(false);
+
+                }
+            }
+        });
+        sugggestions.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    bug.setChecked(false);
+                    others.setChecked(false);
+                }
+            }
+        });
+        others.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    bug.setChecked(false);
+                    sugggestions.setChecked(false);
+                }
+
+            }
+        });
+        int maxLength = 250;
+        feedback.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
+        feedback.setScroller(new Scroller(getContext()));
+        feedback.setVerticalScrollBarEnabled(true);
+
+
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
             }
         });
+
+
     }
 
 }

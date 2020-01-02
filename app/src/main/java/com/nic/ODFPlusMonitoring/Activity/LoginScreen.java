@@ -380,7 +380,6 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                         Log.d("userdatadecry", "" + userDataDecrypt);
                         jsonObject = new JSONObject(userDataDecrypt);
 
-                        Log.d("userdata", "" + prefManager.getDistrictCode() + prefManager.getBlockCode() + prefManager.getPvCode() + prefManager.getDistrictName() + prefManager.getBlockName());
                         prefManager.setUserPassKey(decryptedKey);
                         prefManager.setMotivatorId(String.valueOf(jsonObject.get(AppConstant.KEY_MOTIVATOR_ID)));
                         showHomeScreen();

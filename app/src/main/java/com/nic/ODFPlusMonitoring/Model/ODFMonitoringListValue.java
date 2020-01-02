@@ -60,6 +60,16 @@ public class ODFMonitoringListValue {
     private String imageAvailable;
     private String activityStatus;
 
+    public String getActivityTypeName() {
+        return activityTypeName;
+    }
+
+    public void setActivityTypeName(String activityTypeName) {
+        this.activityTypeName = activityTypeName;
+    }
+
+    private String activityTypeName;
+
     public String getActivityStatus() {
         return activityStatus;
     }

@@ -89,6 +89,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "activity_id INTEGER," +
                 "activity_status TEXT," +
                 "activity_name TEXT," +
+                "activity_type_name TEXT," +
                 "no_of_photos INTEGER," +
                 "dcode INTEGER," +
                 "bcode INTEGER," +

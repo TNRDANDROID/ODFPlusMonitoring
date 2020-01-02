@@ -113,6 +113,10 @@ public class AppConstant {
     public static String KEY_T_SCHEDULE_ACTIVITY_PHOTOS = "t_scheduled_activity_photos";
     public static String KEY_IMAGE_AVAILABLE = "image_available";
     public static String KEY_ACTIVITY_IMAGE_VIEW = "activity_image_view";
+    public static String KEY_ACTIVITY_TYPE_NAME = "activity_type_name";
+    public static String KEY_ACTIVITY_FEEDBACK = "activity_feedback";
+    public static String KEY_ACTIVITY_SCHEDULE_FEEDBACK = "activity_schedule_feedback";
+    public static String KEY_MOTIVATOR_PROFILE = "motivator_profile";
 
 
 

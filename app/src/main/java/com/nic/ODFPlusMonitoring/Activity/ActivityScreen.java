@@ -5,14 +5,14 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -20,16 +20,17 @@ import android.widget.Spinner;
 import com.android.volley.VolleyError;
 import com.nic.ODFPlusMonitoring.Adapter.ActivityListAdapter;
 import com.nic.ODFPlusMonitoring.Adapter.CommonAdapter;
-import com.nic.ODFPlusMonitoring.Adapter.ScheduleListAdapter;
 import com.nic.ODFPlusMonitoring.Api.Api;
+import com.nic.ODFPlusMonitoring.Api.ApiService;
 import com.nic.ODFPlusMonitoring.Api.ServerResponse;
 import com.nic.ODFPlusMonitoring.Constant.AppConstant;
 import com.nic.ODFPlusMonitoring.DataBase.dbData;
-import com.nic.ODFPlusMonitoring.Dialog.MyDialog;
 import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
 import com.nic.ODFPlusMonitoring.Support.MyCustomTextView;
+import com.nic.ODFPlusMonitoring.Utils.UrlGenerator;
+import com.nic.ODFPlusMonitoring.Utils.Utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,6 +47,9 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
     ArrayList<ODFMonitoringListValue> scheduleVillageList = new ArrayList<>();
     ArrayList<ODFMonitoringListValue> activityList = new ArrayList<>();
     private MyCustomTextView activity_tv,not_found_tv;
+    private Animation animation;
+    private ImageView arrowImage;
+    private static ActivityScreen activityScreen;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,7 +60,9 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
 
     public void intializeUI() {
         prefManager = new PrefManager(this);
+        activityScreen = this;
         scheduleVillage_sp = (Spinner) findViewById(R.id.village_spinner);
+        arrowImage = (ImageView) findViewById(R.id.arrow_image_up);
         activityRecycler = (RecyclerView) findViewById(R.id.activity_list);
         activity_tv = (MyCustomTextView) findViewById(R.id.activity_tv);
         not_found_tv = (MyCustomTextView) findViewById(R.id.not_found_tv);
@@ -119,6 +125,7 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
             if(activityList.size() > 0 ){
                 not_found_tv.setVisibility(View.GONE);
                 activity_tv.setVisibility(View.VISIBLE);
+                showArrowImage();
             }
             else {
                 not_found_tv.setVisibility(View.VISIBLE);
@@ -159,19 +166,38 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
 
         scheduleVillage_sp.setAdapter(new CommonAdapter(this, scheduleVillageList, "ScheduleVillage"));
     }
+
+    public JSONObject motivatorScheduleFeedback(JSONObject dataset) {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), dataset.toString());
+        JSONObject savedDataSet = new JSONObject();
+        try {
+            savedDataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+            savedDataSet.put(AppConstant.DATA_CONTENT, authKey);
+
+            new ApiService(this).makeJSONObjectRequest("ScheduleWiseFeedback", Api.Method.POST, UrlGenerator.getMotivatorSchedule(), savedDataSet, "not cache", this);
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return savedDataSet;
+    }
     @Override
     public void OnMyResponse(ServerResponse serverResponse) {
         try {
             JSONObject responseObj = serverResponse.getJsonResponse();
             String urlType = serverResponse.getApi();
-//            if ("MotivatorSchedule".equals(urlType) && responseObj != null) {
-//                if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
-////                    new MotivatorCategoryList().execute(responseObj.getJSONArray(AppConstant.JSON_DATA));
-//                } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("NO_RECORD")) {
-//                    Log.d("Record", responseObj.getString(AppConstant.KEY_MESSAGE));
-//                }
-//                Log.d("MotivatorSchedule", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
-//            }
+            if ("ScheduleWiseFeedback".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    Utils.showAlert(this, "Thanks For Your Valuable Feedback!");
+                } else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("FAIL")) {
+                    Utils.showAlert(this, "No Feedback Inserted!");
+
+                }
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -218,10 +244,28 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
         overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
     }
 
-
+    public static ActivityScreen getInstance() {
+        return activityScreen;
+    }
     @Override
     protected void onResume() {
         super.onResume();
         activityListAdapter.notifyDataSetChanged();
+    }
+
+    public void showArrowImage() {
+        arrowImage.setVisibility(View.VISIBLE);
+        animation = new AlphaAnimation((float) 3, 0); // Change alpha from fully visible to invisible
+        animation.setDuration(500); // duration - half a second
+        animation.setInterpolator(new LinearInterpolator()); // do not alter
+        animation.setRepeatCount(Animation.INFINITE); // Repeat animation
+        animation.setRepeatMode(Animation.REVERSE); // Reverse animation at the
+        arrowImage.startAnimation(animation);
+        arrowImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Utils.showNameChangeDialog(ActivityScreen.this, "ScheduleWiseFeedback", "", prefManager.getDistrictCode(), prefManager.getBlockCode(), prefManager.getPvCode(), getIntent().getStringExtra(AppConstant.KEY_SCHEDULE_ID));
+            }
+        });
     }
 }

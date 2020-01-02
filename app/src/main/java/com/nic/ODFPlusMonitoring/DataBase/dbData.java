@@ -466,6 +466,8 @@ public class dbData {
                             .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_ID)));
                     card.setActivityName(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_NAME)));
+                    card.setActivityTypeName(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_TYPE_NAME)));
                     card.setPlaceOfActivity(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_PLACE_OF_ACTIVITY)));
                     card.setNoOfPhotos(cursor.getInt(cursor
@@ -497,6 +499,8 @@ public class dbData {
                             .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_ID)));
                     card1.setActivityName(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_NAME)));
+                    card1.setActivityTypeName(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_TYPE_NAME)));
                     card1.setPlaceOfActivity(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_PLACE_OF_ACTIVITY)));
                     card1.setNoOfPhotos(cursor.getInt(cursor
@@ -529,6 +533,7 @@ public class dbData {
         values.put(AppConstant.KEY_SCHEDULE_ID,odfMonitoringListValue.getScheduleId());
         values.put(AppConstant.KEY_ACTIVITY_ID,odfMonitoringListValue.getActivityId());
         values.put(AppConstant.KEY_ACTIVITY_NAME,odfMonitoringListValue.getActivityName());
+        values.put(AppConstant.KEY_ACTIVITY_TYPE_NAME,odfMonitoringListValue.getActivityTypeName());
         values.put(AppConstant.KEY_PLACE_OF_ACTIVITY,odfMonitoringListValue.getPlaceOfActivity());
         values.put(AppConstant.KEY_NO_OF_PHOTOS,odfMonitoringListValue.getNoOfPhotos());
         values.put(AppConstant.DISTRICT_CODE,odfMonitoringListValue.getDistictCode());

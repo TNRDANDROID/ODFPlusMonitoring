@@ -44,8 +44,28 @@
                     android:textSize="20sp"
                     android:theme="@style/ThemeOverlay.AppCompat.Dark" />
             </LinearLayout>
+
+
         </LinearLayout>
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:orientation="vertical">
+
+            <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+                android:id="@+id/activity_type_name"
+                style="@style/TextAppearance.AppCompat.Headline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="-10dp"
+                android:padding="@dimen/_8sdp"
+                android:text="Special Activity"
+                android:textSize="20sp"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark" />
+        </RelativeLayout>
         <RelativeLayout
             android:id="@+id/start_activity"
             android:layout_width="match_parent"
@@ -78,14 +98,13 @@
                             android:padding="@dimen/_12sdp"
                             android:text="Start"
                             android:textSize="16sp"
-
-                            android:textColor="#000080"
+                             android:textColor="#000080"
                             customfontdemo:fontName="@string/font_circular_bold" />
 
                         <ImageView
                             android:id="@+id/dummy1"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
                             android:layout_gravity="end"
                             android:layout_toRightOf="@+id/newsTitle"
@@ -136,8 +155,8 @@
 
 
                         <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
                             android:layout_gravity="end"
 
@@ -176,8 +195,8 @@
 
                         <ImageView
                             android:id="@+id/dummy2"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
                             android:layout_gravity="end"
                             android:layout_toRightOf="@+id/end"

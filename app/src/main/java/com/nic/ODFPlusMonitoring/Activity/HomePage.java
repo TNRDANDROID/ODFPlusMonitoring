@@ -2,7 +2,6 @@ package com.nic.ODFPlusMonitoring.Activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -37,7 +35,7 @@ import com.nic.ODFPlusMonitoring.Dialog.MyDialog;
 import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
-import com.nic.ODFPlusMonitoring.Support.BottomSheetFragment;
+import com.nic.ODFPlusMonitoring.Support.MyCustomTextView;
 import com.nic.ODFPlusMonitoring.Support.ProgressHUD;
 import com.nic.ODFPlusMonitoring.Utils.UrlGenerator;
 import com.nic.ODFPlusMonitoring.Utils.Utils;
@@ -50,7 +48,8 @@ import java.util.ArrayList;
 
 public class HomePage extends AppCompatActivity implements Api.ServerResponseListener, View.OnClickListener, MyDialog.myOnClickListener {
     private PrefManager prefManager;
-    private ImageView logout, refresh_icon;
+    private ImageView logout, refresh_icon, arrowImage, pro_img;
+    private MyCustomTextView pro_tv;
     public dbData dbData = new dbData(this);
     private LinearLayout profile_layout;
     Handler myHandler = new Handler();
@@ -61,8 +60,8 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     private String isHome;
     public static HomePage homePage;
     private ProgressHUD progressHUD;
-    private Animation animation;
-    private ImageView arrowImage;
+    private Animation animation,stb2;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,8 +77,11 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
 
     public void intializeUI() {
         prefManager = new PrefManager(this);
+        stb2 = AnimationUtils.loadAnimation(this, R.anim.stb2);
         homePage = this;
         logout = (ImageView) findViewById(R.id.logout);
+        pro_img = (ImageView) findViewById(R.id.pro_img);
+        pro_tv = (MyCustomTextView) findViewById(R.id.pro_tv);
         arrowImage = (ImageView) findViewById(R.id.arrow_image_up);
         refresh_icon = (ImageView) findViewById(R.id.refresh_icon);
         profile_layout = (LinearLayout) findViewById(R.id.profile_layout);
@@ -91,7 +93,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         profile_layout.setOnClickListener(this);
         if(Utils.isOnline()){
             if(!isHome.equalsIgnoreCase("Home")){
-                getMotivatorSchedule();
+                refreshScreenCallApi();
             }
         }
 
@@ -108,17 +110,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                 new fetchScheduletask().execute();
             }
         }, 2000);
-        profile_layout.setAlpha(0);
-        final Runnable profileView = new Runnable() {
-            @Override
-            public void run() {
-                profile_layout.setAlpha(1);
-                profile_layout.startAnimation(AnimationUtils.loadAnimation(HomePage.this, R.anim.text_view_move));
 
-            }
-        };
-        myHandler.postDelayed(profileView, 700);
-        showArrowImage();
     }
 
     public void syncButtonVisibility() {
@@ -130,6 +122,14 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         }else {
             sync.setVisibility(View.GONE);
         }
+    }
+
+    public void startAnimation() {
+        profile_layout.setVisibility(View.VISIBLE);
+        pro_img.startAnimation(stb2);
+        pro_tv.setTranslationX(800);
+        pro_tv.setAlpha(0);
+        pro_tv.animate().translationX(0).alpha(1).setDuration(1000).setStartDelay(600).start();
     }
 
     public class fetchScheduletask extends AsyncTask<Void, Void,
@@ -149,9 +149,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
             scheduleListAdapter = new ScheduleListAdapter(HomePage.this,
                                scheduleList, dbData);
             recyclerView.setAdapter(scheduleListAdapter);
-            if (scheduleList.size() > 0) {
-                recyclerView.showShimmerAdapter();
-            } else {
+            recyclerView.showShimmerAdapter();
                 recyclerView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -160,12 +158,13 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                 }, 2000);
             }
 
-        }
     }
     private void loadCards() {
 
         recyclerView.hideShimmerAdapter();
         syncButtonVisibility();
+        showArrowImage();
+        startAnimation();
     }
 
 
@@ -186,13 +185,34 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                 }
                 Log.d("MotivatorSchedule", "" + responseDecryptedBlockKey);
                 String authKey = responseDecryptedBlockKey;
-                    int maxLogSize = 2000;
-                    for (int i = 0; i <= authKey.length() / maxLogSize; i++) {
-                        int start = i * maxLogSize;
-                        int end = (i + 1) * maxLogSize;
-                        end = end > authKey.length() ? authKey.length() : end;
-                        Log.v("to_send_plain", authKey.substring(start, end));
-                    }
+                int maxLogSize = 2000;
+                for (int i = 0; i <= authKey.length() / maxLogSize; i++) {
+                    int start = i * maxLogSize;
+                    int end = (i + 1) * maxLogSize;
+                    end = end > authKey.length() ? authKey.length() : end;
+                    Log.v("to_send_plain", authKey.substring(start, end));
+                }
+            } else if ("GeneralFeedback".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    Utils.showAlert(this, "Thanks For Your Valuable Feedback!");
+                } else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("FAIL")) {
+                    Utils.showAlert(this, "No Feedback Inserted!");
+
+                }
+            }
+            else if ("MotivatorProfile".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    loadMotivatorScheduleList(jsonObject.getJSONArray(AppConstant.JSON_DATA));
+                } else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("FAIL")) {
+
+
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -267,6 +287,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
 
     public void fetchApi() {
         getMotivatorSchedule();
+        getMotivatorProfile();
     }
 
     public void openPendingScreen() {
@@ -320,6 +341,41 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
         Log.d("scheduleListWise", "" + authKey);
+        return dataSet;
+
+    }
+
+    public JSONObject motivatorFeedback(JSONObject dataset) {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), dataset.toString());
+        JSONObject savedDataSet = new JSONObject();
+        try {
+            savedDataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+            savedDataSet.put(AppConstant.DATA_CONTENT, authKey);
+
+            new ApiService(this).makeJSONObjectRequest("GeneralFeedback", Api.Method.POST, UrlGenerator.getMotivatorSchedule(), savedDataSet, "not cache", this);
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return savedDataSet;
+    }
+
+    public void getMotivatorProfile() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("MotivatorProfile", Api.Method.POST, UrlGenerator.getMotivatorSchedule(), motivatorProfileJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public JSONObject motivatorProfileJsonParams() throws JSONException {
+
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.motivatorProfileJsonParams().toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("motivatorProfile", "" + authKey);
         return dataSet;
 
     }
@@ -415,6 +471,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                         scheduleActivityValue.setScheduleId(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_SCHEDULE_ID));
                         scheduleActivityValue.setActivityId(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_ACTIVITY_ID));
                         scheduleActivityValue.setActivityName(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ACTIVITY_NAME));
+                        scheduleActivityValue.setActivityTypeName(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ACTIVITY_TYPE_NAME));
                         scheduleActivityValue.setPlaceOfActivity(jsonArray.getJSONObject(i).getString(AppConstant.KEY_PLACE_OF_ACTIVITY));
                         scheduleActivityValue.setNoOfPhotos(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_NO_OF_PHOTOS));
                         scheduleActivityValue.setDistictCode(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE));
@@ -504,7 +561,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
 
     public void showArrowImage() {
         arrowImage.setVisibility(View.VISIBLE);
-        animation = new AlphaAnimation((float) 0.5, 0); // Change alpha from fully visible to invisible
+        animation = new AlphaAnimation((float) 3, 0); // Change alpha from fully visible to invisible
         animation.setDuration(500); // duration - half a second
         animation.setInterpolator(new LinearInterpolator()); // do not alter
         animation.setRepeatCount(Animation.INFINITE); // Repeat animation
@@ -513,8 +570,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         arrowImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                BottomSheetFragment bottom= new BottomSheetFragment();
-                bottom.show(getSupportFragmentManager(),bottom.getTag());
+                Utils.showNameChangeDialog(HomePage.this, "General", "", "", "", "", "");
             }
         });
     }

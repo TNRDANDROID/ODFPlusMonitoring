@@ -86,7 +86,12 @@
             android:ellipsize="start"
             android:gravity="start"
             android:hint="Describe your experience here... "
-            android:lines="7" />
+            android:lines="7"
+            android:ems="7"
+            android:scrollbarStyle="insideInset"
+            android:scrollbars="vertical"
+            android:overScrollMode="always"
+            android:maxLength="2"/>
 
     </RelativeLayout>
 

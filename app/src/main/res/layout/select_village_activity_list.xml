@@ -130,8 +130,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/activity_tv"
-                android:layout_alignParentBottom="true"
-                android:layout_margin="5dp"
+                 android:layout_margin="5dp"
                 android:fadeScrollbars="false"
                 android:scrollbarSize="4dp"
                 android:scrollbars="vertical" />
@@ -140,16 +139,32 @@
                 android:id="@+id/not_found_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginTop="@dimen/_230sdp"
+                android:layout_below="@+id/activity_list"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/_20sdp"
                 android:text="No Activity Found!"
                 android:textAlignment="center"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/_16sdp"
                 android:textStyle="bold"
                 android:visibility="gone" />
+
         </RelativeLayout>
+
+
     </android.support.v4.widget.NestedScrollView>
 
-
+    <ImageView
+        android:id="@+id/arrow_image_up"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+         android:layout_gravity="top|right"
+        android:layout_marginTop="@dimen/_50sdp"
+        android:layout_marginRight="@dimen/_10sdp"
+        android:layout_below="@id/not_found_tv"
+        android:layout_centerHorizontal="true"
+         android:background="@drawable/ic_feedback_black_24dp"
+        android:backgroundTint="#9e1392"
+         android:layout_marginBottom="@dimen/_20sdp"
+        android:visibility="gone" />
 </android.support.design.widget.CoordinatorLayout>
