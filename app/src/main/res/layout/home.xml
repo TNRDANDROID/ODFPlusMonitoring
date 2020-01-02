@@ -80,6 +80,7 @@
                 android:layout_centerHorizontal="true"
 
                 android:layout_marginTop="@dimen/_70sdp"
+                android:layout_marginBottom="@dimen/_20sdp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="@dimen/margin"
                 android:layout_marginRight="@dimen/margin"
@@ -143,14 +144,20 @@
         android:layout_centerHorizontal="true"
         android:layout_marginEnd="@dimen/_17sdp"
          android:layout_marginBottom="@dimen/_30sdp"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/pro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/pro_img"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_gravity="center"
+            android:layout_centerInParent="true"
             android:layout_margin="9dp"
             android:background="@drawable/circle"
             android:src="@mipmap/avatar" />
@@ -160,24 +167,51 @@
             style="@style/font_circular_bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="View Profile"
+            android:layout_marginTop="@dimen/_10sdp"
+             android:layout_below="@+id/pro_img"
+            android:layout_centerHorizontal="true"
+             android:text="View Profile"
             android:textAlignment="center"
             android:textColor="@android:color/black"
             android:textSize="@dimen/menu_title_size" />
 
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/feed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/arrow_image_up"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:layout_margin="9dp"
+android:layout_centerInParent="true"
+            android:layout_marginStart="@dimen/_17sdp"
+            android:background="@drawable/ic_feedback_black_24dp"
+            android:backgroundTint="#9e1392" />
+
+
+        <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+            android:id="@+id/feedback_tv"
+            style="@style/font_circular_bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+
+            android:layout_below="@+id/arrow_image_up"
+            android:layout_centerHorizontal="true"
+             android:text="Feedback"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/menu_title_size" />
+
+        </RelativeLayout>
+
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/arrow_image_up"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="@dimen/_17sdp"
-         android:layout_marginBottom="@dimen/_50sdp"
-        android:background="@drawable/ic_feedback_black_24dp"
-        android:backgroundTint="#9e1392"
-        android:visibility="gone" />
+
 </RelativeLayout>

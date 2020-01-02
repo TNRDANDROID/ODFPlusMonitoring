@@ -109,8 +109,15 @@ public class PendingScreenAdapter extends RecyclerView.Adapter<PendingScreenAdap
 //                    prefManager.setKeyPmgsyHabcode(String.valueOf(activityId));
 //                    prefManager.setKeyPmgsyHabcode(String.valueOf(scheduleMasterId));
 //                    prefManager.setKeyPmgsyDeleteId(String.valueOf(position));
-                    prefManager.setDeletedkeyList(roadListValue);
-                   new toUploadActivityTask().execute(roadListValue);
+                    ArrayList<ODFMonitoringListValue> activityImage1 = dbData.selectImageActivity(dcode, bcode, pvcode, String.valueOf(scheduleId), String.valueOf(activityId), "End");
+
+                    if (activityImage1.size() > 0) {
+                        prefManager.setDeletedkeyList(roadListValue);
+                        new toUploadActivityTask().execute(roadListValue);
+                    }
+                    else {
+                        Utils.showAlert((Activity) context, "Activity incomplete!");
+                    }
                 } else {
                     Activity activity = (Activity) context;
                     Utils.showAlert(activity, "Turn On Mobile Data To Synchronize!");

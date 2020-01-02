@@ -21,7 +21,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.android.volley.VolleyError;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
@@ -49,9 +49,9 @@ import java.util.ArrayList;
 public class HomePage extends AppCompatActivity implements Api.ServerResponseListener, View.OnClickListener, MyDialog.myOnClickListener {
     private PrefManager prefManager;
     private ImageView logout, refresh_icon, arrowImage, pro_img;
-    private MyCustomTextView pro_tv;
+    private MyCustomTextView pro_tv, feedback_tv;
     public dbData dbData = new dbData(this);
-    private LinearLayout profile_layout;
+    private RelativeLayout pro, feed;
     Handler myHandler = new Handler();
     private ScheduleListAdapter scheduleListAdapter;
     private ShimmerRecyclerView recyclerView;
@@ -82,15 +82,18 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         logout = (ImageView) findViewById(R.id.logout);
         pro_img = (ImageView) findViewById(R.id.pro_img);
         pro_tv = (MyCustomTextView) findViewById(R.id.pro_tv);
+        feedback_tv = (MyCustomTextView) findViewById(R.id.feedback_tv);
         arrowImage = (ImageView) findViewById(R.id.arrow_image_up);
         refresh_icon = (ImageView) findViewById(R.id.refresh_icon);
-        profile_layout = (LinearLayout) findViewById(R.id.profile_layout);
+        pro = (RelativeLayout) findViewById(R.id.pro);
+        feed = (RelativeLayout) findViewById(R.id.feed);
         sync = (Button) findViewById(R.id.sync);
         recyclerView = (ShimmerRecyclerView) findViewById(R.id.scheduleList);
         logout.setOnClickListener(this);
         sync.setOnClickListener(this);
         refresh_icon.setOnClickListener(this);
-        profile_layout.setOnClickListener(this);
+        pro.setOnClickListener(this);
+        feed.setOnClickListener(this);
         if(Utils.isOnline()){
             if(!isHome.equalsIgnoreCase("Home")){
                 refreshScreenCallApi();
@@ -125,11 +128,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     }
 
     public void startAnimation() {
-        profile_layout.setVisibility(View.VISIBLE);
-        pro_img.startAnimation(stb2);
-        pro_tv.setTranslationX(800);
-        pro_tv.setAlpha(0);
-        pro_tv.animate().translationX(0).alpha(1).setDuration(1000).setStartDelay(600).start();
+
     }
 
     public class fetchScheduletask extends AsyncTask<Void, Void,
@@ -260,7 +259,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                     Utils.showAlert(this, getResources().getString(R.string.no_internet));
                 }
                 break;
-            case R.id.profile_layout:
+            case R.id.pro:
                 openMotivatorProfileView();
                 break;
         }
@@ -560,14 +559,27 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     }
 
     public void showArrowImage() {
-        arrowImage.setVisibility(View.VISIBLE);
+        pro.setVisibility(View.VISIBLE);
+        feed.setVisibility(View.VISIBLE);
         animation = new AlphaAnimation((float) 3, 0); // Change alpha from fully visible to invisible
         animation.setDuration(500); // duration - half a second
         animation.setInterpolator(new LinearInterpolator()); // do not alter
         animation.setRepeatCount(Animation.INFINITE); // Repeat animation
         animation.setRepeatMode(Animation.REVERSE); // Reverse animation at the
+
+        pro_img.startAnimation(stb2);
+        pro_tv.setTranslationX(800);
+        pro_tv.setAlpha(0);
+        pro_tv.animate().translationX(0).alpha(1).setDuration(1000).start();
+
+        feedback_tv.setTranslationX(800);
+        feedback_tv.setAlpha(0);
+        feedback_tv.animate().translationX(0).alpha(1).setDuration(1000).start();
         arrowImage.startAnimation(animation);
-        arrowImage.setOnClickListener(new View.OnClickListener() {
+        feedback_tv.startAnimation(animation);
+
+
+        feed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Utils.showNameChangeDialog(HomePage.this, "General", "", "", "", "", "");
