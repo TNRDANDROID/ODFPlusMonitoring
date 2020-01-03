@@ -51,10 +51,10 @@
                             android:layout_margin="@dimen/padding"
                             app:civ_border_width="2dip"
                             app:civ_border_color="@android:color/black"
-                            />
+                             />
 
                         <de.hdodenhof.circleimageview.CircleImageView
-                            android:id="@+id/profile_image_preview"
+                            android:id="@+id/motivator_image"
                             android:layout_width="130dp"
                             android:layout_height="130dp"
                             android:layout_margin="@dimen/padding"
@@ -62,7 +62,8 @@
                             android:background="@drawable/profile_bg_circle"
                             app:civ_border_width="2dip"
                             app:civ_border_color="@android:color/black"
-                            android:src="@drawable/ic_account_circle_black_24dp" />
+                            android:src="@drawable/ic_account_circle_black_24dp"
+                            />
 
 
                         <RelativeLayout
@@ -92,7 +93,7 @@
                         android:textStyle="bold"/>
 
                     <TextView
-                        android:id="@+id/motivator_gamil"
+                        android:id="@+id/motivator_email"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="developer@appsnipp.com"
@@ -132,6 +133,24 @@
     </android.support.design.widget.AppBarLayout>
 
     <include layout="@layout/content_profile" />
+    <ImageView
+        android:id="@+id/arrow_image"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="bottom|center_horizontal"
+         android:src="@drawable/double_down_arroe"
+        android:visibility="gone"
+         />
 
+    <ImageView
+        android:id="@+id/arrow_image_up"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="@dimen/edit_text_padding"
+        android:rotation="180"
+        android:src="@drawable/double_down_arroe"
+        android:visibility="gone"
+         />
 
 </android.support.design.widget.CoordinatorLayout>

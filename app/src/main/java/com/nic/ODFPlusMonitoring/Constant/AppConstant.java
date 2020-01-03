@@ -56,6 +56,11 @@ public class AppConstant {
 
     public static String KEY_REGISTER_SIGNUP = "signup";
     public static String KEY_MOTIVATOR_NAME = "motivator_name";
+    public static String KEY_MOTIVATOR_ADDRESS = "motivator_address";
+    public static String KEY_MOTIVATOR_MOBILE = "mobile_no";
+    public static String KEY_MOTIVATOR_DOB = "motivator_dob";
+    public static String KEY_MOTIVATOR_EMAIL = "motivator_email";
+    public static String KEY_MOTIVATOR_IMAGE = "image";
     public static String KEY_REGISTER_DOB = "dob";
     public static String KEY_REGISTER_MOBILE = "mobile";
     public static String KEY_REGISTER_EMAIL = "email";

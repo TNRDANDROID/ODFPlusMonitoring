@@ -2,6 +2,7 @@
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nested_scroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -35,6 +36,7 @@
                 style="@style/profileDetailsTextMain" />
 
                 <TextView
+                    android:id="@+id/motivator_name_tv"
                     android:text="developer"
                     android:layout_toRightOf="@id/nameImageView"
                     style="@style/profileDetailsMiniText" />
@@ -56,6 +58,7 @@
                     style="@style/profileDetailsTextMain"/>
 
                 <TextView
+                    android:id="@+id/motivator_mob"
                     android:text="+91-8129999999"
                     android:layout_toRightOf="@id/mobileImageView"
                     style="@style/profileDetailsMiniText" />
@@ -76,6 +79,7 @@
                     style="@style/profileDetailsTextMain" />
 
                 <TextView
+                    android:id="@+id/motivator_email_tv"
                     android:text="developer@appsnipp.com"
                     android:layout_toRightOf="@id/emailImageView"
                     style="@style/profileDetailsMiniText" />
@@ -100,6 +104,7 @@
                     style="@style/profileDetailsTextMain" />
 
                 <TextView
+                    android:id="@+id/motivator_address"
                     android:layout_below="@+id/address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -123,6 +128,7 @@
                     style="@style/profileDetailsTextMain" />
 
                 <TextView
+                    android:id="@+id/motivator_dob"
                     android:text="12-05-1990"
                     android:layout_toRightOf="@id/dobImageView"
                     style="@style/profileDetailsMiniText" />

@@ -202,17 +202,6 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
 
                 }
             }
-            else if ("MotivatorProfile".equals(urlType) && responseObj != null) {
-                String key = responseObj.getString(AppConstant.ENCODE_DATA);
-                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
-                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
-                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-                    loadMotivatorScheduleList(jsonObject.getJSONArray(AppConstant.JSON_DATA));
-                } else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("FAIL")) {
-
-
-                }
-            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -260,7 +249,11 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                 }
                 break;
             case R.id.pro:
-                openMotivatorProfileView();
+                if (Utils.isOnline()) {
+                    openMotivatorProfileView();
+                } else {
+                    Utils.showAlert(this, "Your internet seems to be offline! profile can be seen only in online mode");
+                }
                 break;
         }
 
@@ -286,7 +279,6 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
 
     public void fetchApi() {
         getMotivatorSchedule();
-        getMotivatorProfile();
     }
 
     public void openPendingScreen() {
@@ -360,24 +352,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         return savedDataSet;
     }
 
-    public void getMotivatorProfile() {
-        try {
-            new ApiService(this).makeJSONObjectRequest("MotivatorProfile", Api.Method.POST, UrlGenerator.getMotivatorSchedule(), motivatorProfileJsonParams(), "not cache", this);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
 
-    public JSONObject motivatorProfileJsonParams() throws JSONException {
-
-        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.motivatorProfileJsonParams().toString());
-        JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
-        dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("motivatorProfile", "" + authKey);
-        return dataSet;
-
-    }
 
     public void loadMotivatorScheduleList(JSONArray jsonArray) {
 
@@ -582,7 +557,12 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         feed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Utils.showNameChangeDialog(HomePage.this, "General", "", "", "", "", "");
+                if (Utils.isOnline()) {
+                    Utils.showNameChangeDialog(HomePage.this, "General", "", "", "", "", "");
+                }else{
+                    Utils.showAlert(HomePage.this, "Your internet seems to be offline! feedback can be pos only in online mode");
+
+                }
             }
         });
     }

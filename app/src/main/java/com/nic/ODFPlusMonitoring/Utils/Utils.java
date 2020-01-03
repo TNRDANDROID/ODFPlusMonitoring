@@ -53,6 +53,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.math.BigInteger;
@@ -369,8 +370,8 @@ public class Utils {
     }
 
     public static String changeDate(String time) {
-        String inputPattern = "MM/dd/yyyy HH:mm:ss";
-        String outputPattern = "yyyy-MM-dd H:mm:ss";
+        String inputPattern = "yyyy-MM-dd";
+        String outputPattern = "dd-MM-yyyy";
         SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern, Locale.US);
         SimpleDateFormat outputFormat = new SimpleDateFormat(outputPattern, Locale.US);
 
@@ -1329,6 +1330,7 @@ public class Utils {
                         Utils.showAlert(activity, "Describe your Experience!");
                     }
                 } else {
+                    Utils.showAlert(activity, "Feedback is send only in online mode!");
 
                 }
             }
@@ -1338,4 +1340,9 @@ public class Utils {
     }
 
 
+    public static byte[] getPictureByteOfArray(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 0, byteArrayOutputStream);
+        return byteArrayOutputStream.toByteArray();
+    }
 }

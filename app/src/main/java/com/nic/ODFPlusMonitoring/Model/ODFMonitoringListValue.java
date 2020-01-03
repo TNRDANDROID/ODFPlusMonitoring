@@ -2,6 +2,7 @@ package com.nic.ODFPlusMonitoring.Model;
 
 import android.graphics.Bitmap;
 
+import java.sql.Blob;
 import java.util.Date;
 
 /**
@@ -59,6 +60,60 @@ public class ODFMonitoringListValue {
     private String dateTime;
     private String imageAvailable;
     private String activityStatus;
+    private String motivatorName;
+    private Bitmap motivatorImage;
+    private String motivatorEmail;
+    private String motivatorMobile;
+    private String motivatorAddress;
+    private String motivatorDOB;
+
+    public String getMotivatorDOB() {
+        return motivatorDOB;
+    }
+
+    public void setMotivatorDOB(String motivatorDOB) {
+        this.motivatorDOB = motivatorDOB;
+    }
+
+    public String getMotivatorName() {
+        return motivatorName;
+    }
+
+    public void setMotivatorName(String motivatorName) {
+        this.motivatorName = motivatorName;
+    }
+
+    public Bitmap getMotivatorImage() {
+        return motivatorImage;
+    }
+
+    public void setMotivatorImage(Bitmap motivatorImage) {
+        this.motivatorImage = motivatorImage;
+    }
+
+    public String getMotivatorEmail() {
+        return motivatorEmail;
+    }
+
+    public void setMotivatorEmail(String motivatorEmail) {
+        this.motivatorEmail = motivatorEmail;
+    }
+
+    public String getMotivatorMobile() {
+        return motivatorMobile;
+    }
+
+    public void setMotivatorMobile(String motivatorMobile) {
+        this.motivatorMobile = motivatorMobile;
+    }
+
+    public String getMotivatorAddress() {
+        return motivatorAddress;
+    }
+
+    public void setMotivatorAddress(String motivatorAddress) {
+        this.motivatorAddress = motivatorAddress;
+    }
 
     public String getActivityTypeName() {
         return activityTypeName;
