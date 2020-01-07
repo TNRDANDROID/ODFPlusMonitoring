@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/pro_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context="com.nic.ODFPlusMonitoring.Activity.ViewEditProfileScreen"
+    android:visibility="visible"
     android:background="@color/profileBackground">
 
     <android.support.design.widget.AppBarLayout
@@ -37,16 +39,16 @@
                     android:background="@drawable/gradient_blue">
 
                     <FrameLayout
-                        android:layout_width="250dp"
-                        android:layout_height="200dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginTop="@dimen/margin"
                         android:gravity="center">
 
                         <de.hdodenhof.circleimageview.CircleImageView
                             android:id="@+id/profile_image"
-                            android:layout_width="130dp"
-                            android:layout_height="130dp"
+                            android:layout_width="110dp"
+                            android:layout_height="110dp"
                             android:layout_gravity="center"
                             android:layout_margin="@dimen/padding"
                             app:civ_border_width="2dip"
@@ -55,28 +57,29 @@
 
                         <de.hdodenhof.circleimageview.CircleImageView
                             android:id="@+id/motivator_image"
-                            android:layout_width="130dp"
-                            android:layout_height="130dp"
+                            android:layout_width="110dp"
+                            android:layout_height="110dp"
                             android:layout_margin="@dimen/padding"
                             android:layout_gravity="center"
                             android:background="@drawable/profile_bg_circle"
                             app:civ_border_width="2dip"
                             app:civ_border_color="@android:color/black"
-                            android:src="@drawable/ic_account_circle_black_24dp"
+                            android:src="@mipmap/avatar"
                             />
 
 
                         <RelativeLayout
                             android:id="@+id/edit_image"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
                             android:layout_gravity="bottom|right"
-                            android:layout_margin="@dimen/_37sdp"
-                            android:background="@drawable/edit_profile_bg">
+                            android:layout_margin="@dimen/_11sdp"
+                            android:background="@drawable/edit_profile_bg"
+                            android:visibility="gone">
 
                             <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
                                 android:layout_centerInParent="true"
                                 android:src="@android:drawable/ic_menu_edit" />
 
@@ -112,7 +115,7 @@
                             android:layout_alignParentTop="true"
                             android:layout_width="match_parent"
                             android:layout_height="30dp"
-                            android:background="@drawable/gradient_blue"/>
+                            android:background="@drawable/grad"/>
 
                         <TextView
                             android:id="@+id/back_img"

@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
@@ -43,6 +44,7 @@ import java.util.Calendar;
 public class ViewEditProfileScreen extends AppCompatActivity implements View.OnClickListener,Api.ServerResponseListener {
     private TextView back_img,motivator_Name,motivator_add,motivator_mob,motivator_email,motivator_dob,motivator_Name_tv,motivator_email_tv;
     private ImageView motivator_img,arrowImage,arrowImageUp;
+    private CoordinatorLayout profile;
     private NestedScrollView nested_scroll;
     private PrefManager prefManager;
     private Animation animation;
@@ -55,6 +57,7 @@ public class ViewEditProfileScreen extends AppCompatActivity implements View.OnC
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         back_img = (TextView) findViewById(R.id.back_img);
+        profile = (CoordinatorLayout) findViewById(R.id.pro_parent);
         motivator_Name = (TextView) findViewById(R.id.motivator_name);
         motivator_Name_tv = (TextView) findViewById(R.id.motivator_name_tv);
         motivator_email = (TextView) findViewById(R.id.motivator_email);
@@ -64,7 +67,7 @@ public class ViewEditProfileScreen extends AppCompatActivity implements View.OnC
         motivator_mob = (TextView) findViewById(R.id.motivator_mob);
         arrowImage = (ImageView) findViewById(R.id.arrow_image);
         arrowImageUp = (ImageView) findViewById(R.id.arrow_image_up);
-        motivator_img = (ImageView) findViewById(R.id.profile_image);
+        motivator_img = (ImageView) findViewById(R.id.motivator_image);
         nested_scroll = (NestedScrollView) findViewById(R.id.nested_scroll);
         back_img.setOnClickListener(this);
         getMotivatorProfile();
@@ -156,10 +159,11 @@ public class ViewEditProfileScreen extends AppCompatActivity implements View.OnC
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+
                     generateImageArrayList(jsonObject.getJSONArray(AppConstant.JSON_DATA));
-                } else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("FAIL")) {
+                } else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD")) {
 
-
+                    Utils.showAlert(this,"No Record Found!");
                 }
             }
         } catch (JSONException e) {
