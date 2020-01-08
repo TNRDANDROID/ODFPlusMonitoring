@@ -463,6 +463,8 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
             }
         }else{
             Utils.showAlert(this,"Enter the valid IFSC!");
+            motivator_bank_tv.setText("");
+            motivator_branch_tv.setText("");
         }
     }
 
