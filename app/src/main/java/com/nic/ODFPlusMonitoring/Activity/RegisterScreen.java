@@ -393,7 +393,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                             if (event == null || !event.isShiftPressed()) {
 // the user is done typing.
                                 Log.d("ifsc_check", motivator_ifsc_tv.getText().toString());
-                                fetchBranchName(motivator_ifsc_tv.getText().toString());
+                                fetchBranchName(motivator_ifsc_tv.getText().toString().toUpperCase());
                                 hide_keyboard();
                                 return true; // consume.
                             }
@@ -600,7 +600,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                 onBackPress();
                 break;
             case R.id.tick:
-                fetchBranchName(motivator_ifsc_tv.getText().toString());
+                fetchBranchName(motivator_ifsc_tv.getText().toString().toUpperCase());
                 hide_keyboard();
                 break;
         }
