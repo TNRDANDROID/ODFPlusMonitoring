@@ -67,6 +67,16 @@ public class ODFMonitoringListValue {
     private String motivatorAddress;
     private String motivatorDOB;
 
+    public Integer getPhotoID() {
+        return photoID;
+    }
+
+    public void setPhotoID(Integer photoID) {
+        this.photoID = photoID;
+    }
+
+    private Integer photoID;
+
     public String getMotivatorDOB() {
         return motivatorDOB;
     }

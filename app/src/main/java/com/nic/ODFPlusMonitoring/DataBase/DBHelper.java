@@ -110,7 +110,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 "remark TEXT)");
 
         db.execSQL("CREATE TABLE " + SAVE_ACTIVITY + " ("
-                + "dcode INTEGER," +
+                +"id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                 "dcode INTEGER," +
                 "bcode INTEGER," +
                 "pvcode INTEGER," +
                 "activity_id INTEGER," +

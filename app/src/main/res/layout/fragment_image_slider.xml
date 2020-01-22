@@ -61,6 +61,12 @@
             android:layout_alignParentLeft="true"
             android:textColor="@android:color/white" />
 
+        <ImageView
+            android:id="@+id/edit_image_view"
+            android:layout_width="@dimen/_30sdp"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_gravity="end"
+            android:src="@android:drawable/ic_menu_edit" />
     </LinearLayout>
 
 </RelativeLayout>

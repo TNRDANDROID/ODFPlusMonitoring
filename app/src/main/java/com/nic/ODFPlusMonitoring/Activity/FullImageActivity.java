@@ -148,6 +148,11 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("images", activityImage);
                 bundle.putInt("position", position);
+                bundle.putString(AppConstant.KEY_ACTIVITY_ID, getIntent().getStringExtra(AppConstant.KEY_ACTIVITY_ID));
+                bundle.putString(AppConstant.KEY_SCHEDULE_ID, schedule_id);
+                bundle.putString(AppConstant.DISTRICT_CODE, prefManager.getDistrictCode());
+                bundle.putString(AppConstant.BLOCK_CODE, prefManager.getBlockCode());
+                bundle.putString(AppConstant.PV_CODE, prefManager.getPvCode());
 
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 SlideshowDialogFragment newFragment = SlideshowDialogFragment.newInstance();

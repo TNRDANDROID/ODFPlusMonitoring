@@ -295,6 +295,7 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
         intent.putExtra(AppConstant.KEY_ACTIVITY_ID, String.valueOf(activityListValues.get(pos).getActivityId()));
         intent.putExtra(AppConstant.KEY_SCHEDULE_ID, String.valueOf(activityListValues.get(pos).getScheduleId()));
         intent.putExtra(AppConstant.KEY_ACTIVITY_NAME, activityListValues.get(pos).getActivityName());
+        intent.putExtra(AppConstant.KEY_PURPOSE, "Insert");
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }

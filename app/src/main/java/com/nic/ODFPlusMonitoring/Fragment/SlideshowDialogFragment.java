@@ -1,7 +1,8 @@
 package com.nic.ODFPlusMonitoring.Fragment;
 
+import android.app.Activity;
 import android.content.Context;
-import android.media.Image;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.view.PagerAdapter;
@@ -14,7 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.nic.ODFPlusMonitoring.Activity.CameraScreen;
+import com.nic.ODFPlusMonitoring.Constant.AppConstant;
 import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Utils.Utils;
@@ -30,7 +32,9 @@ public class SlideshowDialogFragment extends DialogFragment {
     private ViewPager viewPager;
     private MyViewPagerAdapter myViewPagerAdapter;
     private TextView lblCount, lblTitle, lblDescription,lblDate,lblType;
+    private ImageView editImageView;
     private int selectedPosition = 0;
+    private String dcode,bcode,pvcode,activity_id,schedule_id;
 
    public static SlideshowDialogFragment newInstance() {
         SlideshowDialogFragment f = new SlideshowDialogFragment();
@@ -42,6 +46,7 @@ public class SlideshowDialogFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_image_slider, container, false);
         viewPager = (ViewPager) v.findViewById(R.id.viewpager);
+        editImageView = (ImageView) v.findViewById(R.id.edit_image_view);
         lblCount = (TextView) v.findViewById(R.id.lbl_count);
         lblTitle = (TextView) v.findViewById(R.id.title);
         lblDescription = (TextView) v.findViewById(R.id.description);
@@ -50,6 +55,12 @@ public class SlideshowDialogFragment extends DialogFragment {
 
         images = (ArrayList<ODFMonitoringListValue>) getArguments().getSerializable("images");
         selectedPosition = getArguments().getInt("position");
+        dcode = getArguments().getString(AppConstant.DISTRICT_CODE);
+        bcode = getArguments().getString(AppConstant.BLOCK_CODE);
+        pvcode = getArguments().getString(AppConstant.PV_CODE);
+        activity_id = getArguments().getString(AppConstant.KEY_ACTIVITY_ID);
+        schedule_id = getArguments().getString(AppConstant.KEY_SCHEDULE_ID);
+
 
         Log.i(TAG, "position: " + selectedPosition);
         Log.i(TAG, "images size: " + images.size());
@@ -90,7 +101,7 @@ public class SlideshowDialogFragment extends DialogFragment {
     private void displayMetaInfo(int position) {
         lblCount.setText((position + 1) + " of " + images.size());
 
-        ODFMonitoringListValue image = images.get(position);
+        final ODFMonitoringListValue image = images.get(position);
         lblTitle.setText(image.getActivityName());
         if(!image.getImageRemark().equalsIgnoreCase("")){
             lblDescription.setVisibility(View.VISIBLE);
@@ -101,6 +112,22 @@ public class SlideshowDialogFragment extends DialogFragment {
         lblType.setText(image.getType());
         String date = Utils.parseDateForChart(image.getDateTime());
         lblDate.setText(date);
+        editImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Integer photoId = image.getPhotoID();
+                Intent intent = new Intent(getActivity(), CameraScreen.class);
+                intent.putExtra(AppConstant.DISTRICT_CODE, dcode);
+                intent.putExtra(AppConstant.BLOCK_CODE, bcode);
+                intent.putExtra(AppConstant.PV_CODE, pvcode);
+                intent.putExtra(AppConstant.KEY_ACTIVITY_ID, activity_id);
+                intent.putExtra(AppConstant.KEY_SCHEDULE_ID, schedule_id);
+                intent.putExtra(AppConstant.KEY_PURPOSE, "Update");
+                intent.putExtra(AppConstant.KEY_PHOTO_ID, photoId);
+                getActivity().startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+            }
+        });
     }
 
     @Override

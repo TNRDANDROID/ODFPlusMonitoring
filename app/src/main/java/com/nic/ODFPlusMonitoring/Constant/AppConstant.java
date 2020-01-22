@@ -122,6 +122,8 @@ public class AppConstant {
     public static String KEY_ACTIVITY_FEEDBACK = "activity_feedback";
     public static String KEY_ACTIVITY_SCHEDULE_FEEDBACK = "activity_schedule_feedback";
     public static String KEY_MOTIVATOR_PROFILE = "motivator_profile";
+    public static String KEY_PURPOSE = "purpose";
+    public static String KEY_PHOTO_ID = "id";
 
 
 
