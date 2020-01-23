@@ -60,6 +60,7 @@ public class PrefManager {
     private static final String KEY_SPINNER_SELECTED_CATEGORY_NAME = "spinner_selected_category_name";
     private static final String KEY_ACTIVITY_NAME= "activity_name";
     private static final String KEY_DELETE_JSON = "deleteJson";
+    private static final String KEY_HACCP_LOCAL_SAVE = "Haccp_Local_Save";
 
 
     private static final String IMEI = "imei";
@@ -306,27 +307,22 @@ public class PrefManager {
         return jsonData;
     }
 
-    public void setVillagePvCodeJson(JSONArray jsonarray) {
-        editor.putString(KEY_VILLAGE_CODE_JSON, jsonarray.toString());
+    public void setLocalSaveHaccpList(List<ODFMonitoringListValue> localSaveHaccp) {
+        Gson gson = new Gson();
+        String json = gson.toJson(localSaveHaccp);
+        editor.putString(KEY_HACCP_LOCAL_SAVE, json);
         editor.commit();
     }
 
-    private String getVillagePvCodeJsonList() {
-        return pref.getString(KEY_VILLAGE_CODE_JSON, null);
+    public String getLocalSaveHaccpString() {
+        return pref.getString(KEY_HACCP_LOCAL_SAVE, null);
     }
 
-    public JSONArray getVillagePvCodeJson() {
-        JSONArray jsonData = null;
-        String strJson = getVillagePvCodeJsonList();//second parameter is necessary ie.,Value to return if this preference does not exist.
-        try {
-            if (strJson != null) {
-                jsonData = new JSONArray(strJson);
-            }
-        } catch (Exception e) {
-
-        }
-        Log.d("prefVillageJson",""+jsonData);
-        return jsonData;
+    public ArrayList<ODFMonitoringListValue> getLocalSaveHaccpList() {
+        Type listType = new TypeToken<ArrayList<ODFMonitoringListValue>>() {
+        }.getType();
+        ArrayList<ODFMonitoringListValue> CCPListNew = new Gson().fromJson(getLocalSaveHaccpString(), listType);
+        return CCPListNew;
     }
     public Integer setKeyAutocompleteSelectedBranchID(Integer userName) {
         editor.putInt(KEY_AUTOCOMPLETE_SELECTED_BRANCH_ID, userName);

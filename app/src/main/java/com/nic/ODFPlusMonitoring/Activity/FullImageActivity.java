@@ -2,7 +2,6 @@ package com.nic.ODFPlusMonitoring.Activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -13,17 +12,14 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
-
 import com.android.volley.VolleyError;
 import com.nic.ODFPlusMonitoring.Adapter.FullImageAdapter;
-import com.nic.ODFPlusMonitoring.Adapter.ScheduleListAdapter;
 import com.nic.ODFPlusMonitoring.Api.Api;
 import com.nic.ODFPlusMonitoring.Api.ApiService;
 import com.nic.ODFPlusMonitoring.Api.ServerResponse;
@@ -42,7 +38,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class FullImageActivity extends AppCompatActivity implements View.OnClickListener,Api.ServerResponseListener {
@@ -146,8 +141,8 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onClick(View view, int position) {
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("images", activityImage);
-                bundle.putInt("position", position);
+                prefManager.setLocalSaveHaccpList(activityImage);
+                 bundle.putInt("position", position);
                 bundle.putString(AppConstant.KEY_ACTIVITY_ID, getIntent().getStringExtra(AppConstant.KEY_ACTIVITY_ID));
                 bundle.putString(AppConstant.KEY_SCHEDULE_ID, schedule_id);
                 bundle.putString(AppConstant.DISTRICT_CODE, prefManager.getDistrictCode());
