@@ -148,6 +148,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
 
     public void saveActivityImage() {
         dbData.open();
+        String whereClause = "";String[] whereArgs = null;
         ImageView imageView = (ImageView) findViewById(R.id.image_view);
         byte[] imageInByte = new byte[0];
         String image_str = "";
@@ -158,6 +159,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
             imageInByte = baos.toByteArray();
             image_str = Base64.encodeToString(imageInByte, Base64.DEFAULT);
 
+            if(getIntent().getStringExtra(AppConstant.KEY_PURPOSE).equalsIgnoreCase("Insert")) {
             ContentValues values = new ContentValues();
             values.put(AppConstant.DISTRICT_CODE,prefManager.getDistrictCode() );
             values.put(AppConstant.BLOCK_CODE, prefManager.getBlockCode());
@@ -182,7 +184,32 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                 super.onBackPressed();
                 overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
             }
-            Log.d("insIdsaveHabitation", String.valueOf(id));
+            }
+            else if(getIntent().getStringExtra(AppConstant.KEY_PURPOSE).equalsIgnoreCase("Update")){
+                String dcode = getIntent().getStringExtra(AppConstant.DISTRICT_CODE);
+                String bcode = getIntent().getStringExtra(AppConstant.BLOCK_CODE);
+                String pvcode = getIntent().getStringExtra(AppConstant.PV_CODE);
+                String activity_id = getIntent().getStringExtra(AppConstant.KEY_ACTIVITY_ID);
+                String schedule_id = getIntent().getStringExtra(AppConstant.KEY_SCHEDULE_ID);
+                String photo_id = getIntent().getStringExtra(AppConstant.KEY_PHOTO_ID);
+
+                ContentValues values = new ContentValues();
+                values.put(AppConstant.KEY_IMAGE,image_str.trim());
+
+                whereClause = "id = ? and dcode = ? and bcode = ? and pvcode = ? and activity_id = ? and schedule_id = ?";
+                whereArgs = new String[]{photo_id,dcode,bcode,pvcode,activity_id,schedule_id};dbData.open();
+
+                long id = db.update(DBHelper.SAVE_ACTIVITY, values, whereClause,whereArgs);
+
+
+                if(id > 0){
+                    Toasty.success(this, "Updated!", Toast.LENGTH_LONG, true).show();
+                    super.onBackPressed();
+                    overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+                }
+            }
+
+           // Log.d("insIdsaveHabitation", String.valueOf(id));
 
         } catch (Exception e) {
             Utils.showAlert(CameraScreen.this, "Atleast Capture one Photo");

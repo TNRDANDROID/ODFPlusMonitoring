@@ -129,8 +129,9 @@ public class SlideshowDialogFragment extends DialogFragment {
                 intent.putExtra(AppConstant.KEY_ACTIVITY_ID, activity_id);
                 intent.putExtra(AppConstant.KEY_SCHEDULE_ID, schedule_id);
                 intent.putExtra(AppConstant.KEY_PURPOSE, "Update");
-                intent.putExtra(AppConstant.KEY_PHOTO_ID, photoId);
+                intent.putExtra(AppConstant.KEY_PHOTO_ID, String.valueOf(photoId));
                 Log.d("dcode",""+dcode+bcode+pvcode+activity_id+schedule_id+photoId);
+                Log.d("photoId",""+photoId);
                 context.startActivity(intent);
                 getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             }
