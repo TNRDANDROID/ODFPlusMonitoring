@@ -633,67 +633,67 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                                                                                         if (!motivator_position_tv.getText().toString().isEmpty()) {
                                                                                             signUP();
                                                                                         } else {
-                                                                                            Utils.showAlert(this, "Enter the Position ");
+                                                                                            Utils.showAlert(this, "நிலையை உள்ளிடவும் /Enter the Position ");
                                                                                         }
                                                                                     } else {
                                                                                         signUP();
                                                                                     }
                                                                                 } else {
-                                                                                    Utils.showAlert(this, "Select the Category ");
+                                                                                    Utils.showAlert(this, "வகையைத் தேர்ந்தெடுக்கவும் ");
                                                                                 }
                                                                             } else {
-                                                                                Utils.showAlert(this, "Enter the No Of State Level Training Attended ");
+                                                                                Utils.showAlert(this,"கலந்துகொண்ட மாநில அளவிலான பயிற்சியின் எண்ணிக்கையை உள்ளிடவும் ");
                                                                             }
                                                                         } else {
-                                                                            Utils.showAlert(this, "Select the Date Of Birth!");
+                                                                            Utils.showAlert(this,"பிறந்த தேதியைத் தேர்ந்தெடுக்கவும்!");
                                                                         }
                                                                     } else {
-                                                                        Utils.showAlert(this, "Enter the IFSC Code!");
+                                                                        Utils.showAlert(this,"IFSC குறியீட்டை உள்ளிடவும்!");
                                                                     }
                                                                 } else {
                                                                     Utils.showAlert(this, "Select the Branch Name!");
                                                                 }
                                                             } else {
-                                                                Utils.showAlert(this, "Select the Bank Name!");
+                                                                Utils.showAlert(this,"வங்கியின் பெயரைத் தேர்ந்தெடுக்கவும்!");
                                                             }
                                                         } else {
-                                                            Utils.showAlert(RegisterScreen.this, "Account No and Verify Account No is not Same!");
+                                                            Utils.showAlert(RegisterScreen.this, "வங்கி கணக்கு எண் மற்றும் சரிபார்ப்பு கணக்கு எண் ஒரே மாதிரியாக இல்லை!");
                                                         }
                                                     } else {
-                                                        Utils.showAlert(this, "Enter the Verify Account No!");
+                                                        Utils.showAlert(this, "சரிபார்க்கும் வங்கி கணக்கு எண்ணை உள்ளிடவும்!");
                                                     }
                                                 } else {
-                                                    Utils.showAlert(this, "Enter the Account No!");
+                                                    Utils.showAlert(this, "உங்கள் வங்கி கணக்கு எண்ணை உள்ளிடவும்!");
                                                 }
                                             } else {
-                                                Utils.showAlert(this, "Enter the Valid Email Id!");
+                                                Utils.showAlert(this, "சரியான மின்னஞ்சல் முகவரி உள்ளிடவும்!");
                                             }
                                         } else {
-                                            Utils.showAlert(this, "Enter the Email Id!");
+                                            Utils.showAlert(this, "உங்கள் மின்னஞ்சல் முகவரி உள்ளிடவும்!");
                                         }
                                     } else {
-                                        Utils.showAlert(this, "Enter the Valid Mobile No");
+                                        Utils.showAlert(this, "சரியான மொபைல் எண் உள்ளிடவும்!");
                                     }
                                 } else {
-                                    Utils.showAlert(this, "Enter the Mobile No!");
+                                    Utils.showAlert(this, "உங்கள் மொபைல் எண் உள்ளிடவும்!");
                                 }
                             } else {
-                                Utils.showAlert(this, "Enter the Address!");
+                                Utils.showAlert(this, "உங்கள் முகவரியை உள்ளிடவும்!");
                             }
                         } else {
-                            Utils.showAlert(this, "Select Village!");
+                            Utils.showAlert(this, "உங்கள் கிராமத்தைத் தேர்ந்தெடுக்கவும்!");
                         }
                     } else {
-                        Utils.showAlert(this, "Select Block!");
+                        Utils.showAlert(this, "உங்கள் தொகுதியைத் தேர்ந்தெடுக்கவும்!");
                     }
                 } else {
-                    Utils.showAlert(this, "Select District!");
+                    Utils.showAlert(this, "உங்கள் மாவட்டத்தைத் தேர்ந்தெடுக்கவும்!");
                 }
             } else {
-                Utils.showAlert(this, "Enter the Name!");
+                Utils.showAlert(this, "உங்கள் பெயரை உள்ளிடவும்!");
             }
         } else {
-            Utils.showAlert(this, "Capture the Profile Image First!");
+            Utils.showAlert(this, "முதலில் சுயவிவரப் படத்தைப் பிடிக்கவும்!!");
         }
     }
 
@@ -1032,7 +1032,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                     JSONObject jsonObject = responseObj.getJSONObject(AppConstant.JSON_DATA);
                     String Motivatorid = jsonObject.getString(AppConstant.KEY_REGISTER_MOTIVATOR_ID);
                     Log.d("motivatorid",""+Motivatorid);
-                    Utils.showAlert(this,"You have been successfully registered!");
+                    Utils.showAlert(this,"நீங்கள் வெற்றிகரமாக பதிவு செய்யப்பட்டுள்ளீர்கள்!");
                     Runnable runnable = new Runnable() {
                         @Override
                         public void run() {
