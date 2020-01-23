@@ -1,6 +1,5 @@
 package com.nic.ODFPlusMonitoring.Fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,11 +18,12 @@ import com.nic.ODFPlusMonitoring.Activity.CameraScreen;
 import com.nic.ODFPlusMonitoring.Constant.AppConstant;
 import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 import com.nic.ODFPlusMonitoring.R;
+import com.nic.ODFPlusMonitoring.Session.PrefManager;
 import com.nic.ODFPlusMonitoring.Utils.Utils;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
-
-
 
 
 public class SlideshowDialogFragment extends DialogFragment {
@@ -35,6 +35,7 @@ public class SlideshowDialogFragment extends DialogFragment {
     private ImageView editImageView;
     private int selectedPosition = 0;
     private String dcode,bcode,pvcode,activity_id,schedule_id;
+    private PrefManager prefManager;
 
    public static SlideshowDialogFragment newInstance() {
         SlideshowDialogFragment f = new SlideshowDialogFragment();
@@ -45,6 +46,7 @@ public class SlideshowDialogFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_image_slider, container, false);
+        prefManager = new PrefManager(getActivity());
         viewPager = (ViewPager) v.findViewById(R.id.viewpager);
         editImageView = (ImageView) v.findViewById(R.id.edit_image_view);
         lblCount = (TextView) v.findViewById(R.id.lbl_count);
@@ -52,8 +54,11 @@ public class SlideshowDialogFragment extends DialogFragment {
         lblDescription = (TextView) v.findViewById(R.id.description);
         lblType = (TextView) v.findViewById(R.id.type);
         lblDate = (TextView) v.findViewById(R.id.date);
+//        if (getArguments() != null) {
+//            images = (ArrayList<ODFMonitoringListValue>) getArguments().getSerializable("images");
+//        }
 
-        images = (ArrayList<ODFMonitoringListValue>) getArguments().getSerializable("images");
+        images = prefManager.getLocalSaveHaccpList();
         selectedPosition = getArguments().getInt("position");
         dcode = getArguments().getString(AppConstant.DISTRICT_CODE);
         bcode = getArguments().getString(AppConstant.BLOCK_CODE);
@@ -115,8 +120,9 @@ public class SlideshowDialogFragment extends DialogFragment {
         editImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Context context = v.getContext();
                 Integer photoId = image.getPhotoID();
-                Intent intent = new Intent(getActivity(), CameraScreen.class);
+                Intent intent = new Intent(context, CameraScreen.class);
                 intent.putExtra(AppConstant.DISTRICT_CODE, dcode);
                 intent.putExtra(AppConstant.BLOCK_CODE, bcode);
                 intent.putExtra(AppConstant.PV_CODE, pvcode);
@@ -124,7 +130,8 @@ public class SlideshowDialogFragment extends DialogFragment {
                 intent.putExtra(AppConstant.KEY_SCHEDULE_ID, schedule_id);
                 intent.putExtra(AppConstant.KEY_PURPOSE, "Update");
                 intent.putExtra(AppConstant.KEY_PHOTO_ID, photoId);
-                getActivity().startActivity(intent);
+                Log.d("dcode",""+dcode+bcode+pvcode+activity_id+schedule_id+photoId);
+                context.startActivity(intent);
                 getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             }
         });
