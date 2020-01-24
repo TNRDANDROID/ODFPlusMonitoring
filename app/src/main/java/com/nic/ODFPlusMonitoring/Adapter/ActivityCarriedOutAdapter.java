@@ -65,13 +65,19 @@ public class ActivityCarriedOutAdapter extends RecyclerView.Adapter<ActivityCarr
         if (scheduleListValues.get(position).getActivityStatus().equalsIgnoreCase("Y")) {
             holder.activity_status.setText("Completed");
         } else if (scheduleListValues.get(position).getActivityStatus().equalsIgnoreCase("N")) {
-            holder.activity_status.setText("Incompleted");
+            holder.activity_status.setText("Incomplete");
         }
-        if (from_date != null || from_date.equalsIgnoreCase("")) {
-            holder.activity_start_date_time.setText(Utils.conUtcToLocalTime(from_date));
+        if ( from_date != null || !from_date.equalsIgnoreCase("")) {
+            holder.activity_start_date_time.setText(from_date);
         }
-        if (to_date != null || to_date.equalsIgnoreCase("")) {
-            holder.activity_end_date_time.setText(Utils.conUtcToLocalTime(to_date));
+        else{
+            holder.activity_start_date_time.setVisibility(View.GONE);
+        }
+
+        if ( to_date!= null || !to_date.equalsIgnoreCase("")) {
+            holder.activity_end_date_time.setText( to_date);
+        }else{
+            holder.activity_end_date_time.setVisibility(View.GONE);
         }
 
     }

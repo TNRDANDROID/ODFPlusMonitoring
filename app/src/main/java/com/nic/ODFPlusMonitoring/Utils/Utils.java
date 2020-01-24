@@ -1358,13 +1358,11 @@ public class Utils {
         String datetime = null;
 
         try {
-            DateFormat formatterIST = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            formatterIST.setTimeZone(TimeZone.getTimeZone("UTC")); // better than using IST
+            DateFormat formatterIST = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
             Date date = formatterIST.parse(ts);
 
 
-            DateFormat formatterUTC = new SimpleDateFormat("dd MMM'T'yy | hh:mm aa");
-            formatterUTC.setTimeZone(TimeZone.getTimeZone(Calendar.getInstance().getTimeZone().getID())); // Local timezone
+            DateFormat formatterUTC = new SimpleDateFormat("dd MMM'T'yy | hh:mm aa", Locale.US);
             datetime = formatterUTC.format(date); // output: 14-05-2014 18:30:00
 
         } catch (ParseException e) {
