@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nic.ODFPlusMonitoring.DataBase.dbData;
@@ -37,10 +38,13 @@ public class ActivityCarriedOutAdapter extends RecyclerView.Adapter<ActivityCarr
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView activity_name, activity_status, activity_start_date_time, activity_end_date_time;
+        private LinearLayout start_time_layout,end_time_layout;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             activity_name = (TextView) itemView.findViewById(R.id.activity_name);
+            start_time_layout = (LinearLayout) itemView.findViewById(R.id.start_time_layout);
+            end_time_layout = (LinearLayout) itemView.findViewById(R.id.end_time_layout);
             activity_status = (TextView) itemView.findViewById(R.id.activity_status);
             activity_start_date_time = (TextView) itemView.findViewById(R.id.activity_start_date_time);
             activity_end_date_time = (TextView) itemView.findViewById(R.id.activity_end_date_time);
@@ -67,17 +71,19 @@ public class ActivityCarriedOutAdapter extends RecyclerView.Adapter<ActivityCarr
         } else if (scheduleListValues.get(position).getActivityStatus().equalsIgnoreCase("N")) {
             holder.activity_status.setText("Incomplete");
         }
-        if ( from_date != null || !from_date.equalsIgnoreCase("")) {
-            holder.activity_start_date_time.setText(from_date);
+        if ( from_date != null && (!from_date.equalsIgnoreCase(""))) {
+            holder.activity_start_date_time.setText(Utils.parseDateForChart(from_date));
+            holder.start_time_layout.setVisibility(View.VISIBLE);
         }
         else{
-            holder.activity_start_date_time.setVisibility(View.GONE);
+            holder.start_time_layout.setVisibility(View.GONE);
         }
 
-        if ( to_date!= null || !to_date.equalsIgnoreCase("")) {
-            holder.activity_end_date_time.setText( to_date);
+        if ( to_date!= null && (!to_date.equalsIgnoreCase(""))) {
+            holder.activity_end_date_time.setText( Utils.parseDateForChart(to_date));
+            holder.end_time_layout.setVisibility(View.VISIBLE);
         }else{
-            holder.activity_end_date_time.setVisibility(View.GONE);
+            holder.end_time_layout.setVisibility(View.GONE);
         }
 
     }

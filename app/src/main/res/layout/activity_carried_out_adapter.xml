@@ -141,6 +141,7 @@ android:layout_marginRight="13dp"
                         android:background="@color/dashboard_line_dark" />
 
                     <LinearLayout
+                        android:id="@+id/start_time_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -180,6 +181,7 @@ android:layout_marginRight="13dp"
                         android:background="@color/dashboard_line_dark" />
 
                     <LinearLayout
+                        android:id="@+id/end_time_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
