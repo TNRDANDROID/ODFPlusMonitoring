@@ -21,6 +21,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.android.volley.VolleyError;
@@ -61,6 +62,8 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     public static HomePage homePage;
     private ProgressHUD progressHUD;
     private Animation animation,stb2;
+    private LinearLayout activity_carried_out;
+
 
 
     @Override
@@ -89,10 +92,12 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         feed = (RelativeLayout) findViewById(R.id.feed);
         sync = (Button) findViewById(R.id.sync);
         recyclerView = (ShimmerRecyclerView) findViewById(R.id.scheduleList);
+        activity_carried_out = (LinearLayout)findViewById(R.id.activity_carried_out);
         logout.setOnClickListener(this);
         sync.setOnClickListener(this);
         refresh_icon.setOnClickListener(this);
         pro.setOnClickListener(this);
+        activity_carried_out.setOnClickListener(this);
         feed.setOnClickListener(this);
         if(Utils.isOnline()){
             if(!isHome.equalsIgnoreCase("Home")){
@@ -206,7 +211,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-//                    loadMotivatorScheduleList(jsonObject.getJSONArray(AppConstant.JSON_DATA));
+                    loadScheduleCompleteList(jsonObject.getJSONArray(AppConstant.JSON_DATA));
                 } else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD") && jsonObject.getString("MESSAGE").equalsIgnoreCase("NO_RECORD")) {
                     Utils.showAlert(this, "No Record Found!");
                     clearAnimations();
@@ -224,6 +229,30 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+    public void loadScheduleCompleteList(JSONArray jsonArray) {
+
+        dbData.open();
+        if (Utils.isOnline()) {
+            dbData.deleteActivityCompletedTable();
+        }
+        dbData.open();
+        ArrayList<ODFMonitoringListValue> schedule_count = dbData.getAllSchedule(prefManager.getMotivatorId());
+      //  if(schedule_count.size() <= 0) {
+            for (int i = 0; i < jsonArray.length(); i++) {
+                ODFMonitoringListValue odfMonitoringListValue = new ODFMonitoringListValue();
+                try {
+                    String scheduleId = jsonArray.getJSONObject(i).getString(AppConstant.KEY_SCHEDULE_ID);
+
+                    JSONArray activityArray = jsonArray.getJSONObject(i).getJSONArray(AppConstant.KEY_T_SCHEDULE_ACTIVITY);
+                    new InsertActivityCompletedTask().execute(activityArray);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+      //  }
+
     }
 
     @Override
@@ -274,6 +303,9 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                     Utils.showAlert(this, "Your internet seems to be offline! profile can be seen only in online mode");
                 }
                 break;
+            case R.id.activity_carried_out:
+                openActivityCarriedOut();
+                break;
         }
 
 
@@ -284,6 +316,13 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
+
+    public void openActivityCarriedOut() {
+        Intent intent = new Intent(this, ActivityCarriedOut.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+    }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -550,6 +589,41 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
             super.onPreExecute();
             setAnimationView();
 //            progressHUD = ProgressHUD.show(HomePage.this, "Downloading", true, false, null);
+        }
+    }
+
+    public class InsertActivityCompletedTask extends AsyncTask<JSONArray ,Void ,Void> {
+
+        @Override
+        protected Void doInBackground(JSONArray... params) {
+            dbData.open();
+            if (params.length > 0) {
+                JSONArray jsonArray = params[0];
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    ODFMonitoringListValue scheduleActivityValue = new ODFMonitoringListValue();
+                    try {
+                        scheduleActivityValue.setScheduleActivityId(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_SCHEDULE_ACTIVITY_ID));
+                        scheduleActivityValue.setScheduleId(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_SCHEDULE_ID));
+                        scheduleActivityValue.setActivityId(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_ACTIVITY_ID));
+                        scheduleActivityValue.setActivityName(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ACTIVITY_NAME));
+                        scheduleActivityValue.setActivityStart(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ACTIVITY_START));
+                        scheduleActivityValue.setActivityEnd(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ACTIVITY_END));
+                        scheduleActivityValue.setActivityTypeName(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ACTIVITY_TYPE_NAME));
+                        scheduleActivityValue.setPlaceOfActivity(jsonArray.getJSONObject(i).getString(AppConstant.KEY_PLACE_OF_ACTIVITY));
+                        scheduleActivityValue.setNoOfPhotos(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_NO_OF_PHOTOS));
+                        scheduleActivityValue.setDistictCode(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE));
+                        scheduleActivityValue.setBlockCode(jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE));
+                        scheduleActivityValue.setPvCode(jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE));
+                        scheduleActivityValue.setActivityStatus(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ACTIVITY_STATUS));
+
+                        dbData.insertActivityCompleted(scheduleActivityValue);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+            return null;
         }
     }
 

@@ -18,6 +18,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String SCHEDULE = "t_schedule";
     public static final String SCHEDULE_VILLAGE = "t_schedule_village";
     public static final String SCHEDULED_ACTIVITY = "t_scheduled_activity";
+    public static final String ACTIVITY_COMPLETED = "t_activity_completed";
     public static final String SCHEDULED_ACTIVITY_PHOTOS = "t_scheduled_activity_photos";
     public static final String SAVE_ACTIVITY = "save_activity";
     public static final String MOTIVATOR_PROFILE = "motivator_profile";
@@ -89,6 +90,21 @@ public class DBHelper extends SQLiteOpenHelper {
                 "activity_id INTEGER," +
                 "activity_status TEXT," +
                 "activity_name TEXT," +
+                "activity_type_name TEXT," +
+                "no_of_photos INTEGER," +
+                "dcode INTEGER," +
+                "bcode INTEGER," +
+                "pvcode INTEGER," +
+                "place_of_activity TEXT)");
+
+        db.execSQL("CREATE TABLE " + ACTIVITY_COMPLETED + " ("
+                + "schedule_activity_id INTEGER," +
+                "schedule_id INTEGER," +
+                "activity_id INTEGER," +
+                "activity_status TEXT," +
+                "activity_name TEXT," +
+                "activity_start TEXT," +
+                "activity_end TEXT," +
                 "activity_type_name TEXT," +
                 "no_of_photos INTEGER," +
                 "dcode INTEGER," +

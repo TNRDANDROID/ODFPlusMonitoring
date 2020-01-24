@@ -55,6 +55,25 @@ public class ODFMonitoringListValue {
     private Integer noOfPhotos;
     private Integer serialNo;
 
+    public String getActivityStart() {
+        return activityStart;
+    }
+
+    public void setActivityStart(String activityStart) {
+        this.activityStart = activityStart;
+    }
+
+    public String getActivityEnd() {
+        return activityEnd;
+    }
+
+    public void setActivityEnd(String activityEnd) {
+        this.activityEnd = activityEnd;
+    }
+
+    private String activityStart;
+    private String activityEnd;
+
     private String type;
     private String imageRemark;
     private String dateTime;

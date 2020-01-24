@@ -808,6 +808,88 @@ public class dbData {
         db.execSQL("delete from "+ DBHelper.SAVE_ACTIVITY);
     }
 
+
+    /****************   Activity Completed   ********/
+
+    public ODFMonitoringListValue insertActivityCompleted(ODFMonitoringListValue odfMonitoringListValue) {
+
+        ContentValues values = new ContentValues();
+        values.put(AppConstant.KEY_SCHEDULE_ACTIVITY_ID,odfMonitoringListValue.getScheduleActivityId());
+        values.put(AppConstant.KEY_SCHEDULE_ID,odfMonitoringListValue.getScheduleId());
+        values.put(AppConstant.KEY_ACTIVITY_ID,odfMonitoringListValue.getActivityId());
+        values.put(AppConstant.KEY_ACTIVITY_NAME,odfMonitoringListValue.getActivityName());
+        values.put(AppConstant.KEY_ACTIVITY_START,odfMonitoringListValue.getActivityStart());
+        values.put(AppConstant.KEY_ACTIVITY_END,odfMonitoringListValue.getActivityEnd());
+        values.put(AppConstant.KEY_ACTIVITY_TYPE_NAME,odfMonitoringListValue.getActivityTypeName());
+        values.put(AppConstant.KEY_PLACE_OF_ACTIVITY,odfMonitoringListValue.getPlaceOfActivity());
+        values.put(AppConstant.KEY_NO_OF_PHOTOS,odfMonitoringListValue.getNoOfPhotos());
+        values.put(AppConstant.DISTRICT_CODE,odfMonitoringListValue.getDistictCode());
+        values.put(AppConstant.BLOCK_CODE,odfMonitoringListValue.getBlockCode());
+        values.put(AppConstant.PV_CODE,odfMonitoringListValue.getPvCode());
+        values.put(AppConstant.KEY_ACTIVITY_STATUS,odfMonitoringListValue.getActivityStatus());
+
+        long id = db.insert(DBHelper.ACTIVITY_COMPLETED,null,values);
+        Log.d("Inser_id_Activ_compl",String.valueOf(id));
+        return odfMonitoringListValue;
+    }
+
+    public void deleteActivityCompletedTable() {
+        db.execSQL("delete from "+ DBHelper.ACTIVITY_COMPLETED);
+    }
+
+    public ArrayList<ODFMonitoringListValue> getAllActivity() {
+
+        ArrayList<ODFMonitoringListValue> cards = new ArrayList<>();
+        Cursor cursor = null;
+        String selection = "";
+        String[] selectionArgs = null;
+
+        try {
+            cursor = db.query(DBHelper.ACTIVITY_COMPLETED,
+                    new String[] {"*"}, selection, selectionArgs, null, null, null);
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    ODFMonitoringListValue card = new ODFMonitoringListValue();
+                    card.setScheduleActivityId(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_SCHEDULE_ACTIVITY_ID)));
+                    card.setScheduleId(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_SCHEDULE_ID)));
+                    card.setActivityId(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_ID)));
+                    card.setActivityName(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_NAME)));
+                    card.setActivityStart(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_START)));
+                    card.setActivityEnd(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_END)));
+                    card.setActivityTypeName(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_TYPE_NAME)));
+                    card.setPlaceOfActivity(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_PLACE_OF_ACTIVITY)));
+                    card.setNoOfPhotos(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_NO_OF_PHOTOS)));
+                    card.setDistictCode(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.DISTRICT_CODE)));
+                    card.setBlockCode(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.BLOCK_CODE)));
+                    card.setPvCode(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.PV_CODE)));
+                    card.setActivityStatus(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_STATUS)));
+                    cards.add(card);
+                }
+            }
+        } catch (Exception e){
+            Log.d("Exception" ,e.toString());
+        } finally{
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return cards;
+    }
+
+
     public void deleteAll(){
         db.execSQL("delete from "+ DBHelper.MOTIVATOR_CATEGORY_LIST_TABLE_NAME);
         deleteScheduleTable();

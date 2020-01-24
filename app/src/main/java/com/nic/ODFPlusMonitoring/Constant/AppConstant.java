@@ -110,6 +110,8 @@ public class AppConstant {
     public static String KEY_DATE_TIME = "datetime";
     public static String KEY_SERIAL_NUMBER = "serial_number";
     public static String KEY_ACTIVITY_STATUS = "activity_status";
+    public static String KEY_ACTIVITY_START = "activity_start";
+    public static String KEY_ACTIVITY_END = "activity_end";
 
     public static String KEY_TRACK_DATA = "track_data";
     public static String KEY_ACTIVITY_IMAGE_SAVE = "activity_image_save";
