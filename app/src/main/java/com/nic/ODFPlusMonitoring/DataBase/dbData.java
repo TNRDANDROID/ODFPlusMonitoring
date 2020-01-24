@@ -822,7 +822,6 @@ public class dbData {
         values.put(AppConstant.KEY_ACTIVITY_END,odfMonitoringListValue.getActivityEnd());
         values.put(AppConstant.KEY_ACTIVITY_TYPE_NAME,odfMonitoringListValue.getActivityTypeName());
         values.put(AppConstant.KEY_PLACE_OF_ACTIVITY,odfMonitoringListValue.getPlaceOfActivity());
-        values.put(AppConstant.KEY_NO_OF_PHOTOS,odfMonitoringListValue.getNoOfPhotos());
         values.put(AppConstant.DISTRICT_CODE,odfMonitoringListValue.getDistictCode());
         values.put(AppConstant.BLOCK_CODE,odfMonitoringListValue.getBlockCode());
         values.put(AppConstant.PV_CODE,odfMonitoringListValue.getPvCode());

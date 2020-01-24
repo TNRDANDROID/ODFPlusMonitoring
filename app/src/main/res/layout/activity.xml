@@ -402,9 +402,9 @@ android:layout_centerHorizontal="true"
                 android:layout_centerInParent="true"
                 android:layout_gravity="center"
                 android:padding="@dimen/_12sdp"
-                android:text="View Offline Images"
+                android:text="Review Your Images"
                 android:textColor="#000080"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:visibility="gone"
                 customfontdemo:fontName="@string/font_circular_medium" />
 
@@ -418,7 +418,7 @@ android:layout_centerHorizontal="true"
                 android:padding="@dimen/_12sdp"
                 android:text="View Activity Images"
                 android:textColor="#000080"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 customfontdemo:fontName="@string/font_circular_bold" />
 
 

@@ -93,14 +93,14 @@
                 />
 
             <LinearLayout
+                android:id="@+id/activity_carried_out"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/scheduleList"
+                android:layout_below="@+id/sync"
                 android:layout_marginTop="@dimen/_50sdp"
                 android:background="@drawable/white_background_two_corners"
                 android:orientation="horizontal"
-                android:padding="@dimen/_5sdp"
-                android:visibility="gone">
+                android:padding="@dimen/_5sdp">
 
 
                 <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
@@ -111,7 +111,7 @@
                     android:layout_gravity="left"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
-                    android:text="View Motivator Profile"
+                    android:text="Activity Carried Out"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_15sdp" />
 
@@ -212,6 +212,5 @@ android:layout_centerInParent="true"
         </RelativeLayout>
 
     </LinearLayout>
-
 
 </RelativeLayout>

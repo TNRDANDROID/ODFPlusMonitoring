@@ -63,6 +63,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     private ProgressHUD progressHUD;
     private Animation animation,stb2;
     private LinearLayout activity_carried_out;
+    private boolean recordContain = true;
 
 
 
@@ -103,6 +104,8 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
             if(!isHome.equalsIgnoreCase("Home")){
                 refreshScreenCallApi();
             }
+        }else{
+            Utils.showAlert(this,getResources().getString(R.string.no_internet));
         }
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -183,6 +186,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     loadMotivatorScheduleList(jsonObject.getJSONArray(AppConstant.JSON_DATA));
+                    clearAnimations();
                 } else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD") && jsonObject.getString("MESSAGE").equalsIgnoreCase("NO_RECORD")) {
                     Utils.showAlert(this, "No Record Found!");
                     clearAnimations();
@@ -212,8 +216,11 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     loadScheduleCompleteList(jsonObject.getJSONArray(AppConstant.JSON_DATA));
+                    clearAnimations();
+                    recordContain = true;
                 } else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD") && jsonObject.getString("MESSAGE").equalsIgnoreCase("NO_RECORD")) {
-                    Utils.showAlert(this, "No Record Found!");
+                    recordContain = false;
+//                    Utils.showAlert(this, "No Record Found!");
                     clearAnimations();
                 }
                 Log.d("MotivatorSchHistory", "" + responseDecryptedBlockKey);
@@ -304,7 +311,11 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                 }
                 break;
             case R.id.activity_carried_out:
-                openActivityCarriedOut();
+                if(recordContain) {
+                    openActivityCarriedOut();
+                }else{
+                    Utils.showAlert(this, "No Record Found!");
+                }
                 break;
         }
 
@@ -610,7 +621,6 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                         scheduleActivityValue.setActivityEnd(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ACTIVITY_END));
                         scheduleActivityValue.setActivityTypeName(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ACTIVITY_TYPE_NAME));
                         scheduleActivityValue.setPlaceOfActivity(jsonArray.getJSONObject(i).getString(AppConstant.KEY_PLACE_OF_ACTIVITY));
-                        scheduleActivityValue.setNoOfPhotos(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_NO_OF_PHOTOS));
                         scheduleActivityValue.setDistictCode(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE));
                         scheduleActivityValue.setBlockCode(jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE));
                         scheduleActivityValue.setPvCode(jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE));

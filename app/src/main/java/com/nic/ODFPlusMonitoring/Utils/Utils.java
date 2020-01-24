@@ -68,6 +68,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1351,5 +1352,25 @@ public class Utils {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 0, byteArrayOutputStream);
         return byteArrayOutputStream.toByteArray();
+    }
+
+    public static String conUtcToLocalTime(String ts) {
+        String datetime = null;
+
+        try {
+            DateFormat formatterIST = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            formatterIST.setTimeZone(TimeZone.getTimeZone("UTC")); // better than using IST
+            Date date = formatterIST.parse(ts);
+
+
+            DateFormat formatterUTC = new SimpleDateFormat("dd MMM'T'yy | hh:mm aa");
+            formatterUTC.setTimeZone(TimeZone.getTimeZone(Calendar.getInstance().getTimeZone().getID())); // Local timezone
+            datetime = formatterUTC.format(date); // output: 14-05-2014 18:30:00
+
+        } catch (ParseException e) {
+
+        }
+        return datetime.replace("T", "'").replace("am", "AM").replace("pm", "PM").replace("a.m.", "AM").replace("p.m.", "PM");
+
     }
 }

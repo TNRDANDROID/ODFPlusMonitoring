@@ -1,5 +1,7 @@
 package com.nic.ODFPlusMonitoring.Activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,6 +11,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -27,12 +30,14 @@ import com.nic.ODFPlusMonitoring.DataBase.dbData;
 
 import java.util.ArrayList;
 
-public class ActivityCarriedOut extends AppCompatActivity {
+public class ActivityCarriedOut extends AppCompatActivity implements View.OnClickListener{
 
-    private ShimmerRecyclerView recyclerView;
+    private RecyclerView recyclerView;
     private PrefManager prefManager;
     public dbData dbData = new dbData(this);
     private ActivityCarriedOutAdapter activityCarriedOutAdapter;
+    private ImageView back_img,home_img;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,8 +49,9 @@ public class ActivityCarriedOut extends AppCompatActivity {
         prefManager = new PrefManager(this);
 
 
-        recyclerView = (ShimmerRecyclerView) findViewById(R.id.activity_history);
-
+        recyclerView = (RecyclerView) findViewById(R.id.activity_history);
+        back_img = (ImageView) findViewById(R.id.back_img);
+        home_img = (ImageView) findViewById(R.id.home_img);
 
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -54,10 +60,45 @@ public class ActivityCarriedOut extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setFocusable(false);
+        back_img.setOnClickListener(this);
+        home_img.setOnClickListener(this);
 
         new fetchActivityHistorytask().execute();
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.back_img:
+                onBackPress();
+                break;
+            case R.id.home_img:
+                homePage();
+                break;
+        }
+
+    }
+    public void homePage() {
+        Intent intent = new Intent(this, HomePage.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("Home", "Home");
+        startActivity(intent);
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        setResult(Activity.RESULT_CANCELED);
+        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+    }
+
+    public void onBackPress() {
+        super.onBackPressed();
+        setResult(Activity.RESULT_CANCELED);
+        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+    }
     public class fetchActivityHistorytask extends AsyncTask<Void, Void,
                 ArrayList<ODFMonitoringListValue>> {
         @Override
@@ -75,18 +116,10 @@ public class ActivityCarriedOut extends AppCompatActivity {
             activityCarriedOutAdapter = new ActivityCarriedOutAdapter(ActivityCarriedOut.this,
                     scheduleList, dbData);
             recyclerView.setAdapter(activityCarriedOutAdapter);
-            recyclerView.showShimmerAdapter();
-            recyclerView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    loadCards();
-                }
-            }, 2000);
+
+
         }
 
     }
 
-    private void loadCards() {
-        recyclerView.hideShimmerAdapter();
-    }
-}
+ }

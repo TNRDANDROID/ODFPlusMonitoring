@@ -240,7 +240,7 @@
                     android:layout_marginLeft="@dimen/margin_left_20dp"
                     android:layout_marginTop="@dimen/padding"
                     android:layout_marginRight="@dimen/margin_left_20dp"
-                    android:text="தொகுதி / Block"
+                    android:text="வட்டம் / Block"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_15sdp"
                     android:visibility="visible"

@@ -43,7 +43,9 @@
             android:layout_centerHorizontal="true"
 
             android:layout_below="@+id/edit_image_view"
-            android:text="Edit Image"
+            android:textAlignment="center"
+            android:text="தேவைப்பட்டால் புகைப்படத்தை\n மீண்டும் எடுக்கவும்"
+            android:textSize="@dimen/_10sdp"
             android:textColor="@android:color/white" />
     </RelativeLayout>
 
