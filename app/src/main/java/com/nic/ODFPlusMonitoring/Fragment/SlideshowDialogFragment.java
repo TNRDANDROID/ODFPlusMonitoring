@@ -11,17 +11,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.nic.ODFPlusMonitoring.Activity.CameraScreen;
 import com.nic.ODFPlusMonitoring.Constant.AppConstant;
+import com.nic.ODFPlusMonitoring.DataBase.dbData;
 import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
 import com.nic.ODFPlusMonitoring.Utils.Utils;
-
-import org.json.JSONArray;
 
 import java.util.ArrayList;
 
@@ -32,12 +32,14 @@ public class SlideshowDialogFragment extends DialogFragment {
     private ViewPager viewPager;
     private MyViewPagerAdapter myViewPagerAdapter;
     private TextView lblCount, lblTitle, lblDescription,lblDate,lblType;
-    private ImageView editImageView;
+    private RelativeLayout editImageViewLayout;
     private int selectedPosition = 0;
     private String dcode,bcode,pvcode,activity_id,schedule_id;
     private PrefManager prefManager;
+    public dbData dbData;
+    private Context context;
 
-   public static SlideshowDialogFragment newInstance() {
+    public static SlideshowDialogFragment newInstance() {
         SlideshowDialogFragment f = new SlideshowDialogFragment();
         return f;
     }
@@ -47,8 +49,10 @@ public class SlideshowDialogFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_image_slider, container, false);
         prefManager = new PrefManager(getActivity());
+        this.context = getActivity();
+        dbData = new dbData(getActivity());
         viewPager = (ViewPager) v.findViewById(R.id.viewpager);
-        editImageView = (ImageView) v.findViewById(R.id.edit_image_view);
+        editImageViewLayout = (RelativeLayout) v.findViewById(R.id.edit_image_layout);
         lblCount = (TextView) v.findViewById(R.id.lbl_count);
         lblTitle = (TextView) v.findViewById(R.id.title);
         lblDescription = (TextView) v.findViewById(R.id.description);
@@ -117,23 +121,35 @@ public class SlideshowDialogFragment extends DialogFragment {
         lblType.setText(image.getType());
         String date = Utils.parseDateForChart(image.getDateTime());
         lblDate.setText(date);
-        editImageView.setOnClickListener(new View.OnClickListener() {
+        if(getArguments().getString("OnOffType").equalsIgnoreCase("Online")){
+            editImageViewLayout.setVisibility(View.GONE);
+        }
+        else {
+            editImageViewLayout.setVisibility(View.VISIBLE);
+        }
+        editImageViewLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Context context = v.getContext();
-                Integer photoId = image.getPhotoID();
-                Intent intent = new Intent(context, CameraScreen.class);
-                intent.putExtra(AppConstant.DISTRICT_CODE, dcode);
-                intent.putExtra(AppConstant.BLOCK_CODE, bcode);
-                intent.putExtra(AppConstant.PV_CODE, pvcode);
-                intent.putExtra(AppConstant.KEY_ACTIVITY_ID, activity_id);
-                intent.putExtra(AppConstant.KEY_SCHEDULE_ID, schedule_id);
-                intent.putExtra(AppConstant.KEY_PURPOSE, "Update");
-                intent.putExtra(AppConstant.KEY_PHOTO_ID, String.valueOf(photoId));
-                Log.d("dcode",""+dcode+bcode+pvcode+activity_id+schedule_id+photoId);
-                Log.d("photoId",""+photoId);
-                context.startActivity(intent);
-                getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                dbData.open();
+                ArrayList<ODFMonitoringListValue> activityImage = dbData.selectImageActivity(dcode, bcode, pvcode, schedule_id, activity_id, "End");
+                if (activityImage.size() > 0) {
+                    Utils.showAlert(getActivity(), "Your edit option is closed because you are captured end photo!");
+                } else {
+                    Context context = v.getContext();
+                    Integer photoId = image.getPhotoID();
+                    Intent intent = new Intent(context, CameraScreen.class);
+                    intent.putExtra(AppConstant.DISTRICT_CODE, dcode);
+                    intent.putExtra(AppConstant.BLOCK_CODE, bcode);
+                    intent.putExtra(AppConstant.PV_CODE, pvcode);
+                    intent.putExtra(AppConstant.KEY_ACTIVITY_ID, activity_id);
+                    intent.putExtra(AppConstant.KEY_SCHEDULE_ID, schedule_id);
+                    intent.putExtra(AppConstant.KEY_PURPOSE, "Update");
+                    intent.putExtra(AppConstant.KEY_PHOTO_ID, String.valueOf(photoId));
+                    Log.d("dcode", "" + dcode + bcode + pvcode + activity_id + schedule_id + photoId);
+                    Log.d("photoId", "" + photoId);
+                    context.startActivity(intent);
+                    getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                }
             }
         });
     }
@@ -187,4 +203,11 @@ public class SlideshowDialogFragment extends DialogFragment {
             container.removeView((View) object);
         }
     }
+
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//
+//        getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+//    }
 }

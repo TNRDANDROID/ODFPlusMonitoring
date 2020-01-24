@@ -1118,6 +1118,13 @@ public class Utils {
         return dataSet;
     }
 
+    public static JSONObject motivatorScheduleHistoryJsonParams() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_MOTIVATOR_SCHEDULE_HISTORY);
+        Log.d("object", "" + dataSet);
+        return dataSet;
+    }
+
     public static JSONObject motivatorProfileJsonParams() throws JSONException {
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_MOTIVATOR_PROFILE);

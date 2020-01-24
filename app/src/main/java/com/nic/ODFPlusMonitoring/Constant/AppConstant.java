@@ -74,6 +74,7 @@ public class AppConstant {
     public static String KEY_REGISTER_IFSC_CODE = "ifsccode";
     public static String KEY_REGISTER_MOTIVATOR_ID = "motivator_id";
     public static String KEY_MOTIVATOR_SCHEDULE = "motivator_schedule";
+    public static String KEY_MOTIVATOR_SCHEDULE_HISTORY = "motivator_schedule_history";
 
     /******************* t_schedule **********************/
 

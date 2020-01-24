@@ -201,6 +201,25 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                     Utils.showAlert(this, "No Feedback Inserted!");
 
                 }
+            }else if ("MotivatorScheduleHistory".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+//                    loadMotivatorScheduleList(jsonObject.getJSONArray(AppConstant.JSON_DATA));
+                } else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD") && jsonObject.getString("MESSAGE").equalsIgnoreCase("NO_RECORD")) {
+                    Utils.showAlert(this, "No Record Found!");
+                    clearAnimations();
+                }
+                Log.d("MotivatorSchHistory", "" + responseDecryptedBlockKey);
+                String authKey = responseDecryptedBlockKey;
+                int maxLogSize = 2000;
+                for (int i = 0; i <= authKey.length() / maxLogSize; i++) {
+                    int start = i * maxLogSize;
+                    int end = (i + 1) * maxLogSize;
+                    end = end > authKey.length() ? authKey.length() : end;
+                    Log.v("to_send_plain", authKey.substring(start, end));
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -279,6 +298,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
 
     public void fetchApi() {
         getMotivatorSchedule();
+        getMotivatorScheduleHistory();
     }
 
     public void openPendingScreen() {
@@ -332,6 +352,25 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
         Log.d("scheduleListWise", "" + authKey);
+        return dataSet;
+
+    }
+
+    public void getMotivatorScheduleHistory() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("MotivatorScheduleHistory", Api.Method.POST, UrlGenerator.getMotivatorSchedule(), motivatorScheduleHistoryJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public JSONObject motivatorScheduleHistoryJsonParams() throws JSONException {
+
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.motivatorScheduleHistoryJsonParams().toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("MotivatorSchHistory", "" + authKey);
         return dataSet;
 
     }

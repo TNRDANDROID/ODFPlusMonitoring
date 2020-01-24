@@ -148,6 +148,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                 bundle.putString(AppConstant.DISTRICT_CODE, prefManager.getDistrictCode());
                 bundle.putString(AppConstant.BLOCK_CODE, prefManager.getBlockCode());
                 bundle.putString(AppConstant.PV_CODE, prefManager.getPvCode());
+                bundle.putString("OnOffType",getIntent().getStringExtra("OnOffType"));
 
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 SlideshowDialogFragment newFragment = SlideshowDialogFragment.newInstance();

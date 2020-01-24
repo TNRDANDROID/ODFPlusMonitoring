@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -41,6 +42,7 @@ import com.nic.ODFPlusMonitoring.Api.ServerResponse;
 import com.nic.ODFPlusMonitoring.Constant.AppConstant;
 import com.nic.ODFPlusMonitoring.DataBase.DBHelper;
 import com.nic.ODFPlusMonitoring.DataBase.dbData;
+import com.nic.ODFPlusMonitoring.Fragment.SlideshowDialogFragment;
 import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
 import com.nic.ODFPlusMonitoring.Support.MyEditTextView;
@@ -194,6 +196,8 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                 String photo_id = getIntent().getStringExtra(AppConstant.KEY_PHOTO_ID);
 
                 ContentValues values = new ContentValues();
+                values.put(AppConstant.KEY_LATITUDE, offlatTextValue.toString());
+                values.put(AppConstant.KEY_LONGITUDE, offlongTextValue.toString());
                 values.put(AppConstant.KEY_IMAGE,image_str.trim());
 
                 whereClause = "id = ? and dcode = ? and bcode = ? and pvcode = ? and activity_id = ? and schedule_id = ?";
@@ -204,8 +208,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
 
                 if(id > 0){
                     Toasty.success(this, "Updated!", Toast.LENGTH_LONG, true).show();
-                    super.onBackPressed();
-                    overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+                    homePage();
                 }
             }
 

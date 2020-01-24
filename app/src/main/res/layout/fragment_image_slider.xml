@@ -20,6 +20,33 @@
         android:textSize="16dp"
         android:textStyle="bold" />
 
+    <RelativeLayout
+        android:id="@+id/edit_image_layout"
+        android:layout_below="@+id/lbl_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_15sdp"
+        android:layout_alignParentEnd="true"
+         >
+
+        <ImageView
+            android:id="@+id/edit_image_view"
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:layout_centerHorizontal="true"
+             android:background="@mipmap/edit_icon" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+
+            android:layout_below="@+id/edit_image_view"
+            android:text="Edit Image"
+            android:textColor="@android:color/white" />
+    </RelativeLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -61,12 +88,7 @@
             android:layout_alignParentLeft="true"
             android:textColor="@android:color/white" />
 
-        <ImageView
-            android:id="@+id/edit_image_view"
-            android:layout_width="@dimen/_30sdp"
-            android:layout_height="@dimen/_30sdp"
-            android:layout_gravity="end"
-            android:src="@android:drawable/ic_menu_edit" />
+
     </LinearLayout>
 
 </RelativeLayout>

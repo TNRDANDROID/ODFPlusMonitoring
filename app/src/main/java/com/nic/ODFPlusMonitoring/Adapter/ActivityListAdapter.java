@@ -211,22 +211,29 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
         holder.multiple_photo_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ArrayList<ODFMonitoringListValue> activityEndImage1 = dbData.selectImageActivity(dcode, bcode, pvcode, schedule_id, activity_id, "End");
+
                 if (!activity_status.equalsIgnoreCase("y")) {
-                    ArrayList<ODFMonitoringListValue> activityImage1 = dbData.selectImageActivity(dcode, bcode, pvcode, schedule_id, activity_id, "Start");
+                    if (!(activityEndImage1.size() > 0)) {
 
-                    if (activityImage1.size() <= 0) {
-                        Utils.showAlert((Activity) context, "Please Capture Image for Start Activity");
-                    } else {
-                        ArrayList<ODFMonitoringListValue> activityImage = dbData.selectImageActivity(dcode, bcode, pvcode, schedule_id, activity_id, "Middle");
+                        ArrayList<ODFMonitoringListValue> activityImage1 = dbData.selectImageActivity(dcode, bcode, pvcode, schedule_id, activity_id, "Start");
 
-                        if (activityImage.size() > 0 && activityImage.size() == (no_of_photos - 2)) {
-                            Utils.showAlert((Activity) context, "Limit Exceed");
+                        if (activityImage1.size() <= 0) {
+                            Utils.showAlert((Activity) context, "Please Capture Image for Start Activity");
                         } else {
-                            cameraScreen(position, "Middle", String.valueOf(activityImage.size() + 1));
-                        }
-                    }
+                            ArrayList<ODFMonitoringListValue> activityImage = dbData.selectImageActivity(dcode, bcode, pvcode, schedule_id, activity_id, "Middle");
 
-                } else {
+                            if (activityImage.size() > 0 && activityImage.size() == (no_of_photos - 2)) {
+                                Utils.showAlert((Activity) context, "Limit Exceed");
+                            } else {
+                                cameraScreen(position, "Middle", String.valueOf(activityImage.size() + 1));
+                            }
+                        }
+
+                    }else{
+                        Utils.showAlert((Activity) context, "Already Captured");
+                    }
+                }else {
                     Utils.showAlert((Activity) context, "Activity Completed");
                 }
             }

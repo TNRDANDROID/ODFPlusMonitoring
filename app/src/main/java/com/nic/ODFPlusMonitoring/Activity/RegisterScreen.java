@@ -651,7 +651,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                                                                         Utils.showAlert(this,"IFSC குறியீட்டை உள்ளிடவும்!");
                                                                     }
                                                                 } else {
-                                                                    Utils.showAlert(this, "Select the Branch Name!");
+                                                                    Utils.showAlert(this, "கிளை பெயரைத் தேர்ந்தெடுக்கவும்!");
                                                                 }
                                                             } else {
                                                                 Utils.showAlert(this,"வங்கியின் பெயரைத் தேர்ந்தெடுக்கவும்!");
@@ -666,16 +666,16 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                                                     Utils.showAlert(this, "உங்கள் வங்கி கணக்கு எண்ணை உள்ளிடவும்!");
                                                 }
                                             } else {
-                                                Utils.showAlert(this, "சரியான மின்னஞ்சல் முகவரி உள்ளிடவும்!");
+                                                Utils.showAlert(this, "சரியான மின்னஞ்சல் முகவரியை உள்ளிடவும்!");
                                             }
                                         } else {
-                                            Utils.showAlert(this, "உங்கள் மின்னஞ்சல் முகவரி உள்ளிடவும்!");
+                                            Utils.showAlert(this, "உங்கள் மின்னஞ்சல் முகவரியை உள்ளிடவும்!");
                                         }
                                     } else {
-                                        Utils.showAlert(this, "சரியான மொபைல் எண் உள்ளிடவும்!");
+                                        Utils.showAlert(this, "சரியான கைபேசி எண்ணை உள்ளிடவும்!");
                                     }
                                 } else {
-                                    Utils.showAlert(this, "உங்கள் மொபைல் எண் உள்ளிடவும்!");
+                                    Utils.showAlert(this, "உங்கள் கைபேசி எண்ணை உள்ளிடவும்!");
                                 }
                             } else {
                                 Utils.showAlert(this, "உங்கள் முகவரியை உள்ளிடவும்!");
