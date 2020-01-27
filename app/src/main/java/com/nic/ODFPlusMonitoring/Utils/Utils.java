@@ -300,7 +300,7 @@ public class Utils {
 
     public static String parseDateForChart(String time) {
         String inputPattern = "yyyy-MM-dd HH:mm:ss";
-        String outputPattern = "dd MMM'T'yy, h:mm a";
+        String outputPattern = "dd MMM'T'yy | hh:mm aa";
         SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern, Locale.US);
         SimpleDateFormat outputFormat = new SimpleDateFormat(outputPattern, Locale.US);
 
@@ -1354,21 +1354,4 @@ public class Utils {
         return byteArrayOutputStream.toByteArray();
     }
 
-    public static String conUtcToLocalTime(String ts) {
-        String datetime = null;
-
-        try {
-            DateFormat formatterIST = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
-            Date date = formatterIST.parse(ts);
-
-
-            DateFormat formatterUTC = new SimpleDateFormat("dd MMM'T'yy | hh:mm aa", Locale.US);
-            datetime = formatterUTC.format(date); // output: 14-05-2014 18:30:00
-
-        } catch (ParseException e) {
-
-        }
-        return datetime.replace("T", "'").replace("am", "AM").replace("pm", "PM").replace("a.m.", "AM").replace("p.m.", "PM");
-
-    }
 }
