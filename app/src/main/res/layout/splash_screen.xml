@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
     tools:context="com.nic.ODFPlusMonitoring.Activity.SplashScreen">
 
     <RelativeLayout
@@ -14,13 +13,10 @@
 
         <ImageView
             android:id="@+id/imageView1"
-            android:layout_width="@dimen/_70sdp"
-            android:layout_height="@dimen/_70sdp"
-            android:layout_alignParentTop="true"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_320sdp"
             android:layout_centerInParent="true"
-            android:layout_marginLeft="@dimen/_20sdp"
-            android:background="@mipmap/tamilnadu_logo"
-            android:scaleType="centerCrop" />
+            android:background="@drawable/splash1" />
 
         <TextView
             android:id="@+id/headtext"
@@ -33,6 +29,7 @@
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:text="ODF Plus Monitoring"
+            android:visibility="gone"
             android:textColor="#000000"
             android:textSize="@dimen/_15sdp" />
 

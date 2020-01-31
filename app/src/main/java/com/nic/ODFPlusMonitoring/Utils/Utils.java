@@ -79,7 +79,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class Utils {
 
-    private static final String SHARED_PREFERENCE_UTILS = "Nimble";
+    private static final String SHARED_PREFERENCE_UTILS = "NIC";
     private static final int SECONDS_IN_A_MINUTE = 60;
     private static final int MINUTES_IN_AN_HOUR = 60;
     private static SharedPreferences sharedPreferences;
