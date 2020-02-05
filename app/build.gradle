@@ -28,7 +28,7 @@ android {
             def version = variant.versionName
             def date = new Date()
             def formattedDate = date.format('ddMMyy')
-            outputFileName = "Thooimai tamilakam_${variant.buildType.name}_v${version}_${formattedDate}.apk"
+            outputFileName = "Thooimai Tamilakam_${variant.buildType.name}_v${version}_${formattedDate}.apk"
         }
     }
     buildTypes {
