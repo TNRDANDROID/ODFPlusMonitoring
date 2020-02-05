@@ -835,6 +835,104 @@
 
             </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/motivator_others_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_left_20dp"
+                android:layout_marginTop="@dimen/padding"
+                android:layout_marginRight="@dimen/margin_left_20dp"
+                android:text="விண்ணப்பதாரர் ஊக்குவிப்பவரா/மற்றவரா என்பதை தேர்வு செய்யவும் / Select whether the applicant is motivator/others"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/_15sdp"
+                android:visibility="visible"
+                customfontdemo:fontName="@string/font_circular_medium" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rectangle_box"
+                android:layout_marginLeft="@dimen/margin_left_20dp"
+                android:layout_marginTop="@dimen/padding"
+                android:layout_marginRight="@dimen/margin_left_20dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2 "
+                    android:gravity="center"
+
+
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+
+                        android:layout_width="100dp"
+                        android:layout_height="@dimen/header"
+                        android:layout_gravity="center"
+
+                        android:orientation="horizontal">
+
+
+                        <RadioButton
+                            android:id="@+id/motivator"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerInParent="true"
+                            android:checked="false"
+
+                            android:text="Motivator"
+
+                            android:textColor="@android:color/black"
+                            android:textSize="13sp" />
+
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:gravity="right"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+
+                        android:layout_width="100dp"
+                        android:layout_height="@dimen/header"
+                        android:layout_below="@+id/hab_layout"
+                        android:layout_gravity="center"
+
+                        android:layout_marginEnd="@dimen/_5sdp"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/others"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerInParent="true"
+                            android:text="Others"
+                            android:textColor="@android:color/black"
+                            android:textSize="13sp" />
+
+
+                    </RelativeLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/state_level_layout"
                 android:layout_width="match_parent"

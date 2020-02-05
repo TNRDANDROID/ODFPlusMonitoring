@@ -8,14 +8,12 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="@dimen/_20sdp">
+        android:layout_centerInParent="true">
 
         <ImageView
             android:id="@+id/imageView1"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_320sdp"
-            android:layout_centerInParent="true"
+            android:layout_height="@dimen/_300sdp"
             android:layout_margin="@dimen/_5sdp"
             android:background="@drawable/splash1" />
 
@@ -25,14 +23,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/imageView1"
-            android:layout_centerInParent="true"
+
+          android:layout_centerHorizontal="true"
             android:gravity="center_horizontal"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
-            android:text="ODF Plus Monitoring"
-            android:visibility="gone"
+            android:text="தூய்மை தமிழகம்"
             android:textColor="#000000"
-            android:textSize="@dimen/_15sdp" />
+            android:textSize="@dimen/_22sdp" />
 
     </RelativeLayout>
 

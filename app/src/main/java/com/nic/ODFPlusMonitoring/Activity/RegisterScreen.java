@@ -37,9 +37,11 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -101,6 +103,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
     private RelativeLayout dob_layout, edit_image, verify_account_layout, phone_no_layout, email_id_layout;
     private LinearLayout position_layout;
     private Spinner sp_block, sp_district, sp_village, sp_category;
+    private RadioButton motivator, other;
     private PrefManager prefManager;
     private List<ODFMonitoringListValue> Block = new ArrayList<>();
     private List<ODFMonitoringListValue> District = new ArrayList<>();
@@ -130,6 +133,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
     private static String imageStoragePath;
     public static final int BITMAP_SAMPLE_SIZE = 8;
     private ExifInterface exifObject;
+    private Integer isMotivatorOthers;
 
 
 
@@ -181,6 +185,8 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         profile_image = (CircleImageView) findViewById(R.id.profile_image);
         profile_image_preview = (CircleImageView) findViewById(R.id.profile_image_preview);
         back_img = (ImageView) findViewById(R.id.back_img);
+        motivator = (RadioButton) findViewById(R.id.motivator);
+        other = (RadioButton) findViewById(R.id.others);
         arrowImage.setOnClickListener(this);
         arrowImageUp.setOnClickListener(this);
         dob_layout.setOnClickListener(this);
@@ -293,6 +299,28 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        motivator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    isMotivatorOthers = 1;
+                    other.setChecked(false);
+
+                }
+            }
+        });
+        other.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    isMotivatorOthers = 2;
+                    motivator.setChecked(false);
+
+                }
 
             }
         });
@@ -627,22 +655,26 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                                                                 if (!motivator_bank_tv.getText().toString().isEmpty()) {
                                                                 if (!motivator_branch_tv.getText().toString().isEmpty()) {
                                                                         if (!motivator_dob_tv.getText().toString().isEmpty()) {
-                                                                            if (!motivator_state_level_tv.getText().toString().isEmpty()) {
-                                                                                if (!"Select Category".equalsIgnoreCase(Category.get(sp_category.getSelectedItemPosition()).getMotivatorCategoryName())) {
-                                                                                    if ((prefManager.getSpinnerSelectedCategoryName()).equalsIgnoreCase("others")) {
-                                                                                        if (!motivator_position_tv.getText().toString().isEmpty()) {
-                                                                                            signUP();
+                                                                            if ((motivator.isChecked()) || (other.isChecked())) {
+                                                                                if (!motivator_state_level_tv.getText().toString().isEmpty()) {
+                                                                                    if (!"Select Category".equalsIgnoreCase(Category.get(sp_category.getSelectedItemPosition()).getMotivatorCategoryName())) {
+                                                                                        if ((prefManager.getSpinnerSelectedCategoryName()).equalsIgnoreCase("others")) {
+                                                                                            if (!motivator_position_tv.getText().toString().isEmpty()) {
+                                                                                                signUP();
+                                                                                            } else {
+                                                                                                Utils.showAlert(this, "நிலையை உள்ளிடவும்!");
+                                                                                            }
                                                                                         } else {
-                                                                                            Utils.showAlert(this, "நிலையை உள்ளிடவும்!");
+                                                                                            signUP();
                                                                                         }
                                                                                     } else {
-                                                                                        signUP();
+                                                                                        Utils.showAlert(this, "வகையைத் தேர்ந்தெடுக்கவும்!");
                                                                                     }
                                                                                 } else {
-                                                                                    Utils.showAlert(this, "வகையைத் தேர்ந்தெடுக்கவும்!");
+                                                                                    Utils.showAlert(this, "கலந்துகொண்ட மாநில அளவிலான பயிற்சியின் எண்ணிக்கையை உள்ளிடவும்!");
                                                                                 }
                                                                             } else {
-                                                                                Utils.showAlert(this, "கலந்துகொண்ட மாநில அளவிலான பயிற்சியின் எண்ணிக்கையை உள்ளிடவும்!");
+                                                                                Utils.showAlert(this, "விண்ணப்பதாரர் ஊக்குவிப்பவரா/மற்றவரா என்பதை தேர்வு செய்யவும்!");
                                                                             }
                                                                         } else {
                                                                             Utils.showAlert(this,"பிறந்த தேதியைத் தேர்ந்தெடுக்கவும்!");
@@ -990,6 +1022,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_REGISTER_SIGNUP);
         dataSet.put(AppConstant.KEY_MOTIVATOR_NAME, motivator_name.getText().toString());
         dataSet.put(AppConstant.KEY_REGISTER_DOB, motivator_dob_tv.getText().toString());
+        dataSet.put(AppConstant.KEY_MOTIVATOR_OTHERS, isMotivatorOthers);
         dataSet.put(AppConstant.KEY_REGISTER_MOBILE, motivator_mobileNO.getText().toString());
         dataSet.put(AppConstant.KEY_REGISTER_EMAIL, motivator_email_id.getText().toString());
         dataSet.put(AppConstant.KEY_REGISTER_ADDRESS, motivator_address.getText().toString());
