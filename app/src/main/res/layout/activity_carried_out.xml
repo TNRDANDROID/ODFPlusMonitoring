@@ -132,5 +132,6 @@ android:layout_gravity="bottom"
         android:textAlignment="center"
         android:textColor="@android:color/black"
         android:textSize="@dimen/_15sdp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:visibility="gone"/>
 </android.support.design.widget.CoordinatorLayout>
