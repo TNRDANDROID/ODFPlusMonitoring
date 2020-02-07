@@ -683,7 +683,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                 if (Utils.isOnline()) {
                     Utils.showNameChangeDialog(HomePage.this, "General", "", "", "", "", "");
                 }else{
-                    Utils.showAlert(HomePage.this, "Your internet seems to be offline! feedback can be pos only in online mode");
+                    Utils.showAlert(HomePage.this, "Your internet seems to be offline! feedback can be post only in online mode");
 
                 }
             }

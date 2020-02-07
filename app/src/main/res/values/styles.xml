@@ -107,7 +107,6 @@
         <item name="colorAccent">@color/profileAccentColor</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:textColor">@color/whiteTextColor</item>
     </style>
 
     <style name="TransparentText" parent="@android:style/TextAppearance">

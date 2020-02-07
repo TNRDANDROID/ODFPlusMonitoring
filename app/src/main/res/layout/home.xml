@@ -98,6 +98,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/sync"
                 android:layout_marginTop="@dimen/_50sdp"
+                android:layout_marginBottom="@dimen/_50sdp"
                 android:background="@drawable/white_background_two_corners"
                 android:orientation="horizontal"
                 android:padding="@dimen/_5sdp">

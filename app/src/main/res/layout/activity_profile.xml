@@ -93,7 +93,8 @@
                         android:layout_height="wrap_content"
                         android:text="\@appsnippuser"
                         android:textSize="28dp"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold"
+                        android:textColor="@color/whiteTextColor"/>
 
                     <TextView
                         android:id="@+id/motivator_email"
@@ -101,7 +102,8 @@
                         android:layout_height="wrap_content"
                         android:text="developer@appsnipp.com"
                         android:textSize="12dp"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold"
+                        android:textColor="@color/whiteTextColor"/>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -120,6 +122,7 @@
                         <TextView
                             android:id="@+id/back_img"
                             android:text="Back to\nHome"
+                            android:textColor="@color/whiteTextColor"
                             style="@style/profileStyledBackButton" />
                     </RelativeLayout>
 

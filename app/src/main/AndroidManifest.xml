@@ -128,6 +128,8 @@
         <activity
             android:name=".Activity.ViewEditProfileScreen"
             android:label="@string/motivator_profile"
+            android:configChanges="orientation|keyboardHidden"
+            android:windowSoftInputMode="stateUnchanged|adjustPan"
             android:theme="@style/AppTheme.ProfileTheme"
             android:screenOrientation="portrait"
               />
