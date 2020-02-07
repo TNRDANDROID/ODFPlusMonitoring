@@ -1074,8 +1074,8 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                     };
                     handler.postDelayed(runnable,2000);
 
-                } else {
-                    Utils.showAlert(this, "Status Fail");
+                } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("FAIL")) {
+                    Utils.showAlert(this, responseObj.getString("MESSAGE"));
                 }
             }
 
