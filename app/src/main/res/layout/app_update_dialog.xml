@@ -19,7 +19,7 @@
             android:text="Thooimai - தூய்மை தமிழகம்"
             android:textAllCaps="true"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/menu_title_size"
+            android:textSize="@dimen/_15sdp"
             customfontdemo:fontName="@string/font_circular_medium" />
 
     </RelativeLayout>
