@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_marginTop="@dimen/margin"
-            android:text="ODF Plus Monitoring"
+            android:text="Thooimai - தூய்மை தமிழகம்"
             android:textAllCaps="true"
             android:textColor="@android:color/black"
             android:textSize="@dimen/menu_title_size"
@@ -48,7 +48,7 @@
             android:gravity="center"
             android:lineSpacingExtra="5dp"
             android:padding="@dimen/padding"
-            android:text="You need to update ODF Plus Monitoring"
+            android:text="You need to update Thooimai - தூய்மை தமிழகம்"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
             customfontdemo:fontName="@string/font_circular_medium" />
 
@@ -60,7 +60,7 @@
             android:gravity="center"
             android:lineSpacingExtra="5dp"
             android:padding="@dimen/padding"
-            android:text="This version of ODF Plus Monitoring is no longer supported. Please go to Official Site and install new version"
+            android:text="This version of Thooimai - தூய்மை தமிழகம் is no longer supported. Please go to Official Site and install new version"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
             customfontdemo:fontName="@string/font_normal" />
 
