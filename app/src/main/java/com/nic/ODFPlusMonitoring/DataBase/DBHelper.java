@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "ODFPlusMonitoring";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
 
     public static final String DISTRICT_TABLE_NAME = "ODF_DistrictTable";
     public static final String BLOCK_TABLE_NAME = "ODF_BlockTable";
@@ -158,7 +158,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion >= newVersion) {
+        if (oldVersion > newVersion) {
             //drop table if already exists
             db.execSQL("DROP TABLE IF EXISTS " + DISTRICT_TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + BLOCK_TABLE_NAME);
@@ -172,6 +172,7 @@ public class DBHelper extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + SCHEDULED_ACTIVITY_PHOTOS);
             db.execSQL("DROP TABLE IF EXISTS " + SAVE_ACTIVITY);
             db.execSQL("DROP TABLE IF EXISTS " + MOTIVATOR_PROFILE);
+            db.execSQL("DROP TABLE IF EXISTS " + ACTIVITY_COMPLETED);
             onCreate(db);
         }
     }

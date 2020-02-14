@@ -67,6 +67,7 @@ public class PrefManager {
     private static final String MOTIVATOR_ID = "motivator_id";
     private static final String SCHEDULE_MASTER_ID = "schedule_master_id";
     private static final String KEY_JSON_OBJECT_DELETED_KEY= "KEY_JSON_OBJECT_DELETED_KEY";
+    private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
 
 
     public PrefManager(Context context) {
@@ -376,5 +377,13 @@ public class PrefManager {
         }.getType();
         ODFMonitoringListValue CCPListNew = new Gson().fromJson(getLocalSaveDeletedKeyString(), listType);
         return CCPListNew;
+    }
+    public boolean isLoggedIn() {
+        return pref.getBoolean(KEY_IS_LOGGED_IN, false);
+    }
+
+    public void setIsLoggedIn(boolean value) {
+        editor.putBoolean(KEY_IS_LOGGED_IN, value);
+        editor.commit();
     }
 }

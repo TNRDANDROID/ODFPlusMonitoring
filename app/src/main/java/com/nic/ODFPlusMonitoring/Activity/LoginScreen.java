@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -70,15 +69,22 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     private PrefManager prefManager;
     private ProgressHUD progressHUD;
     public dbData dbData = new dbData(this);
+    private String isLogin;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         setContentView(R.layout.login_screen);
+        Bundle bundle = this.getIntent().getExtras();
+        if (bundle != null) {
+            isLogin = bundle.getString("Login");
+        }
         intializeUI();
         if (Utils.isOnline()) {
-            fetchAllResponseFromApi();
+            if ((!isLogin.equalsIgnoreCase("Login"))) {
+                fetchAllResponseFromApi();
+            }
             // to avoid insertion of data while back
 //            Cursor toCheck = getRawEvents("SELECT * FROM " + DBHelper.BANKLIST_TABLE_NAME, null);
 //            toCheck.moveToFirst();
@@ -146,6 +152,9 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     }
 
     public void fetchAllResponseFromApi(){
+        if (!prefManager.isLoggedIn() && (!isLogin.equalsIgnoreCase("Login"))) {
+            Utils.clearApplicationData(this);
+        }
         getMotivatorCategoryList();
         getVillageList();
         getDistrictList();
@@ -382,6 +391,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
                         prefManager.setUserPassKey(decryptedKey);
                         prefManager.setMotivatorId(String.valueOf(jsonObject.get(AppConstant.KEY_MOTIVATOR_ID)));
+                        prefManager.setIsLoggedIn(true);
                         showHomeScreen();
                     } else {
                         if (response.equals("LOGIN_FAILED")) {

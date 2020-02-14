@@ -382,6 +382,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
             Intent intent = new Intent(this, LoginScreen.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.putExtra("EXIT", false);
+            intent.putExtra("Login", "Login");
             startActivity(intent);
             finish();
             overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
