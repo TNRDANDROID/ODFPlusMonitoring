@@ -99,6 +99,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
     private Handler handler = new Handler();
     private MyEditTextView motivator_name, motivator_address, motivator_mobileNO, motivator_email_id, motivator_state_level_tv, motivator_position_tv, motivator_account_tv, verify_motivator_account_tv, motivator_ifsc_tv;
     private MyCustomTextView motivator_bank_tv, motivator_branch_tv;
+    private LinearLayout account_layout, verify_account_layout_show_hide, ifsc_layout, bank_layout, branch_layout;
     private static MyCustomTextView motivator_dob_tv;
     private RelativeLayout dob_layout, edit_image, verify_account_layout, phone_no_layout, email_id_layout;
     private LinearLayout position_layout;
@@ -176,6 +177,11 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         arrowImageUp = (ImageView)findViewById(R.id.arrow_image_up) ;
         tick = (ImageView) findViewById(R.id.tick);
         childlayout = (LinearLayout)findViewById(R.id.child_view);
+        account_layout = (LinearLayout) findViewById(R.id.account_layout);
+        verify_account_layout_show_hide = (LinearLayout) findViewById(R.id.verify_account_layout_show_hide);
+        ifsc_layout = (LinearLayout) findViewById(R.id.ifsc_layout);
+        bank_layout = (LinearLayout) findViewById(R.id.bank_layout);
+        branch_layout = (LinearLayout) findViewById(R.id.branch_layout);
         dob_layout = (RelativeLayout) findViewById(R.id.dob_layout);
         edit_image = (RelativeLayout) findViewById(R.id.edit_image);
         verify_account_layout = (RelativeLayout) findViewById(R.id.verify_account_layout);
@@ -309,6 +315,11 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                 if (isChecked) {
                     isMotivatorOthers = 1;
                     other.setChecked(false);
+                    account_layout.setVisibility(View.VISIBLE);
+                    verify_account_layout_show_hide.setVisibility(View.VISIBLE);
+                    ifsc_layout.setVisibility(View.VISIBLE);
+                    bank_layout.setVisibility(View.VISIBLE);
+                    branch_layout.setVisibility(View.VISIBLE);
 
                 }
             }
@@ -319,6 +330,16 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                 if (isChecked) {
                     isMotivatorOthers = 2;
                     motivator.setChecked(false);
+                    account_layout.setVisibility(View.GONE);
+                    verify_account_layout_show_hide.setVisibility(View.GONE);
+                    ifsc_layout.setVisibility(View.GONE);
+                    bank_layout.setVisibility(View.GONE);
+                    branch_layout.setVisibility(View.GONE);
+                    motivator_account_tv.getText().clear();
+                    verify_motivator_account_tv.getText().clear();
+                    motivator_ifsc_tv.getText().clear();
+                    motivator_bank_tv.setText("");
+                    motivator_branch_tv.setText("");
 
                 }
 
@@ -648,39 +669,17 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                                     if (Utils.isValidMobile(motivator_mobileNO.getText().toString())) {
 //                                        if (!motivator_email_id.getText().toString().isEmpty()) {
 //                                            if (Utils.isEmailValid(motivator_email_id.getText().toString())) {
+                                        if ((motivator.isChecked()) || (other.isChecked())) {
+                                            if (motivator.isChecked()) {
                                                 if (!motivator_account_tv.getText().toString().isEmpty()) {
                                                     if (!verify_motivator_account_tv.getText().toString().isEmpty()) {
                                                         if (motivator_account_tv.getText().toString().equalsIgnoreCase(verify_motivator_account_tv.getText().toString())) {
                                                             if (!motivator_ifsc_tv.getText().toString().isEmpty()) {
                                                                 if (!motivator_bank_tv.getText().toString().isEmpty()) {
-                                                                if (!motivator_branch_tv.getText().toString().isEmpty()) {
-                                                                        if (!motivator_dob_tv.getText().toString().isEmpty()) {
-                                                                            if ((motivator.isChecked()) || (other.isChecked())) {
-                                                                                if (!motivator_state_level_tv.getText().toString().isEmpty()) {
-                                                                                    if (!"Select Category".equalsIgnoreCase(Category.get(sp_category.getSelectedItemPosition()).getMotivatorCategoryName())) {
-                                                                                        if ((prefManager.getSpinnerSelectedCategoryName()).equalsIgnoreCase("others")) {
-                                                                                            if (!motivator_position_tv.getText().toString().isEmpty()) {
-                                                                                                signUP();
-                                                                                            } else {
-                                                                                                Utils.showAlert(this, "நிலையை உள்ளிடவும்!");
-                                                                                            }
-                                                                                        } else {
-                                                                                            signUP();
-                                                                                        }
-                                                                                    } else {
-                                                                                        Utils.showAlert(this, "வகையைத் தேர்ந்தெடுக்கவும்!");
-                                                                                    }
-                                                                                } else {
-                                                                                    Utils.showAlert(this, "கலந்துகொண்ட மாநில அளவிலான பயிற்சியின் எண்ணிக்கையை உள்ளிடவும்!");
-                                                                                }
-                                                                            } else {
-                                                                                Utils.showAlert(this, "விண்ணப்பதாரர் ஊக்குவிப்பவரா/மற்றவரா என்பதை தேர்வு செய்யவும்!");
-                                                                            }
-                                                                        } else {
-                                                                            Utils.showAlert(this,"பிறந்த தேதியைத் தேர்ந்தெடுக்கவும்!");
-                                                                        }
+                                                                    if (!motivator_branch_tv.getText().toString().isEmpty()) {
+                                                                        motivatorOthersValidation();
                                                                     } else {
-                                                                         Utils.showAlert(this, "வங்கி கிளை பெயரைத் தேர்ந்தெடுக்கவும்!");
+                                                                        Utils.showAlert(this, "வங்கி கிளை பெயரைத் தேர்ந்தெடுக்கவும்!");
                                                                     }
                                                                 } else {
                                                                     Utils.showAlert(this, "வங்கியின் பெயரைத் தேர்ந்தெடுக்கவும்!");
@@ -703,6 +702,20 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
 //                                        } else {
 //                                            Utils.showAlert(this, "உங்கள் மின்னஞ்சல் முகவரியை உள்ளிடவும்!");
 //                                        }
+                                            } else {
+                                                prefManager.setKeyAutocompleteSelectedBankID(0);
+                                                prefManager.setKeyAutocompleteSelectedBranchID(0);
+                                                prefManager.setKeyAutocompleteSelectedIfscCode("");
+                                                motivator_account_tv.getText().clear();
+                                                verify_motivator_account_tv.getText().clear();
+                                                motivator_ifsc_tv.getText().clear();
+                                                motivator_bank_tv.setText("");
+                                                motivator_branch_tv.setText("");
+                                                motivatorOthersValidation();
+                                            }
+                                        } else {
+                                            Utils.showAlert(this, "விண்ணப்பதாரர் ஊக்குவிப்பவரா/மற்றவரா என்பதை தேர்வு செய்யவும்!");
+                                        }
                                     } else {
                                         Utils.showAlert(this, "சரியான கைபேசி எண்ணை உள்ளிடவும்!");
                                     }
@@ -726,6 +739,32 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
             }
         } else {
             Utils.showAlert(this, "முதலில் சுயவிவரப் படத்தைப் பிடிக்கவும்!!");
+        }
+    }
+
+    public void motivatorOthersValidation() {
+        if (!motivator_dob_tv.getText().toString().isEmpty()) {
+
+            if (!motivator_state_level_tv.getText().toString().isEmpty()) {
+                if (!"Select Category".equalsIgnoreCase(Category.get(sp_category.getSelectedItemPosition()).getMotivatorCategoryName())) {
+                    if ((prefManager.getSpinnerSelectedCategoryName()).equalsIgnoreCase("others")) {
+                        if (!motivator_position_tv.getText().toString().isEmpty()) {
+                            signUP();
+                        } else {
+                            Utils.showAlert(this, "நிலையை உள்ளிடவும்!");
+                        }
+                    } else {
+                        signUP();
+                    }
+                } else {
+                    Utils.showAlert(this, "வகையைத் தேர்ந்தெடுக்கவும்!");
+                }
+            } else {
+                Utils.showAlert(this, "கலந்துகொண்ட மாநில அளவிலான பயிற்சியின் எண்ணிக்கையை உள்ளிடவும்!");
+            }
+
+        } else {
+            Utils.showAlert(this, "பிறந்த தேதியைத் தேர்ந்தெடுக்கவும்!");
         }
     }
 
