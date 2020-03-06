@@ -42,7 +42,7 @@ public class ApiService {
     }
 
     public CustomRequest getRequest(String api, int method, String url , Map<String, String> parmas, String type, final Api.ServerResponseListener listener) {
-        Log.d("url*",url);
+//        Log.d("url*",url);
         return new CustomRequest(api, method, url ,parmas, type, new Response.Listener<ServerResponse>() {
             @Override
             public void onResponse(ServerResponse myResponse) {
@@ -110,7 +110,7 @@ public class ApiService {
     }
 
     public void makeJSONObjectRequest(String api, int method, String url, JSONObject parmas, String type, final Api.ServerResponseListener listener) {
-        Log.d("url*",url);
+//        Log.d("url*",url);
         JRequest request = getJSONObjectRequest(api, method, url, parmas, type, listener);
         request.setTimeout();
         NICApplication.getInstance().addToRequestQueue(request);
