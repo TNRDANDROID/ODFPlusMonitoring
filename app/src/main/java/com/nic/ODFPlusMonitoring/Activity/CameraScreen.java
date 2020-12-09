@@ -198,6 +198,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                 ContentValues values = new ContentValues();
                 values.put(AppConstant.KEY_LATITUDE, offlatTextValue.toString());
                 values.put(AppConstant.KEY_LONGITUDE, offlongTextValue.toString());
+                values.put(AppConstant.KEY_DATE_TIME,Utils.getCurrentDateTime());
                 values.put(AppConstant.KEY_IMAGE,image_str.trim());
 
                 whereClause = "id = ? and dcode = ? and bcode = ? and pvcode = ? and activity_id = ? and schedule_id = ?";
