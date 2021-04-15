@@ -70,12 +70,17 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     private ProgressHUD progressHUD;
     public dbData dbData = new dbData(this);
     private String isLogin;
+    private static LoginScreen instance;
 
+    public static LoginScreen getInstance() {
+        return instance;
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         setContentView(R.layout.login_screen);
+        instance = this;
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null) {
             isLogin = bundle.getString("Login");
@@ -197,7 +202,14 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     }
 
     private void checkLoginScreen() {
+        userName.setText("9751995897");
+        passwordEditText.setText("odf65#$");
 
+        /*userName.setText("7664589783");
+        passwordEditText.setText("odf6#$");*/
+
+       /* userName.setText("maedemo");
+        passwordEditText.setText("test123#$");*/
         final String username = userName.getText().toString().trim();
         final String password = passwordEditText.getText().toString().trim();
         prefManager.setUserPassword(password);
@@ -265,6 +277,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
 
         Log.d("user", "" + userName.getText().toString().trim());
+        Log.d("params", "" +params);
 
 
         return params;
@@ -381,6 +394,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             }
             if ("LoginScreen".equals(urlType)) {
                 if (status.equalsIgnoreCase("OK")) {
+                    Log.d("Lresponse", "" + response);
                     if (response.equals("LOGIN_SUCCESS")) {
                         String key = responseObj.getString(AppConstant.KEY_USER);
                         String user_data = responseObj.getString(AppConstant.USER_DATA);
@@ -392,7 +406,16 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                         prefManager.setUserPassKey(decryptedKey);
                         prefManager.setMotivatorId(String.valueOf(jsonObject.get(AppConstant.KEY_MOTIVATOR_ID)));
                         prefManager.setIsLoggedIn(true);
-                        showHomeScreen();
+//                        showHomeScreen();
+
+
+//                        String result=jsonObject.getString("result");
+                        String result="N";
+                        if(result.equals("N")){
+                            Utils.showAlertResult(LoginScreen.this,"Attend The ODF Plus Qualifying Test");
+                        }
+
+
                     } else {
                         if (response.equals("LOGIN_FAILED")) {
                             Utils.showAlert(this, "Invalid UserName Or Password");
@@ -670,7 +693,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 //        showHomeScreen();
 //    }
 
-    private void showHomeScreen() {
+    public void showHomeScreen() {
         Intent intent = new Intent(LoginScreen.this,HomePage.class);
         intent.putExtra("Home", "Login");
         startActivity(intent);

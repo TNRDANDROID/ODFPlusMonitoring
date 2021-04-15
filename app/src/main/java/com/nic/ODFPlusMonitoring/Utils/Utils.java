@@ -11,22 +11,35 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.FileProvider;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SwitchCompat;
 import android.text.InputFilter;
 import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.method.ScrollingMovementMethod;
+import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,13 +50,19 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.Scroller;
+import android.widget.SeekBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.intuit.sdp.BuildConfig;
 import com.nic.ODFPlusMonitoring.Activity.ActivityScreen;
 import com.nic.ODFPlusMonitoring.Activity.HomePage;
+import com.nic.ODFPlusMonitoring.Activity.LoginScreen;
 import com.nic.ODFPlusMonitoring.Application.NICApplication;
-import com.nic.ODFPlusMonitoring.BuildConfig;
 import com.nic.ODFPlusMonitoring.Constant.AppConstant;
 import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
@@ -56,6 +75,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -92,6 +112,12 @@ public class Utils {
     private static PrefManager prefManager;
     static JSONObject datasetActivity = new JSONObject();
     static String feedback_reason = "";
+
+    //For audio play
+    private static MediaPlayer playmPlayer;
+    private static int plaympass,playmduration,playmdue;
+    private static Handler playmHandler;
+    private static Runnable playmRunnable;
 
     private static void initializeSharedPreference() {
         sharedPreferences = NICApplication.getGlobalContext()
@@ -191,6 +217,30 @@ public class Utils {
         dialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public static void showAlertResult(Activity activity, String msg){
+        try {
+        final Dialog dialog = new Dialog(activity);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.alert_dialog);
+
+        MyCustomTextView text = (MyCustomTextView) dialog.findViewById(R.id.tv_message);
+        text.setText(msg);
+
+        Button dialogButton = (Button) dialog.findViewById(R.id.btn_ok);
+        dialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LoginScreen.getInstance().showHomeScreen();
                 dialog.dismiss();
             }
         });
@@ -1381,5 +1431,305 @@ public class Utils {
 
         return dir.delete();
     }
+    public static void addReadMore(final Context context, final String text, final TextView textView, final int color) {
+        int stringLength=0;
+        if(color==0){
+            stringLength=40;
+        }else {
+            stringLength=35;
+        }
+        SpannableString ss;
+        if(textView.getLineCount() > 2){
+            String[] lines = textView.getText().toString().split("\n");
+            int length = 0;
+            int index = 0;
+            for (String line : lines) {
+                length = length+ line.length();
+                index++;
+                if(index==3){
+                    break;
+                }
+            }
+            ss = new SpannableString(text.substring(0, text.length() > length ? length : text.length()) + "... read more");
+            if(length > stringLength)
+                ss = new SpannableString(text.substring(0, text.length() > stringLength ? stringLength : text.length()) + "... read more");
+        } else {
+            ss = new SpannableString(text.substring(0, text.length() > stringLength ? stringLength : text.length()) + "... read more");
+        }
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View view) {
+//                addReadLess(context,text, textView,color);
+//                String text="Let's try to run your application. I assume you have connected your actual Android Mobile device with your computer." +
+//                        " To run the app from android studio, open one of your project's activity files and click the Run icon " +
+//                        "from the toolbar. Select your mobile device as an option and then check your mobile device which will " +
+//                        "display your default screen I assume you have connected your actual Android Mobile device with your computer." +
+//                        " I assume you have connected your actual Android Mobile device with your computer." +
+//                        " I assume you have connected your actual Android Mobile device with your computer." +
+//                        "I assume you have connected your actual Android Mobile device with your computer.";
+
+                showPopUp(context,text);
+            }
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if(color==0){
+                        ds.setColor(context.getResources().getColor(R.color.white, context.getTheme()));
+                    }else {
+                        ds.setColor(context.getResources().getColor(R.color.darkblue, context.getTheme()));
+
+                    }
+                } else {
+                    if(color==0) {
+                        ds.setColor(context.getResources().getColor(R.color.white));
+                    }else {
+                        ds.setColor(context.getResources().getColor(R.color.darkblue));
+                    }
+                }
+            }
+        };
+        ss.setSpan(clickableSpan, ss.length() - 10, ss.length() , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textView.setText(ss);
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
+    public static void showPopUp(Context activity, String msg){
+        try {
+            final Dialog dialog = new Dialog(activity);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setCancelable(false);
+            dialog.setContentView(R.layout.alert_dialog);
+
+            MyCustomTextView text = (MyCustomTextView) dialog.findViewById(R.id.tv_message);
+            text.setText(msg);
+            text.setGravity(Gravity.START);
+            text.setTextSize(18);
+            text.setMaxLines(15);
+            text.setMovementMethod(new ScrollingMovementMethod());
+
+            Button dialogButton = (Button) dialog.findViewById(R.id.btn_ok);
+            dialogButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+            dialog.getWindow().getAttributes().windowAnimations = R.style.PauseDialogAnimation;
+            dialog.show();
+            dialog.setCanceledOnTouchOutside(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public static void addReadLess(final Context context, final String text, final TextView textView, final int color) {
+        SpannableString ss = new SpannableString(text + " read less");
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View view) {
+                addReadMore(context,text, textView,1);
+            }
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if(color==0){
+                        ds.setColor(context.getResources().getColor(R.color.white, context.getTheme()));
+                    }else {
+                        ds.setColor(context.getResources().getColor(R.color.darkblue, context.getTheme()));
+
+                    }
+                } else {
+                    if(color==0) {
+                        ds.setColor(context.getResources().getColor(R.color.white));
+                    }else {
+                        ds.setColor(context.getResources().getColor(R.color.darkblue));
+                    }
+                }
+
+            }
+        };
+        ss.setSpan(clickableSpan, ss.length() - 10, ss.length() , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textView.setText(ss);
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
+    public static boolean duration(String strDate){
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date currentdate = new Date();
+        String currentDate= dateFormat.format(currentdate);
+        System.out.println("currentdate >>"+currentDate);
+
+        final long millisToAdd = 7_200_000; //two hours
+        Date d2 = null;
+        try {
+            d2 = dateFormat.parse(strDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        d2.setTime(d2.getTime() + millisToAdd);
+        String endDate= dateFormat.format(d2);
+        System.out.println("endDate: " + endDate);
+        return currentDate.equals(endDate);
+    }
+
+
+    public static void playAudio(final Activity activity, final String url) {
+        try {
+            //We need to get the instance of the LayoutInflater, use the context of this activity
+            final LayoutInflater inflater = (LayoutInflater) activity
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            //Inflate the view from a predefined XML layout
+            View edit_cpt_list_layout = inflater.inflate(R.layout.pop_up_audio_play, null);
+
+            TextView heading = (TextView) edit_cpt_list_layout.findViewById(R.id.tvAlertHeading);
+            final ImageView play_btn = (ImageView) edit_cpt_list_layout.findViewById(R.id.play_btn);
+            final LinearLayout close_pop = (LinearLayout) edit_cpt_list_layout.findViewById(R.id.close_pop);
+            final ImageView stop_btn = (ImageView) edit_cpt_list_layout.findViewById(R.id.stop_btn);
+            final SeekBar seekbar = (SeekBar) edit_cpt_list_layout.findViewById(R.id.seekbar);
+            final TextView mPass = (TextView) edit_cpt_list_layout.findViewById(R.id.mPass);
+            final TextView mDuration = (TextView) edit_cpt_list_layout.findViewById(R.id.mDuration);
+            final TextView mDue = (TextView) edit_cpt_list_layout.findViewById(R.id.mDue);
+            final RelativeLayout audio_layout = (RelativeLayout) edit_cpt_list_layout.findViewById(R.id.audio_layout);
+            close_pop.setVisibility(View.VISIBLE);
+
+            final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
+            dialogBuilder.setView(edit_cpt_list_layout);
+            dialogBuilder.setCancelable(true);
+            final AlertDialog add_cpts_search_alert = dialogBuilder.create();
+            add_cpts_search_alert.show();
+            add_cpts_search_alert.setCanceledOnTouchOutside(true);
+
+            close_pop.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //stopPlaying();
+                    add_cpts_search_alert.dismiss();
+                }
+            });
+            play_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    add_cpts_search_alert.setCancelable(false);
+                    stop_btn.setVisibility(View.VISIBLE);
+                    play_btn.setVisibility(View.GONE);
+                    close_pop.setVisibility(View.GONE);
+                    startPlaying();
+                }
+
+                private void startPlaying() {
+                    if(playmPlayer!=null){
+                        playmPlayer.stop();
+                        playmPlayer.reset();
+                        playmPlayer.release();
+                        playmPlayer = null;
+                    }
+
+                    mDue.setVisibility(View.GONE);
+                    mDuration.setVisibility(View.VISIBLE);
+                    mPass.setVisibility(View.VISIBLE);
+                    audio_layout.setEnabled(false);
+                    playmPlayer = new MediaPlayer();
+                    playmPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                    try{
+                        System.out.println("uri>"+Uri.parse(url));
+                        playmPlayer.setDataSource(activity,Uri.parse(url));
+                        playmPlayer.prepare();
+                        playmPlayer.start();
+                        getAudioStats();
+                        initializeSeekBar();
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }catch (IllegalArgumentException e){
+                        e.printStackTrace();
+                    }catch (SecurityException e){
+                        e.printStackTrace();
+                    }catch (IllegalStateException e){
+                        e.printStackTrace();
+                    }
+                    playmPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mediaPlayer) {
+                            stopPlaying();
+                            stop_btn.setVisibility(View.GONE);
+                            play_btn.setVisibility(View.VISIBLE);
+                            close_pop.setVisibility(View.VISIBLE);
+                            dialogBuilder.setCancelable(true);
+                            audio_layout.setEnabled(true);
+
+                        }
+
+                    });
+                }
+
+                private void initializeSeekBar() {
+                    playmHandler = new Handler();
+                    seekbar.setMax(playmPlayer.getDuration()/1000);
+                    playmRunnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            if(playmPlayer!=null){
+                                int mCurrentPosition = playmPlayer.getCurrentPosition()/1000; // In milliseconds
+                                seekbar.setProgress(mCurrentPosition);
+                                getAudioStats();
+                            }
+                            playmHandler.postDelayed(playmRunnable,1000);
+                        }
+                    };
+                    playmHandler.postDelayed(playmRunnable,1000);
+                }
+
+                private void getAudioStats() {
+                    playmduration  = playmPlayer.getDuration()/1000; // In milliseconds
+                    playmdue = (playmPlayer.getDuration() - playmPlayer.getCurrentPosition())/1000;
+                    plaympass = playmduration - playmdue;
+                    mPass.setText("" + plaympass + " secs");
+                    mDuration.setText("" + playmduration + " secs");
+                    mDue.setText("" + playmdue + " secs");
+                }
+            });
+            stop_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    add_cpts_search_alert.setCancelable(true);
+                    stop_btn.setVisibility(View.GONE);
+                    play_btn.setVisibility(View.VISIBLE);
+                    close_pop.setVisibility(View.VISIBLE);
+                    stopPlaying();
+                }
+            });
+            seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                    if(playmPlayer!=null && b){
+                        playmPlayer.seekTo(i*1000);
+                    } }
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) { }
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) { }
+            });
+            add_cpts_search_alert.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            add_cpts_search_alert.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT,WindowManager.LayoutParams.WRAP_CONTENT);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    private static void stopPlaying() {
+        if(playmPlayer!=null){
+            playmPlayer.stop();
+            playmPlayer.release();
+            playmPlayer = null;
+            if(playmHandler!=null){
+                playmHandler.removeCallbacks(playmRunnable);
+            }
+        }
+    }
 
 }
+

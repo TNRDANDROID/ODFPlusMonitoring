@@ -1,15 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.nic.ODFPlusMonitoring.Support.SquareLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.nic.ODFPlusMonitoring.Support.SquareLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@android:color/white"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:ignore="MissingClass">
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
 
-    <ImageView
-        android:id="@+id/thumbnail"
+            <ImageView
+                android:id="@+id/thumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/_1sdp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/delete"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/circle_white"
+            android:layout_marginRight="8dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="top|right"
+            android:adjustViewBounds="true"
+            android:src="@drawable/ic_trash"
+            android:padding="5dp"
+            android:description="@null"
+            android:tint="@color/subscription_type_red_color"
+            android:scaleType="fitStart" />
+
+    </RelativeLayout>
+</com.nic.ODFPlusMonitoring.Support.SquareLayout>
+
+    <!--
+    <?xml version="1.0" encoding="utf-8"?>
+    <com.nic.ODFPlusMonitoring.Support.SquareLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/_1sdp"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop" />
-</com.nic.ODFPlusMonitoring.Support.SquareLayout>
+        android:background="@android:color/white"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/thumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/_1sdp"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop" />
+    </com.nic.ODFPlusMonitoring.Support.SquareLayout>-->

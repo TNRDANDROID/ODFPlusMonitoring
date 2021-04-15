@@ -51,6 +51,8 @@ public class ODFMonitoringListValue {
     private Integer scheduleActivityId;
     private Integer ActivityId;
     private String ActivityName;
+    private String ActivityAudio;
+    private String AudioSize;
     private String placeOfActivity;
     private Integer noOfPhotos;
     private Integer serialNo;
@@ -85,6 +87,45 @@ public class ODFMonitoringListValue {
     private String motivatorMobile;
     private String motivatorAddress;
     private String motivatorDOB;
+
+    private String finYear;
+    private String month;
+
+    public String getAudioSize() {
+        return AudioSize;
+    }
+
+    public ODFMonitoringListValue setAudioSize(String audioSize) {
+        AudioSize = audioSize;
+        return this;
+    }
+
+    public String getActivityAudio() {
+        return ActivityAudio;
+    }
+
+    public ODFMonitoringListValue setActivityAudio(String activityAudio) {
+        ActivityAudio = activityAudio;
+        return this;
+    }
+
+    public String getFinYear() {
+        return finYear;
+    }
+
+    public ODFMonitoringListValue setFinYear(String finYear) {
+        this.finYear = finYear;
+        return this;
+    }
+
+    public String getMonth() {
+        return month;
+    }
+
+    public ODFMonitoringListValue setMonth(String month) {
+        this.month = month;
+        return this;
+    }
 
     public Integer getPhotoID() {
         return photoID;

@@ -66,6 +66,8 @@ public class ActivityCarriedOutAdapter extends RecyclerView.Adapter<ActivityCarr
 
 
         holder.activity_name.setText(scheduleListValues.get(position).getActivityName());
+        Utils.addReadMore(context,scheduleListValues.get(position).getActivityName(), holder.activity_name,1);
+
         if (scheduleListValues.get(position).getActivityStatus().equalsIgnoreCase("Y")) {
             holder.activity_status.setText("Completed");
         } else if (scheduleListValues.get(position).getActivityStatus().equalsIgnoreCase("N")) {

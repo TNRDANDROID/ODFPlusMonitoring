@@ -1,6 +1,7 @@
 package com.nic.ODFPlusMonitoring.Activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,20 +13,27 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
+import com.nic.ODFPlusMonitoring.Adapter.CommonAdapter;
 import com.nic.ODFPlusMonitoring.Adapter.ScheduleListAdapter;
 import com.nic.ODFPlusMonitoring.Api.Api;
 import com.nic.ODFPlusMonitoring.Api.ApiService;
@@ -46,6 +54,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.List;
 
 public class HomePage extends AppCompatActivity implements Api.ServerResponseListener, View.OnClickListener, MyDialog.myOnClickListener {
     private PrefManager prefManager;
@@ -64,9 +75,11 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     private Animation animation,stb2;
     private LinearLayout activity_carried_out;
     private boolean recordContain = true;
-
-
-
+    private AlertDialog alert;
+    ArrayList<ODFMonitoringListValue> finYearList = new ArrayList<>();
+    ArrayList<ODFMonitoringListValue> monthList = new ArrayList<>();
+    Spinner fin_year,month_sp;
+    String selected_fin_year,selected_month;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -313,6 +326,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
             case R.id.activity_carried_out:
                 if(recordContain) {
                     openActivityCarriedOut();
+//                    getActivityList();
                 }else{
                     Utils.showAlert(this, "No Record Found!");
                 }
@@ -690,4 +704,119 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
             }
         });
     }
+
+    public void getActivityList(){
+        try {
+            //We need to get the instance of the LayoutInflater, use the context of this activity
+            final LayoutInflater inflater = (LayoutInflater) this
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            //Inflate the view from a predefined XML layout
+            final View view = inflater.inflate(R.layout.pop_up_get_activity, null);
+            ImageView close,submit;
+
+            close = (ImageView) view.findViewById(R.id.close);
+            submit = (ImageView) view.findViewById(R.id.submit);
+            fin_year = (Spinner) view.findViewById(R.id.fin_year);
+            month_sp = (Spinner) view.findViewById(R.id.month_sp);
+            loadfinYearList();
+            submit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if( fin_year.getSelectedItem()!= null && !selected_fin_year.equals("Select Year")){
+                        if( month_sp.getSelectedItem()!= null && !selected_month.equals("Select Month")){
+                            openActivityCarriedOut();
+                            alert.dismiss();
+                        }else {
+                            Utils.showAlert(HomePage.this,"Select Month!");
+                        }
+                    }else {
+                        Utils.showAlert(HomePage.this,"Select Year!");
+                    }
+
+                }
+            });
+            fin_year.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                    String fin_year = parent.getSelectedItem().toString();
+                    selected_fin_year = finYearList.get(position).getPvName();
+                    System.out.println("fin_year>"+selected_fin_year);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+            month_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                    String month = parent.getSelectedItem().toString();
+                    selected_month = monthList.get(position).getPvName();
+                    System.out.println("month>"+selected_month);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+
+            close.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alert.dismiss();
+                }
+            });
+
+
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+            dialogBuilder.setView(view);
+            alert = dialogBuilder.create();
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            lp.copyFrom(alert.getWindow().getAttributes());
+            lp.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            lp.gravity = Gravity.CENTER;
+            lp.windowAnimations = R.style.DialogAnimation;
+            alert.getWindow().setAttributes(lp);
+            alert.show();
+            alert.setCanceledOnTouchOutside(true);
+            alert.setCancelable(true);
+            alert.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void loadfinYearList() {
+        ODFMonitoringListValue roadListValue = new ODFMonitoringListValue();
+        roadListValue.setPvName("Select Year");
+        finYearList.add(roadListValue);
+
+        int thisYear = Calendar.getInstance().get(Calendar.YEAR);
+        for (int i = 2010; i <= thisYear; i++) {
+            ODFMonitoringListValue villageList = new ODFMonitoringListValue();
+            villageList.setPvName(Integer.toString(i));
+            finYearList.add(villageList);
+        }
+
+        ODFMonitoringListValue mValue = new ODFMonitoringListValue();
+        mValue.setPvName("Select Month");
+        monthList.add(mValue);
+        List<String> tags = Arrays.asList(getResources().getStringArray(R.array.month));
+        for (int i = 0; i < tags.size(); i++) {
+            ODFMonitoringListValue villageList = new ODFMonitoringListValue();
+            villageList.setPvName(tags.get(i));
+            monthList.add(villageList);
+        }
+
+        fin_year.setAdapter(new CommonAdapter(this, finYearList, "ScheduleVillage"));
+        month_sp.setAdapter(new CommonAdapter(this, monthList, "ScheduleVillage"));
+    }
+
+
+
 }

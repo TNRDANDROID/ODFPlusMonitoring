@@ -50,6 +50,7 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
     private Animation animation;
     private ImageView arrowImage;
     private static ActivityScreen activityScreen;
+    Activity activity;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,6 +62,7 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
     public void intializeUI() {
         prefManager = new PrefManager(this);
         activityScreen = this;
+        activity=this;
         scheduleVillage_sp = (Spinner) findViewById(R.id.village_spinner);
         arrowImage = (ImageView) findViewById(R.id.arrow_image_up);
         activityRecycler = (RecyclerView) findViewById(R.id.activity_list);
@@ -75,7 +77,7 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
         activityRecycler.setHasFixedSize(true);
         activityRecycler.setNestedScrollingEnabled(false);
         activityRecycler.setFocusable(false);
-        activityListAdapter = new ActivityListAdapter(this, activityList, dbData);
+        activityListAdapter = new ActivityListAdapter(activity,this, activityList, dbData);
         activityRecycler.setAdapter(activityListAdapter);
         back_img.setOnClickListener(this);
         home_img.setOnClickListener(this);
@@ -118,7 +120,7 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
         @Override
         protected void onPostExecute(ArrayList<ODFMonitoringListValue> pmgsyHabitationList) {
             super.onPostExecute(pmgsyHabitationList);
-            activityListAdapter = new ActivityListAdapter(ActivityScreen.this,
+            activityListAdapter = new ActivityListAdapter(activity,ActivityScreen.this,
                     activityList, dbData);
            // habitation_tv.setVisibility(View.VISIBLE);
             activityRecycler.setAdapter(activityListAdapter);

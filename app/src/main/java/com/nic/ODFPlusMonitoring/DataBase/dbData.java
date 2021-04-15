@@ -675,6 +675,8 @@ public class dbData {
                             .getColumnIndexOrThrow(AppConstant.KEY_IMAGE_REMARK)));
                     card.setSerialNo(cursor.getInt(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_SERIAL_NUMBER)));
+                    card.setActivityAudio(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_AUDIO)));
                     card.setImage(decodedByte);
 
                     cards.add(card);
@@ -789,6 +791,8 @@ public class dbData {
                             .getColumnIndexOrThrow(AppConstant.KEY_IMAGE_REMARK)));
                     card.setActivityName(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_NAME)));
+                    card.setActivityAudio(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_AUDIO)));
                     card.setImage(decodedByte);
 
                     cards.add(card);
@@ -876,6 +880,68 @@ public class dbData {
                     card.setActivityStatus(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_STATUS)));
                     cards.add(card);
+                }
+            }
+        } catch (Exception e){
+            Log.d("Exception" ,e.toString());
+        } finally{
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return cards;
+    }
+    public ArrayList<ODFMonitoringListValue> getFilteredActivity(int status) {
+
+        ArrayList<ODFMonitoringListValue> cards = new ArrayList<>();
+        Cursor cursor = null;
+        String selection = "";
+        String[] selectionArgs = null;
+
+        try {
+            cursor = db.query(DBHelper.ACTIVITY_COMPLETED,
+                    new String[] {"*"}, selection, selectionArgs, null, null, null);
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    ODFMonitoringListValue card = new ODFMonitoringListValue();
+                    card.setScheduleActivityId(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_SCHEDULE_ACTIVITY_ID)));
+                    card.setScheduleId(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_SCHEDULE_ID)));
+                    card.setActivityId(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_ID)));
+                    card.setActivityName(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_NAME)));
+                    card.setActivityStart(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_START)));
+                    card.setActivityEnd(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_END)));
+                    card.setActivityTypeName(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_TYPE_NAME)));
+                    card.setPlaceOfActivity(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_PLACE_OF_ACTIVITY)));
+                    card.setNoOfPhotos(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_NO_OF_PHOTOS)));
+                    card.setDistictCode(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.DISTRICT_CODE)));
+                    card.setBlockCode(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.BLOCK_CODE)));
+                    card.setPvCode(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.PV_CODE)));
+                    card.setActivityStatus(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_STATUS)));
+                    if(status == 1){
+                        if(cursor.getString(cursor
+                                .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_STATUS)).equals("Y")){
+                            cards.add(card);
+                        }else { }
+                    }else if(status == 2){
+                        if(cursor.getString(cursor
+                                .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_STATUS)).equals("N")){
+                            cards.add(card);
+                        }else { }
+                    }
+
                 }
             }
         } catch (Exception e){

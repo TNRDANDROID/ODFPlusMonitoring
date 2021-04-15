@@ -5,240 +5,283 @@
     xmlns:customfontdemo="http://schemas.android.com/apk/res-auto"
     android:layout_margin="@dimen/_10sdp"
     card_view:cardCornerRadius="15dp"
+    card_view:cardElevation="@dimen/_6sdp"
     android:background="?android:selectableItemBackground">
-
     <RelativeLayout
-        android:id="@+id/activity_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/sportsImage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:src="@drawable/img_tabletennis"/>
-
-        <LinearLayout
-            android:id="@+id/activity_name_layout"
-
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/sportsImage"
-
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.9"
-                android:orientation="vertical">
-
-                <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
-                    android:id="@+id/activity_name"
-                    style="@style/TextAppearance.AppCompat.Headline"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/_12sdp"
-                    android:text="Title1"
-                    android:textSize="20sp"
-                    android:theme="@style/ThemeOverlay.AppCompat.Dark" />
-            </LinearLayout>
-
-
-        </LinearLayout>
-
+        android:layout_height="wrap_content"
+        android:background="@drawable/cornered_rect_lite_bg">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
+            android:id="@+id/activityTypeLayout"
             android:orientation="vertical">
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:id="@+id/pdfDoc"
+                android:src="@drawable/ic_pdf"/>
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:background="@drawable/circle"
+                android:paddingRight="1dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:paddingLeft="5dp"
+                android:id="@+id/audio_play"
+                android:layout_toRightOf="@id/pdfDoc"
+                android:src="@drawable/ic_volume"/>
             <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
                 android:id="@+id/activity_type_name"
                 style="@style/TextAppearance.AppCompat.Headline"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_marginTop="-10dp"
+                android:layout_centerVertical="true"
                 android:padding="@dimen/_8sdp"
                 android:text="Special Activity"
                 android:textAlignment="textEnd"
-                android:textSize="20sp"
+                android:textSize="16sp"
+                android:textColor="@color/darkblue"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark" />
         </RelativeLayout>
+
         <RelativeLayout
-            android:id="@+id/start_activity"
+            android:id="@+id/activity_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/activity_name_layout"
-            android:visibility="gone">
+            android:layout_below="@+id/activityTypeLayout"
+            >
 
-            <LinearLayout
+            <ImageView
+                android:id="@+id/sportsImage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:src="@drawable/img_tabletennis"/>
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:layout_margin="10dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignBottom="@id/sportsImage"
+                android:background="@drawable/circle_white"
+                android:padding="5dp"
+                android:tint="@color/colorPrimaryDark"
+                android:id="@+id/audio_record"
+                android:src="@drawable/audio_record"/>
+
+            <LinearLayout
+                android:id="@+id/activity_name_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/sportsImage"
 
                 android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="3"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <RelativeLayout
-                        android:id="@+id/start_layout1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-
-                        <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
-                            android:id="@+id/newsTitle2"
-                            style="@style/TextAppearance.AppCompat.Subhead"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:padding="@dimen/_10sdp"
-                            android:layout_alignParentStart="true"
-                            android:layout_centerInParent="true"
-                            android:textAlignment="center"
-                            android:text="Start"
-                            android:textSize="16sp"
-                             android:textColor="#000080"
-                            customfontdemo:fontName="@string/font_circular_bold" />
-
-                        <ImageView
-                            android:id="@+id/dummy1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:layout_gravity="end"
-                            android:layout_toRightOf="@+id/newsTitle2"
-                            android:gravity="end"
-                            android:text="Take Photo" />
-
-                        <ImageView
-                            android:layout_width="@dimen/_20sdp"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:layout_gravity="end"
-                            android:layout_centerHorizontal="true"
-                            android:layout_toRightOf="@+id/dummy1"
-                            android:gravity="end"
-                            android:src="@mipmap/cam"
-                            android:text="Take Photo" />
-
-                    </RelativeLayout>
-
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:gravity="center"
+                    android:layout_gravity="bottom"
                     android:orientation="vertical">
 
-                    <RelativeLayout
-                        android:id="@+id/multiple_photo_layout1"
-                        android:layout_width="wrap_content"
+                    <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+                        android:id="@+id/activity_name"
+                        style="@style/TextAppearance.AppCompat.Headline"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:visibility="gone">
-
-                        <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
-                            android:id="@+id/mulTitle2"
-                            style="@style/TextAppearance.AppCompat.Subhead"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:padding="@dimen/_8sdp"
-                            android:text="Multiple"
-                            android:textSize="16sp"
-                            android:layout_alignParentStart="true"
-                            android:layout_centerInParent="true"
-android:textAlignment="center"
-                            android:textColor="#000080"
-                            customfontdemo:fontName="@string/font_circular_bold" />
-
-
-
-                        <ImageView
-                            android:layout_width="@dimen/_20sdp"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                             android:layout_centerHorizontal="true"
-                            android:layout_toRightOf="@+id/mulTitle2"
-                            android:gravity="end"
-                            android:src="@mipmap/cam"
-                            android:text="Take Photo" />
-
-                    </RelativeLayout>
+                        android:padding="@dimen/_12sdp"
+                        android:layout_marginRight="50dp"
+                        android:text="Title1"
+                        android:textSize="16sp"
+                        android:theme="@style/ThemeOverlay.AppCompat.Dark" />
                 </LinearLayout>
 
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/start_activity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/activity_name_layout"
+                android:visibility="gone">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:gravity="center"
-                    android:orientation="vertical">
 
-                    <RelativeLayout
-                        android:id="@+id/end_layout1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                    android:orientation="horizontal">
 
-                        <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
-                            android:id="@+id/end2"
-                            style="@style/TextAppearance.AppCompat.Subhead"
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <RelativeLayout
+                            android:id="@+id/start_layout1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+                                android:id="@+id/newsTitle2"
+                                style="@style/TextAppearance.AppCompat.Subhead"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="@dimen/_10sdp"
+                                android:layout_alignParentStart="true"
+                                android:layout_centerInParent="true"
+                                android:textAlignment="center"
+                                android:text="Start"
+                                android:textSize="16sp"
+                                android:textColor="#000080"
+                                customfontdemo:fontName="@string/font_circular_bold" />
+
+                            <ImageView
+                                android:id="@+id/dummy1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:layout_gravity="end"
+                                android:layout_toRightOf="@+id/newsTitle2"
+                                android:gravity="end"
+                                android:text="Take Photo" />
+
+                            <ImageView
+                                android:layout_width="@dimen/_20sdp"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:layout_gravity="end"
+                                android:layout_centerHorizontal="true"
+                                android:layout_toRightOf="@+id/dummy1"
+                                android:gravity="end"
+                                android:src="@mipmap/cam"
+                                android:text="Take Photo" />
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <RelativeLayout
+                            android:id="@+id/multiple_photo_layout1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:padding="@dimen/_10sdp"
-                            android:text="End  "
-                            android:textSize="16sp"
-                            android:layout_alignParentStart="true"
-                            android:layout_centerInParent="true"
-                            android:textAlignment="center"
-                            android:textColor="#000080"
-                            customfontdemo:fontName="@string/font_circular_bold" />
+                            android:visibility="gone">
 
-                        <ImageView
-                            android:id="@+id/dummy2"
+                            <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+                                android:id="@+id/mulTitle2"
+                                style="@style/TextAppearance.AppCompat.Subhead"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="@dimen/_8sdp"
+                                android:text="Multiple"
+                                android:textSize="16sp"
+                                android:layout_alignParentStart="true"
+                                android:layout_centerInParent="true"
+                                android:textAlignment="center"
+                                android:textColor="#000080"
+                                customfontdemo:fontName="@string/font_circular_bold" />
+
+
+
+                            <ImageView
+                                android:layout_width="@dimen/_20sdp"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:layout_centerHorizontal="true"
+                                android:layout_toRightOf="@+id/mulTitle2"
+                                android:gravity="end"
+                                android:src="@mipmap/cam"
+                                android:text="Take Photo" />
+
+                        </RelativeLayout>
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <RelativeLayout
+                            android:id="@+id/end_layout1"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:layout_gravity="end"
-                            android:layout_toRightOf="@+id/end2"
-                            android:gravity="end"
-                            android:text="Take Photo" />
+                            android:layout_height="wrap_content">
 
-                        <ImageView
-                            android:layout_width="@dimen/_20sdp"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:layout_gravity="end"
-android:layout_centerHorizontal="true"
-                            android:layout_toRightOf="@+id/dummy2"
-                            android:gravity="end"
-                            android:src="@mipmap/cam"
-                            android:text="Take Photo" />
+                            <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+                                android:id="@+id/end2"
+                                style="@style/TextAppearance.AppCompat.Subhead"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="@dimen/_10sdp"
+                                android:text="End  "
+                                android:textSize="16sp"
+                                android:layout_alignParentStart="true"
+                                android:layout_centerInParent="true"
+                                android:textAlignment="center"
+                                android:textColor="#000080"
+                                customfontdemo:fontName="@string/font_circular_bold" />
 
-                    </RelativeLayout>
+                            <ImageView
+                                android:id="@+id/dummy2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:layout_gravity="end"
+                                android:layout_toRightOf="@+id/end2"
+                                android:gravity="end"
+                                android:text="Take Photo" />
+
+                            <ImageView
+                                android:layout_width="@dimen/_20sdp"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:layout_gravity="end"
+                                android:layout_centerHorizontal="true"
+                                android:layout_toRightOf="@+id/dummy2"
+                                android:gravity="end"
+                                android:src="@mipmap/cam"
+                                android:text="Take Photo" />
+
+                        </RelativeLayout>
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
-        </RelativeLayout>
+            </RelativeLayout>
 
+
+        </RelativeLayout>
         <RelativeLayout
             android:id="@+id/footer_layout"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-             android:layout_alignParentStart="true"
-            android:layout_below="@+id/start_activity"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/activity_layout"
             android:visibility="visible">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/inner_header_1"
-                 android:orientation="horizontal">
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -247,7 +290,7 @@ android:layout_centerHorizontal="true"
                     android:id="@+id/reorder_layout"
                     android:gravity="center"
                     android:orientation="vertical"
-                   >
+                    >
 
                     <RelativeLayout
                         android:id="@+id/start_layout"
@@ -300,7 +343,7 @@ android:layout_centerHorizontal="true"
                         android:id="@+id/multiple_photo_layout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:visibility="gone">
+                        android:visibility="visible">
 
                         <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
                             android:id="@+id/mulTitle"
@@ -343,7 +386,7 @@ android:layout_centerHorizontal="true"
                     android:layout_weight="1"
                     android:gravity="center"
                     android:orientation="vertical"
-                 >
+                    >
 
                     <RelativeLayout
                         android:id="@+id/end_layout"
@@ -424,4 +467,6 @@ android:layout_centerHorizontal="true"
 
         </RelativeLayout>
     </RelativeLayout>
+
+
 </android.support.v7.widget.CardView>

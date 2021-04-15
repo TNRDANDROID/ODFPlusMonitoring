@@ -159,6 +159,7 @@ public class PendingScreenAdapter extends RecyclerView.Adapter<PendingScreenAdap
                         String image_str = Base64.encodeToString(imageInByte, Base64.DEFAULT);
 
                         activityJson.put(AppConstant.KEY_IMAGE,image_str);
+                        activityJson.put(AppConstant.KEY_AUDIO,saveActivityLists.get(i).getActivityAudio());
 
                         saveAcivityArray.put(activityJson);
                     }

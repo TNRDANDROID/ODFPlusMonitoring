@@ -3,26 +3,50 @@ package com.nic.ODFPlusMonitoring.Adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.MediaRecorder;
+import android.net.Uri;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.SystemClock;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nic.ODFPlusMonitoring.Activity.CameraScreen;
 import com.nic.ODFPlusMonitoring.Activity.FullImageActivity;
 import com.nic.ODFPlusMonitoring.Constant.AppConstant;
 import com.nic.ODFPlusMonitoring.DataBase.dbData;
+import com.nic.ODFPlusMonitoring.Dialog.MyDialog;
 import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
 import com.nic.ODFPlusMonitoring.Support.MyCustomTextView;
 import com.nic.ODFPlusMonitoring.Utils.Utils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
+import static android.Manifest.permission.RECORD_AUDIO;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapter.MyViewHolder>{
 
@@ -32,8 +56,33 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
     private PrefManager prefManager;
     public final String dcode,bcode,pvcode;
 
-    public ActivityListAdapter(Context context, List<ODFMonitoringListValue> activityListValues, dbData dbData) {
+
+    // for Audio record
+    MediaPlayer mediaPlayer ;
+    ImageView start_record,stop_record,close,anim_img;
+    TextView cancel_audio,submit_audio,pop_rec_msg;
+    RelativeLayout anim_layout;
+    Boolean isRecording=false;
+    String AudioSavePathInDevice = null;
+    MediaRecorder mediaRecorder ;
+    Random random ;
+    String RandomAudioFileName = "ABCDEFGHIJKLMNOP";
+    public static final int RequestPermissionCode = 1;
+    int pass,duration,due;
+    private Handler mHandler;
+    private Runnable mRunnable;
+    Animation animation;
+    Chronometer chronometer;
+    int ClickedPosition;
+    AlertDialog add_cpts_search_alert;
+    Boolean isOpen=false;
+    LinearLayout audio_layout;
+    RelativeLayout submit_layout;
+    Activity activity;
+
+    public ActivityListAdapter(Activity activity,Context context, List<ODFMonitoringListValue> activityListValues, dbData dbData) {
         this.context = context;
+        this.activity = activity;
         this.activityListValues = activityListValues;
         this.dbData = dbData;
         prefManager = new PrefManager(context);
@@ -52,12 +101,15 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
         private MyCustomTextView activity_name, view_online_images, view_offline_images, activity_type_name;
         private RelativeLayout start_layout, end_layout,multiple_photo_layout;
         private LinearLayout schedule;
-        private ImageView sportsImage;
+        private ImageView sportsImage,pdfImage,audio_record,audio_play;
         RelativeLayout activityLayout;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             sportsImage = (ImageView)itemView.findViewById(R.id.sportsImage);
+            audio_record = (ImageView)itemView.findViewById(R.id.audio_record);
+            audio_play = (ImageView)itemView.findViewById(R.id.audio_play);
+            pdfImage = (ImageView)itemView.findViewById(R.id.pdfDoc);
             activity_name = (MyCustomTextView) itemView.findViewById(R.id.activity_name);
             activity_type_name = (MyCustomTextView) itemView.findViewById(R.id.activity_type_name);
             view_online_images = (MyCustomTextView) itemView.findViewById(R.id.view_online_images);
@@ -83,6 +135,16 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
         final String activity_status = activityListValues.get(position).getActivityStatus();
         holder.activity_name.setText(activityListValues.get(position).getActivityName());
         holder.activity_type_name.setText(activityListValues.get(position).getActivityTypeName());
+
+
+        if(activityListValues.get(position).getActivityTypeName().toLowerCase().contains("general")){
+            holder.activity_type_name.setText(activityListValues.get(position).getActivityTypeName()+" (Rs.100)");
+            holder.activity_type_name.setTextColor(context.getResources().getColor(R.color.account_status_green_color));
+        }else {
+            holder.activity_type_name.setText(activityListValues.get(position).getActivityTypeName()+" (Rs.200)");
+            holder.activity_type_name.setTextColor(context.getResources().getColor(R.color.dot_dark_screen3));
+        }
+        Utils.addReadMore(context,activityListValues.get(position).getActivityName(), holder.activity_name,0);
         if(position %2 == 1)
         {
             holder.sportsImage.setImageResource(R.drawable.img_cycling);
@@ -133,6 +195,10 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
                     if (activityImage1.size() <= 0) {
                         Utils.showAlert((Activity) context, "Please Capture Image for Start Activity");
                     } else {
+                        String StartTime=activityImage1.get(0).getDateTime();
+                        System.out.println("StartTime >>"+StartTime);
+                        boolean flag=Utils.duration(StartTime);
+
                         ArrayList<ODFMonitoringListValue> activityImage = dbData.selectImageActivity(dcode, bcode, pvcode, schedule_id, activity_id, "End");
 
                         if (activityImage.size() > 0) {
@@ -140,11 +206,20 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
                                 if (activityImage.get(i).getType().equalsIgnoreCase("end")) {
                                     Utils.showAlert((Activity) context, "Already Captured");
                                 } else {
-                                    cameraScreen(position, "End", "1");
+                                    if(flag){
+                                        cameraScreen(position, "End", "1");
+                                    }else {
+                                        Utils.showAlert((Activity) context, "Activity time not completed!");
+                                    }
+
                                 }
                             }
                         } else {
-                            cameraScreen(position, "End", "1");
+                            if(flag){
+                                cameraScreen(position, "End", "1");
+                            }else {
+                                Utils.showAlert((Activity) context, "Activity time not completed!");
+                            }
                         }
                     }
                 }else {
@@ -198,8 +273,32 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
                 viewOfflineImages(schedule_id,schedule_activity_id,"Online");
             }
         });
+        holder.audio_record.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startRecord(position);
+            }
+        });
+        holder.audio_play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url= "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+                String url1= "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3";
+                String url2= "http://10.163.19.140/mp3_audio/kalimba.mp3";
+                Utils.playAudio(activity,url2);
+            }
+        });
+        holder.pdfImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String URL ="https://www.orimi.com/pdf-test.pdf";
+                String URL2 ="http://www.africau.edu/images/default/sample.pdf";
 
-        final Integer no_of_photos = activityListValues.get(position).getNoOfPhotos();
+                context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(URL2)));
+            }
+        });
+
+        final Integer no_of_photos = 5/*activityListValues.get(position).getNoOfPhotos()*/;
 
         if(no_of_photos > 2) {
             holder.multiple_photo_layout.setVisibility(View.VISIBLE);
@@ -305,6 +404,338 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
         intent.putExtra(AppConstant.KEY_PURPOSE, "Insert");
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+    }
+
+
+    //For Activity Audio
+    private void startRecord(final int position) {
+        try {
+            //We need to get the instance of the LayoutInflater, use the context of this activity
+            final LayoutInflater inflater = (LayoutInflater) context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            //Inflate the view from a predefined XML layout
+            View edit_cpt_list_layout = inflater.inflate(R.layout.pop_up_audio_recorder, null);
+            start_record = (ImageView) edit_cpt_list_layout.findViewById(R.id.start_record);
+            stop_record = (ImageView) edit_cpt_list_layout.findViewById(R.id.stop_record);
+            anim_img = (ImageView) edit_cpt_list_layout.findViewById(R.id.anim_img);
+            anim_layout = (RelativeLayout) edit_cpt_list_layout.findViewById(R.id.anim_layout);
+            pop_rec_msg = (TextView) edit_cpt_list_layout.findViewById(R.id.pop_msg);
+            close = (ImageView) edit_cpt_list_layout.findViewById(R.id.close);
+            submit_audio=(TextView)edit_cpt_list_layout.findViewById(R.id.submit_test);
+            cancel_audio=(TextView)edit_cpt_list_layout.findViewById(R.id.cancel_test);
+            audio_layout=(LinearLayout) edit_cpt_list_layout.findViewById(R.id.audio_layout);
+            submit_layout=(RelativeLayout) edit_cpt_list_layout.findViewById(R.id.submit_layout);
+            chronometer = (Chronometer) edit_cpt_list_layout.findViewById(R.id.chronometerTimer);
+            chronometer.setBase(SystemClock.elapsedRealtime());
+            close.setVisibility(View.VISIBLE);
+            submit_audio.setEnabled(true);
+            submit_layout.setVisibility(View.GONE);
+            submit_audio.setVisibility(View.GONE);
+            audio_layout.setVisibility(View.GONE);
+            final ImageView play_btn = (ImageView) edit_cpt_list_layout.findViewById(R.id.play_btn);
+            final ImageView stop_btn = (ImageView) edit_cpt_list_layout.findViewById(R.id.stop_btn);
+            final SeekBar seekbar = (SeekBar) edit_cpt_list_layout.findViewById(R.id.seekbar);
+            final TextView mPass = (TextView) edit_cpt_list_layout.findViewById(R.id.mPass);
+            final TextView mDuration = (TextView) edit_cpt_list_layout.findViewById(R.id.mDuration);
+            final TextView mDue = (TextView) edit_cpt_list_layout.findViewById(R.id.mDue);
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+            dialogBuilder.setView(edit_cpt_list_layout);
+            dialogBuilder.setCancelable(true);
+            add_cpts_search_alert = dialogBuilder.create();
+            add_cpts_search_alert.show();
+            add_cpts_search_alert.setCanceledOnTouchOutside(false);
+            add_cpts_search_alert.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            add_cpts_search_alert.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT,WindowManager.LayoutParams.WRAP_CONTENT);
+            stop_record.setEnabled(false);
+            isOpen=true;
+            random = new Random();
+            start_record.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+
+                    if(checkPermission()) {
+                        close.setVisibility(View.GONE);
+                        add_cpts_search_alert.setCancelable(false);
+                        isRecording=true;
+                        isOpen=false;
+                        AudioSavePathInDevice = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + CreateRandomAudioFileName(5) + "AudioRecording.3gp";
+                        MediaRecorderReady();
+                        try {
+
+                            mediaRecorder.prepare();
+                            mediaRecorder.start();
+
+                        } catch (IllegalStateException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        chronometer.setBase(SystemClock.elapsedRealtime());
+                        chronometer.start();
+                        ClickedPosition=position;
+                        start_record.setVisibility(View.GONE);
+                        stop_record.setVisibility(View.VISIBLE);
+                        anim_layout.setVisibility(View.VISIBLE);
+                        pop_rec_msg.setText("Stop Record");
+                        animation = AnimationUtils.loadAnimation(context, R.anim.blink);
+                        anim_img.startAnimation(animation);
+                        start_record.setEnabled(false);
+                        stop_record.setEnabled(true);
+
+                    } else {
+                        requestPermission();
+                    }
+
+                }
+            });
+            stop_record.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    StopRecording(position);
+                }
+            });
+            close.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    stop_record.setEnabled(true);
+                    add_cpts_search_alert.dismiss();
+                    isOpen=false;
+                    stopPlaying();
+                }
+            });
+            submit_audio.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    boolean flag =false;
+                    flag=new MyDialog(activity).flagDialog(activity, "Are you sure to submit audio file?", "Audio");
+                    if(flag){
+                        stop_record.setEnabled(true);
+                        add_cpts_search_alert.dismiss();
+                        isOpen=false;
+                        if(!chronometer.getText().toString().equals("00:00")){
+                            ODFMonitoringListValue odfMonitoringListValue = activityListValues.get(position);
+                            odfMonitoringListValue.setActivityAudio(AudioSavePathInDevice);
+                            odfMonitoringListValue.setAudioSize(chronometer.getText().toString());
+                            activityListValues.set(position,odfMonitoringListValue);
+                            notifyDataSetChanged();
+                        }
+                    }else {
+                    }
+
+                }
+            });
+
+            cancel_audio.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    stop_record.setEnabled(true);
+                    add_cpts_search_alert.dismiss();
+                    isOpen=false;
+                    stopPlaying();
+                }
+            });
+
+            play_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    submit_audio.setEnabled(false);
+                    add_cpts_search_alert.setCancelable(false);
+                    stop_btn.setVisibility(View.VISIBLE);
+                    play_btn.setVisibility(View.GONE);
+                    startPlaying();
+                }
+
+                private void startPlaying() {
+                    if(mediaPlayer!=null){
+                        mediaPlayer.stop();
+                        mediaPlayer.reset();
+                        mediaPlayer.release();
+                        mediaPlayer = null;
+                    }
+
+                    mDue.setVisibility(View.GONE);
+                    mDuration.setVisibility(View.VISIBLE);
+                    mPass.setVisibility(View.VISIBLE);
+                    audio_layout.setEnabled(false);
+                    mediaPlayer = new MediaPlayer();
+                    mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                    try{
+                        mediaPlayer.setDataSource(AudioSavePathInDevice);
+                        mediaPlayer.prepare();
+                        mediaPlayer.start();
+                        getAudioStats();
+                        initializeSeekBar();
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }catch (IllegalArgumentException e){
+                        e.printStackTrace();
+                    }catch (SecurityException e){
+                        e.printStackTrace();
+                    }catch (IllegalStateException e){
+                        e.printStackTrace();
+                    }
+                    mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mediaPlayer) {
+                            stopPlaying();
+                            submit_audio.setEnabled(true);
+                            stop_btn.setVisibility(View.GONE);
+                            play_btn.setVisibility(View.VISIBLE);
+                            audio_layout.setEnabled(true);
+                            add_cpts_search_alert.setCancelable(true);
+                        }
+
+                    });
+                }
+
+                private void initializeSeekBar() {
+                    seekbar.setMax(mediaPlayer.getDuration()/1000);
+                    mHandler = new Handler();
+                    mRunnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            if(mediaPlayer!=null){
+                                int mCurrentPosition = mediaPlayer.getCurrentPosition()/1000; // In milliseconds
+                                seekbar.setProgress(mCurrentPosition);
+                                getAudioStats();
+                            }
+                            mHandler.postDelayed(mRunnable,1000);
+                        }
+                    };
+                    mHandler.postDelayed(mRunnable,1000);
+                }
+
+                private void getAudioStats() {
+                    duration  = mediaPlayer.getDuration()/1000; // In milliseconds
+                    due = (mediaPlayer.getDuration() - mediaPlayer.getCurrentPosition())/1000;
+                    pass = duration - due;
+                    mPass.setText("" + pass + " secs");
+                    mDuration.setText("" + duration + " secs");
+                    mDue.setText("" + due + " secs");
+                }
+            });
+
+            stop_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    submit_audio.setEnabled(true);
+                    stop_btn.setVisibility(View.GONE);
+                    play_btn.setVisibility(View.VISIBLE);
+                    StopPlaying();
+                    add_cpts_search_alert.setCancelable(true);
+                }
+
+                private void StopPlaying() {
+                    if(mediaPlayer!=null){
+                        mediaPlayer.stop();
+                        mediaPlayer.release();
+                        MediaRecorderReady();
+                        mediaPlayer = null;
+                        if(mHandler!=null){
+                            mHandler.removeCallbacks(mRunnable);
+                        }
+                    }
+
+                }
+            });
+            seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                    if(mediaPlayer!=null && b){
+                        mediaPlayer.seekTo(i*1000);
+                    } }
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) { }
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) { }
+            });
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    private boolean checkPermission() {
+        int result = ContextCompat.checkSelfPermission(context, WRITE_EXTERNAL_STORAGE);
+        int result1 = ContextCompat.checkSelfPermission(context, RECORD_AUDIO);
+        return result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED;
+    }
+    private String CreateRandomAudioFileName(int string){
+        StringBuilder stringBuilder = new StringBuilder( string );
+        int i = 0 ;
+        while(i < string ) {
+            stringBuilder.append(RandomAudioFileName.charAt(random.nextInt(RandomAudioFileName.length())));
+            i++ ;
+        }
+        return stringBuilder.toString();
+    }
+    private void MediaRecorderReady(){
+        mediaRecorder=new MediaRecorder();
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+        mediaRecorder.setOutputFile(AudioSavePathInDevice);
+        System.out.println("AudioSavePathInDevice" + AudioSavePathInDevice);
+    }
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(activity, new String[]{WRITE_EXTERNAL_STORAGE, RECORD_AUDIO}, RequestPermissionCode);
+    }
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case RequestPermissionCode:
+                if (grantResults.length> 0) {
+                    boolean StoragePermission = grantResults[0] ==
+                            PackageManager.PERMISSION_GRANTED;
+                    boolean RecordPermission = grantResults[1] ==
+                            PackageManager.PERMISSION_GRANTED;
+
+                    if (StoragePermission && RecordPermission) {
+                        Toast.makeText(context, "Permission Granted", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(context,"Permission Denied",Toast.LENGTH_LONG).show();
+                    }
+                }
+                break;
+        }
+    }
+
+    private void stopPlaying() {
+        if(mediaPlayer!=null){
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            MediaRecorderReady();
+            mediaPlayer = null;
+            if(mHandler!=null){
+                mHandler.removeCallbacks(mRunnable);
+            }
+        }
+    }
+
+    private void StopRecording(int position) {
+        if(!chronometer.getText().toString().equals("00:00")){
+            isRecording=false;
+            if(animation!=null){
+                anim_img.getAnimation().cancel();
+                anim_img.clearAnimation();
+                animation.setAnimationListener(null);
+            }else {}
+
+            stop_record.setImageResource(R.drawable.stop_audio_record);
+            pop_rec_msg.setVisibility(View.GONE);
+            anim_layout.setVisibility(View.GONE);
+            isOpen=false;
+            close.setVisibility(View.VISIBLE);
+            submit_audio.setVisibility(View.VISIBLE);
+            cancel_audio.setVisibility(View.VISIBLE);
+            submit_layout.setVisibility(View.VISIBLE);
+            audio_layout.setVisibility(View.VISIBLE);
+            mediaRecorder.stop();
+            chronometer.stop();
+            stop_record.setEnabled(false);
+            start_record.setEnabled(true);
+            add_cpts_search_alert.setCancelable(true);
+        }
     }
 
 }

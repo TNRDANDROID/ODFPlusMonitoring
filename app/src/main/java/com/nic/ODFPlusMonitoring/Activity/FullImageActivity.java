@@ -135,7 +135,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     }
 
     public void setAdapter(){
-        fullImageAdapter = new FullImageAdapter(FullImageActivity.this,
+        fullImageAdapter = new FullImageAdapter(FullImageActivity.this,getApplicationContext(),
                 activityImage, dbData);
         image_preview_recyclerview.addOnItemTouchListener(new FullImageAdapter.RecyclerTouchListener(getApplicationContext(), image_preview_recyclerview, new FullImageAdapter.ClickListener() {
             @Override

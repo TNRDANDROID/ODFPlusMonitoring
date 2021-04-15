@@ -107,6 +107,7 @@ public class AppConstant {
     public static String KEY_LATITUDE = "lat";
     public static String KEY_LONGITUDE = "long";
     public static String KEY_IMAGE = "image";
+    public static String KEY_AUDIO = "audio";
     public static String KEY_IMAGE_REMARK = "remark";
     public static String KEY_DATE_TIME = "datetime";
     public static String KEY_SERIAL_NUMBER = "serial_number";
