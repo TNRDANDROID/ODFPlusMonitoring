@@ -32,6 +32,10 @@
     <color name="dot_dark_screen4">#a854d4</color>
     <color name="app_bg">#343434</color>
 
+    <color name="greyed_very_lite">#b9d9d9d9</color>
+    <color name="grey2">#505454</color>
+    <color name="grey">#E5E5E5</color>
+
 
     <!-- dots active colors -->
     <color name="dot_light_screen1">#f98da5</color>

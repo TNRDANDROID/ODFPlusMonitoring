@@ -23,6 +23,10 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String SAVE_ACTIVITY = "save_activity";
     public static final String MOTIVATOR_PROFILE = "motivator_profile";
 
+
+    public static final String OTHER_PARTICIPATES_LIST = "other_participates_list";
+    public static final String OTHER_PARTICIPATES_DESIGNATION_LIST = "other_participates_designation_list";
+
     private Context context;
 
     public DBHelper(Context context) {
@@ -83,6 +87,24 @@ public class DBHelper extends SQLiteOpenHelper {
                 "bcode INTEGER," +
                 "pvcode INTEGER," +
                 "pvname TEXT)");
+        db.execSQL("CREATE TABLE " + OTHER_PARTICIPATES_LIST + " ("
+                        +"motivator_id INTEGER," +
+                        "dcode INTEGER," +
+                        "bcode INTEGER," +
+                        "pvcode INTEGER," +
+                        "other_participates_name TEXT," +
+                        "other_participates_mobile_no TEXT," +
+                        "other_participates_designation_id INTEGER," +
+                        "other_participates_designation_name TEXT," +
+                        "pvname TEXT)");
+        db.execSQL("CREATE TABLE " + OTHER_PARTICIPATES_DESIGNATION_LIST + " ("
+                        +"motivator_id INTEGER," +
+                        "dcode INTEGER," +
+                        "bcode INTEGER," +
+                        "pvcode INTEGER," +
+                        "other_participates_designation_id INTEGER," +
+                        "other_participates_designation_name TEXT," +
+                        "pvname TEXT)");
 
         db.execSQL("CREATE TABLE " + SCHEDULED_ACTIVITY + " ("
                 + "schedule_activity_id INTEGER," +
@@ -135,6 +157,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "motivator_id INTEGER," +
                 "schedule_master_id INTEGER," +
                 "image BLOB," +
+                "audio BLOB," +
                 "lat TEXT," +
                 "long TEXT," +
                 "type TEXT," +
@@ -173,6 +196,8 @@ public class DBHelper extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + SAVE_ACTIVITY);
             db.execSQL("DROP TABLE IF EXISTS " + MOTIVATOR_PROFILE);
             db.execSQL("DROP TABLE IF EXISTS " + ACTIVITY_COMPLETED);
+            db.execSQL("DROP TABLE IF EXISTS " + OTHER_PARTICIPATES_DESIGNATION_LIST);
+            db.execSQL("DROP TABLE IF EXISTS " + OTHER_PARTICIPATES_LIST);
             onCreate(db);
         }
     }

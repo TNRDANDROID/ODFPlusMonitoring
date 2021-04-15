@@ -74,6 +74,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+        //Profile
             <FrameLayout
                 android:layout_width="250dp"
                 android:layout_height="200dp"
@@ -121,7 +122,7 @@
 
             </FrameLayout>
 
-
+        //Name
             <LinearLayout
                 android:id="@+id/name_layout"
                 android:layout_width="match_parent"
@@ -172,6 +173,7 @@
 
             </LinearLayout>
 
+        //District
             <LinearLayout
                 android:id="@+id/District_layout"
                 android:layout_width="match_parent"
@@ -228,6 +230,7 @@
 
             </LinearLayout>
 
+        //Block
             <LinearLayout
                 android:id="@+id/block_layout"
                 android:layout_width="match_parent"
@@ -286,7 +289,7 @@
 
             </LinearLayout>
 
-
+        //Village
             <LinearLayout
                 android:id="@+id/village_layout"
                 android:layout_width="match_parent"
@@ -345,6 +348,7 @@
 
             </LinearLayout>
 
+        //Address
             <LinearLayout
                 android:id="@+id/address_layout"
                 android:layout_width="match_parent"
@@ -392,6 +396,206 @@
 
             </LinearLayout>
 
+        //DOB
+            <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_left_20dp"
+                android:layout_marginTop="@dimen/padding"
+                android:layout_marginRight="@dimen/margin_left_20dp"
+                android:text="பிறந்த தேதி / Date Of birth"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/_15sdp"
+                android:visibility="visible"
+                customfontdemo:fontName="@string/font_circular_medium" />
+
+            <RelativeLayout
+                android:id="@+id/dob_layout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/header"
+                android:layout_marginLeft="@dimen/margin_left_20dp"
+                android:layout_marginTop="@dimen/padding"
+                android:layout_marginRight="@dimen/margin_left_20dp"
+                android:background="@drawable/rectangle_box"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+
+                <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+                    android:id="@+id/motivator_dob_tv"
+                    style="@style/Toolbar.TitleText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint=""
+                    android:layout_alignParentStart="true"
+                    android:layout_centerInParent="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="15dp"
+                    android:layout_toLeftOf="@+id/calendar_icon"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:textAlignment="viewStart"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_15sdp"
+                    customfontdemo:fontName="@string/font_circular_book" />
+
+                <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+                    android:id="@+id/calendar_icon"
+                    style="@style/Toolbar.TitleText"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerInParent="true"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center"
+                    android:background="@drawable/datepicker_icon"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+
+                    android:layout_marginRight="@dimen/_6sdp"/>
+
+
+                <!--<com.nic.ODFPlusMonitoring.Support.MyCustomTextView-->
+                <!--android:id="@+id/motivator_dob_tv"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentStart="true"-->
+                <!--android:layout_centerInParent="true"-->
+                <!--android:layout_marginLeft="15dp"-->
+                <!--android:background="@android:color/transparent"-->
+                <!--android:inputType="textPersonName"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--android:textSize="@dimen/_15sdp"-->
+                <!--android:visibility="visible"-->
+                <!--customfontdemo:fontName="@string/font_circular_book" />-->
+
+
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+        //Gender
+            <LinearLayout
+            android:id="@+id/gender_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_left_20dp"
+                android:layout_marginTop="@dimen/padding"
+                android:layout_marginRight="@dimen/margin_left_20dp"
+                android:text="பாலினம் / Gender"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/_15sdp"
+                android:visibility="visible"
+                customfontdemo:fontName="@string/font_circular_medium" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/header"
+                android:layout_marginLeft="@dimen/margin_left_20dp"
+                android:layout_marginTop="@dimen/padding"
+                android:layout_marginRight="@dimen/margin_left_20dp"
+                android:background="@drawable/rectangle_box"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="15dp"
+
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_15sdp"
+                    android:visibility="visible"
+                    customfontdemo:fontName="@string/font_circular_book" />
+
+                <Spinner
+                    android:id="@+id/gender_spinner"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:gravity="center" />
+
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+        //Educational Qualification
+            <LinearLayout
+            android:id="@+id/educational_qualification_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_left_20dp"
+                android:layout_marginTop="@dimen/padding"
+                android:layout_marginRight="@dimen/margin_left_20dp"
+                android:text="கல்வி தகுதி / Educational Qualification"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/_15sdp"
+                android:visibility="visible"
+                customfontdemo:fontName="@string/font_circular_medium" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/header"
+                android:layout_marginLeft="@dimen/margin_left_20dp"
+                android:layout_marginTop="@dimen/padding"
+                android:layout_marginRight="@dimen/margin_left_20dp"
+                android:background="@drawable/rectangle_box"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="15dp"
+
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_15sdp"
+                    android:visibility="visible"
+                    customfontdemo:fontName="@string/font_circular_book" />
+
+                <Spinner
+                    android:id="@+id/educational_qualification_spinner"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:gravity="center" />
+
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+        //Mobile Number
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -442,6 +646,7 @@
 
             </LinearLayout>
 
+        //Email Id
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -492,104 +697,107 @@
 
             </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/motivator_others_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_left_20dp"
-                android:layout_marginTop="@dimen/padding"
-                android:layout_marginRight="@dimen/margin_left_20dp"
-                android:text="விண்ணப்பதாரர் ஊக்குவிப்பவரா/மற்றவரா என்பதை தேர்வு செய்யவும் / Select whether the applicant is motivator/others"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/_15sdp"
-                android:visibility="visible"
-                customfontdemo:fontName="@string/font_circular_medium" />
-
-
+        //Motivator or Others
             <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/motivator_others_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/rectangle_box"
-                android:layout_marginLeft="@dimen/margin_left_20dp"
-                android:layout_marginTop="@dimen/padding"
-                android:layout_marginRight="@dimen/margin_left_20dp"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2 "
-                    android:gravity="center"
-
-
-                    android:orientation="vertical">
-
-                    <RelativeLayout
-
-                        android:layout_width="100dp"
-                        android:layout_height="@dimen/header"
-                        android:layout_gravity="center"
-
-                        android:orientation="horizontal">
-
-
-                        <RadioButton
-                            android:id="@+id/motivator"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:layout_centerInParent="true"
-                            android:checked="false"
-
-                            android:text="Motivator"
-
-                            android:textColor="@android:color/black"
-                            android:textSize="13sp" />
-
-
-                    </RelativeLayout>
-
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="0dp"
+                <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:gravity="right"
-                    android:orientation="vertical">
-
-                    <RelativeLayout
-
-                        android:layout_width="100dp"
-                        android:layout_height="@dimen/header"
-                        android:layout_below="@+id/hab_layout"
-                        android:layout_gravity="center"
-
-                        android:layout_marginEnd="@dimen/_5sdp"
-                        android:orientation="horizontal">
-
-                        <RadioButton
-                            android:id="@+id/others"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:layout_centerInParent="true"
-                            android:text="Others"
-                            android:textColor="@android:color/black"
-                            android:textSize="13sp" />
+                    android:layout_marginLeft="@dimen/margin_left_20dp"
+                    android:layout_marginTop="@dimen/padding"
+                    android:layout_marginRight="@dimen/margin_left_20dp"
+                    android:text="விண்ணப்பதாரர் ஊக்குவிப்பவரா/மற்றவரா என்பதை தேர்வு செய்யவும் / Select whether the applicant is motivator/others"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_15sdp"
+                    android:visibility="visible"
+                    customfontdemo:fontName="@string/font_circular_medium" />
 
 
-                    </RelativeLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rectangle_box"
+                    android:layout_marginLeft="@dimen/margin_left_20dp"
+                    android:layout_marginTop="@dimen/padding"
+                    android:layout_marginRight="@dimen/margin_left_20dp"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2 "
+                        android:gravity="center"
+
+
+                        android:orientation="vertical">
+
+                        <RelativeLayout
+
+                            android:layout_width="100dp"
+                            android:layout_height="@dimen/header"
+                            android:layout_gravity="center"
+
+                            android:orientation="horizontal">
+
+
+                            <RadioButton
+                                android:id="@+id/motivator"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentStart="true"
+                                android:layout_centerInParent="true"
+                                android:checked="false"
+
+                                android:text="Motivator"
+
+                                android:textColor="@android:color/black"
+                                android:textSize="13sp" />
+
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:gravity="right"
+                        android:orientation="vertical">
+
+                        <RelativeLayout
+
+                            android:layout_width="100dp"
+                            android:layout_height="@dimen/header"
+                            android:layout_below="@+id/hab_layout"
+                            android:layout_gravity="center"
+
+                            android:layout_marginEnd="@dimen/_5sdp"
+                            android:orientation="horizontal">
+
+                            <RadioButton
+                                android:id="@+id/others"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentStart="true"
+                                android:layout_centerInParent="true"
+                                android:text="Others"
+                                android:textColor="@android:color/black"
+                                android:textSize="13sp" />
+
+
+                        </RelativeLayout>
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
 
+        //Bank Details
             <LinearLayout
                 android:id="@+id/account_layout"
                 android:layout_width="match_parent"
@@ -638,118 +846,115 @@
 
 
             </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/verify_account_layout_show_hide"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+            <LinearLayout
+                android:id="@+id/verify_account_layout_show_hide"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_left_20dp"
-                android:layout_marginTop="@dimen/padding"
-                android:layout_marginRight="@dimen/margin_left_20dp"
-                android:text="உங்கள் வங்கி கணக்கு எண்ணை சரிபார்க்கவும் / Verify Your Account NO"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/_15sdp"
-                android:visibility="visible"
-                customfontdemo:fontName="@string/font_circular_medium" />
+                android:orientation="vertical">
 
-            <RelativeLayout
-                android:id="@+id/verify_account_layout"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/header"
-                android:layout_marginLeft="@dimen/margin_left_20dp"
-                android:layout_marginTop="@dimen/padding"
-                android:layout_marginRight="@dimen/margin_left_20dp"
-                android:background="@drawable/rectangle_box"
-                android:orientation="vertical"
-                android:visibility="visible">
-
-                <com.nic.ODFPlusMonitoring.Support.MyEditTextView
-                    android:id="@+id/verify_motivator_account_tv"
+                <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint=""
-                    android:layout_alignParentStart="true"
-                    android:layout_centerInParent="true"
-                    android:layout_marginLeft="15dp"
-                    android:background="@android:color/transparent"
-                    android:inputType="textPassword"
+                    android:layout_marginLeft="@dimen/margin_left_20dp"
+                    android:layout_marginTop="@dimen/padding"
+                    android:layout_marginRight="@dimen/margin_left_20dp"
+                    android:text="உங்கள் வங்கி கணக்கு எண்ணை சரிபார்க்கவும் / Verify Your Account NO"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_15sdp"
                     android:visibility="visible"
-                    customfontdemo:fontName="@string/font_circular_book" />
+                    customfontdemo:fontName="@string/font_circular_medium" />
+
+                <RelativeLayout
+                    android:id="@+id/verify_account_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/header"
+                    android:layout_marginLeft="@dimen/margin_left_20dp"
+                    android:layout_marginTop="@dimen/padding"
+                    android:layout_marginRight="@dimen/margin_left_20dp"
+                    android:background="@drawable/rectangle_box"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+                    <com.nic.ODFPlusMonitoring.Support.MyEditTextView
+                        android:id="@+id/verify_motivator_account_tv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint=""
+                        android:layout_alignParentStart="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginLeft="15dp"
+                        android:background="@android:color/transparent"
+                        android:inputType="textPassword"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/_15sdp"
+                        android:visibility="visible"
+                        customfontdemo:fontName="@string/font_circular_book" />
 
 
-            </RelativeLayout>
+                </RelativeLayout>
 
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ifsc_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/ifsc_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_left_20dp"
-                android:layout_marginTop="@dimen/padding"
-                android:layout_marginRight="@dimen/margin_left_20dp"
-                android:text="IFSC குறியீடு / IFSC Code"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/_15sdp"
-                android:visibility="visible"
-                customfontdemo:fontName="@string/font_circular_medium" />
+                android:orientation="vertical">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/header"
-                android:layout_marginLeft="@dimen/margin_left_20dp"
-                android:layout_marginTop="@dimen/padding"
-                android:layout_marginRight="@dimen/margin_left_20dp"
-                android:background="@drawable/rectangle_box"
-                android:orientation="vertical"
-                android:visibility="visible">
-
-                <com.nic.ODFPlusMonitoring.Support.MyEditTextView
-                    android:id="@+id/motivator_ifsc_tv"
+                <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint=""
-                    android:layout_alignParentStart="true"
-                    android:layout_centerInParent="true"
-                    android:layout_marginLeft="15dp"
-                    android:background="@android:color/transparent"
-                    android:inputType="textPersonName"
+                    android:layout_marginLeft="@dimen/margin_left_20dp"
+                    android:layout_marginTop="@dimen/padding"
+                    android:layout_marginRight="@dimen/margin_left_20dp"
+                    android:text="IFSC குறியீடு / IFSC Code"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_15sdp"
-                    android:imeOptions="actionDone"
                     android:visibility="visible"
-                    customfontdemo:fontName="@string/font_circular_book" />
+                    customfontdemo:fontName="@string/font_circular_medium" />
 
-                <ImageView
-                    android:id="@+id/tick"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_gravity="center"
-                    android:layout_margin="@dimen/_5sdp"
-                    android:background="@mipmap/tick"
-                    android:focusable="true"
-                    android:visibility="gone"/>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/header"
+                    android:layout_marginLeft="@dimen/margin_left_20dp"
+                    android:layout_marginTop="@dimen/padding"
+                    android:layout_marginRight="@dimen/margin_left_20dp"
+                    android:background="@drawable/rectangle_box"
+                    android:orientation="vertical"
+                    android:visibility="visible">
 
-            </RelativeLayout>
+                    <com.nic.ODFPlusMonitoring.Support.MyEditTextView
+                        android:id="@+id/motivator_ifsc_tv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint=""
+                        android:layout_alignParentStart="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginLeft="15dp"
+                        android:background="@android:color/transparent"
+                        android:inputType="textPersonName"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/_15sdp"
+                        android:imeOptions="actionDone"
+                        android:visibility="visible"
+                        customfontdemo:fontName="@string/font_circular_book" />
+
+                    <ImageView
+                        android:id="@+id/tick"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="center"
+                        android:layout_margin="@dimen/_5sdp"
+                        android:background="@mipmap/tick"
+                        android:focusable="true"
+                        android:visibility="gone"/>
+
+                </RelativeLayout>
 
 
-        </LinearLayout>
-
+            </LinearLayout>
             <LinearLayout
                 android:id="@+id/bank_layout"
                 android:layout_width="match_parent"
@@ -798,7 +1003,6 @@
 
 
             </LinearLayout>
-
             <LinearLayout
                 android:id="@+id/branch_layout"
                 android:layout_width="match_parent"
@@ -850,90 +1054,7 @@
 
 
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_left_20dp"
-                    android:layout_marginTop="@dimen/padding"
-                    android:layout_marginRight="@dimen/margin_left_20dp"
-                    android:text="பிறந்த தேதி / Date Of birth"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/_15sdp"
-                    android:visibility="visible"
-                    customfontdemo:fontName="@string/font_circular_medium" />
-
-                <RelativeLayout
-                    android:id="@+id/dob_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/header"
-                    android:layout_marginLeft="@dimen/margin_left_20dp"
-                    android:layout_marginTop="@dimen/padding"
-                    android:layout_marginRight="@dimen/margin_left_20dp"
-                    android:background="@drawable/rectangle_box"
-                    android:orientation="vertical"
-                    android:visibility="visible">
-
-
-                        <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
-                            android:id="@+id/motivator_dob_tv"
-                            style="@style/Toolbar.TitleText"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint=""
-                            android:layout_alignParentStart="true"
-                            android:layout_centerInParent="true"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginLeft="15dp"
-                            android:layout_toLeftOf="@+id/calendar_icon"
-                            android:ellipsize="marquee"
-                            android:focusable="true"
-                            android:focusableInTouchMode="true"
-                            android:textAlignment="viewStart"
-                            android:textColor="@android:color/black"
-                            android:textSize="@dimen/_15sdp"
-                            customfontdemo:fontName="@string/font_circular_book" />
-
-                        <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
-                            android:id="@+id/calendar_icon"
-                            style="@style/Toolbar.TitleText"
-                            android:layout_width="35dp"
-                            android:layout_height="35dp"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerInParent="true"
-                            android:layout_centerHorizontal="true"
-                            android:gravity="center"
-                             android:background="@drawable/datepicker_icon"
-                            android:focusable="true"
-                            android:focusableInTouchMode="true"
-
-                           android:layout_marginRight="@dimen/_6sdp"/>
-
-
-                    <!--<com.nic.ODFPlusMonitoring.Support.MyCustomTextView-->
-                        <!--android:id="@+id/motivator_dob_tv"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_alignParentStart="true"-->
-                        <!--android:layout_centerInParent="true"-->
-                        <!--android:layout_marginLeft="15dp"-->
-                        <!--android:background="@android:color/transparent"-->
-                        <!--android:inputType="textPersonName"-->
-                        <!--android:textColor="@android:color/black"-->
-                        <!--android:textSize="@dimen/_15sdp"-->
-                        <!--android:visibility="visible"-->
-                        <!--customfontdemo:fontName="@string/font_circular_book" />-->
-
-
-                </RelativeLayout>
-
-
-            </LinearLayout>
-
+        //Participation Level
             <LinearLayout
                 android:id="@+id/state_level_layout"
                 android:layout_width="match_parent"
@@ -983,6 +1104,7 @@
 
             </LinearLayout>
 
+        //Category
             <LinearLayout
                 android:id="@+id/category_layout"
                 android:layout_width="match_parent"
