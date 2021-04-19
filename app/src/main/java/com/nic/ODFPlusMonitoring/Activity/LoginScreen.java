@@ -1,6 +1,7 @@
 package com.nic.ODFPlusMonitoring.Activity;
 
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -8,26 +9,38 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialog;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
+import com.nic.ODFPlusMonitoring.Adapter.NotificationAdapter;
 import com.nic.ODFPlusMonitoring.Api.Api;
 import com.nic.ODFPlusMonitoring.Api.ApiService;
 import com.nic.ODFPlusMonitoring.Api.ServerResponse;
 import com.nic.ODFPlusMonitoring.Constant.AppConstant;
 import com.nic.ODFPlusMonitoring.DataBase.DBHelper;
 import com.nic.ODFPlusMonitoring.DataBase.dbData;
+import com.nic.ODFPlusMonitoring.Model.NotificationList;
 import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
@@ -41,8 +54,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 
@@ -58,6 +77,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     private MyEditTextView userName;
     private MyEditTextView passwordEditText;
     private LinearLayout sign_up;
+    private RelativeLayout notification;
     private int setPType;
     private ImageView redEye;
     public static DBHelper dbHelper;
@@ -71,6 +91,12 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     public dbData dbData = new dbData(this);
     private String isLogin;
     private static LoginScreen instance;
+    BottomSheetBehavior sheetBehavior;
+    RecyclerView recycler_view_notifications;
+    TextView no_records;
+    ArrayList<NotificationList> NotificationList;
+    View bottomSheet;
+    ImageView close;
 
     public static LoginScreen getInstance() {
         return instance;
@@ -78,7 +104,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.login_screen);
         instance = this;
         Bundle bundle = this.getIntent().getExtras();
@@ -97,6 +123,12 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 //                fetchAllResponseFromApi();
 //            }
         }
+        try {
+            dbHelper = new DBHelper(this);
+            db = dbHelper.getWritableDatabase();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -104,13 +136,55 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         prefManager = new PrefManager(this);
         userName = (MyEditTextView) findViewById(R.id.user_name);
         redEye = (ImageView) findViewById(R.id.red_eye);
+        close = (ImageView) findViewById(R.id.close);
         btn_sign_in = (Button) findViewById(R.id.btn_sign_in);
         sign_up = (LinearLayout) findViewById(R.id.sign_up);
+        bottomSheet = (View) findViewById(R.id.bottomSheet);
+        notification = (RelativeLayout) findViewById(R.id.notification);
         passwordEditText = (MyEditTextView) findViewById(R.id.passwordEditText);
         versionNumber = (MyCustomTextView) findViewById(R.id.tv_version_number);
+        recycler_view_notifications=(RecyclerView)findViewById(R.id.recycler_view_notifications);
+        no_records=(TextView)findViewById(R.id.no_records);
+        bottomSheet=(NestedScrollView) findViewById(R.id.bottomSheet);
+        sheetBehavior = BottomSheetBehavior.from(bottomSheet);
 
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        recycler_view_notifications.setLayoutManager(mLayoutManager);
+        sheetBehavior.setPeekHeight(0);
+        sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View view, int i) {
+                switch (i) {
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+//                        mTextViewState.setText("Collapsed");
+                        sheetBehavior.setPeekHeight(0);
+                        break;
+                    case BottomSheetBehavior.STATE_DRAGGING:
+//                        mTextViewState.setText("Dragging...");
+                        break;
+                    case BottomSheetBehavior.STATE_EXPANDED:
+//                        mTextViewState.setText("Expanded");
+                        break;
+                    case BottomSheetBehavior.STATE_HIDDEN:
+//                        mTextViewState.setText("Hidden");
+                        break;
+                    case BottomSheetBehavior.STATE_SETTLING:
+//                        mTextViewState.setText("Settling...");
+                        break;
+                }
+
+            }
+
+            @Override
+            public void onSlide(@NonNull View view, float v) {
+
+            }
+        });
         btn_sign_in.setOnClickListener(this);
         sign_up.setOnClickListener(this);
+        notification.setOnClickListener(this);
+        close.setOnClickListener(this);
 
         passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
@@ -166,7 +240,8 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         getBlockList();
         getBankNameList();
         getBankBranchList();
-
+        getGenderList();
+        getEducationalQualificationList();
     }
 
     @Override
@@ -181,7 +256,75 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             case R.id.red_eye:
                 showPassword();
                 break;
+            case R.id.notification:
+                GetNotificationDetails();
+                sheetBehavior.setPeekHeight(180);
+                sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                break;
+            case R.id.close:
+                sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                break;
         }
+    }
+
+
+    private void GetNotificationDetails() {
+        NotificationList = new ArrayList<NotificationList>();
+        for (int i = 0; i < 8; i++) {
+            if (i == 0) {
+                NotificationList Detail = new NotificationList();
+                Detail.setTittle("New Activity");
+                Detail.setDescription("Attend meeting at next week.");
+                Detail.setDate("10-10-2020");
+                NotificationList.add(Detail);
+            }else if (i == 1) {
+                NotificationList Detail = new NotificationList();
+                Detail.setTittle("Recent Activity");
+                Detail.setDescription("Make report.");
+                Detail.setDate("02-05-2020");
+                NotificationList.add(Detail);
+            }else {
+                NotificationList Detail = new NotificationList();
+                Detail.setTittle("Recent Activity");
+                Detail.setDescription("Make report.");
+                Detail.setDate("08-12-2020");
+                NotificationList.add(Detail);
+            }
+        }
+        SortAndReverseList(NotificationList);
+        if(NotificationList != null && NotificationList.size() >0) {
+            NotificationAdapter adapter = new NotificationAdapter(LoginScreen.this,NotificationList);
+            adapter.notifyDataSetChanged();
+            recycler_view_notifications.setAdapter(adapter);
+            recycler_view_notifications.setVisibility(View.VISIBLE);
+            no_records.setVisibility(View.GONE);
+        }else {
+            recycler_view_notifications.setVisibility(View.GONE);
+            no_records.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void SortAndReverseList( ArrayList<NotificationList> historyList) {
+        Collections.sort(historyList, new Comparator<NotificationList>() {
+            @Override
+            public int compare(NotificationList o1, NotificationList o2) {
+                String date1=o1.getDate();
+                String date2=o2.getDate();
+                int compareResult = 0;
+                SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+                try {
+                    Date arg0Date = format.parse(date1);
+                    Date arg1Date = format.parse(date2);
+                    compareResult = arg0Date.compareTo(arg1Date);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    compareResult = date2.compareTo(date1);
+                }
+                return compareResult;
+            }
+
+        });
+        // Collections.reverse(studentActivityDetails);
     }
 
     public boolean validate() {
@@ -202,14 +345,12 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     }
 
     private void checkLoginScreen() {
-        userName.setText("9751995897");
-        passwordEditText.setText("odf65#$");
+       /* userName.setText("9751995897"); //prod
+        passwordEditText.setText("odf65#$");*/
 
-        /*userName.setText("7664589783");
-        passwordEditText.setText("odf6#$");*/
+        userName.setText("9843476693"); //loc
+        passwordEditText.setText("odf64#$");
 
-       /* userName.setText("maedemo");
-        passwordEditText.setText("test123#$");*/
         final String username = userName.getText().toString().trim();
         final String password = passwordEditText.getText().toString().trim();
         prefManager.setUserPassword(password);
@@ -337,7 +478,31 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             e.printStackTrace();
         }
     }
+    public void getGenderList() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("Gender", Api.Method.POST, UrlGenerator.getOpenUrl(), genderParams(), "not cache", this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void getEducationalQualificationList() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("EducationalQualification", Api.Method.POST, UrlGenerator.getOpenUrl(), EducationalQualificationParams(), "not cache", this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    public JSONObject genderParams() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, "OS_Gender");
+        return dataSet;
+    }
+    public JSONObject EducationalQualificationParams() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, "OS_EducationalQualification");
+        return dataSet;
+    }
 
     public JSONObject districtListJsonParams() throws JSONException {
         JSONObject dataSet = new JSONObject();
@@ -388,11 +553,13 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             String status = null;
             String response = null;
          //   String message = responseObj.getString(AppConstant.KEY_MESSAGE);
-            if (!"MotivatorSchedule".equals(urlType)){
+           /* if (!"MotivatorSchedule".equals(urlType)){
                 status  = responseObj.getString(AppConstant.KEY_STATUS);
                 response = responseObj.getString(AppConstant.KEY_RESPONSE);
-            }
+            }*/
             if ("LoginScreen".equals(urlType)) {
+                status  = responseObj.getString(AppConstant.KEY_STATUS);
+                response = responseObj.getString(AppConstant.KEY_RESPONSE);
                 if (status.equalsIgnoreCase("OK")) {
                     Log.d("Lresponse", "" + response);
                     if (response.equals("LOGIN_SUCCESS")) {
@@ -425,6 +592,8 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
             }
             if ("MotivatorCategoryList".equals(urlType) && responseObj != null) {
+                status  = responseObj.getString(AppConstant.KEY_STATUS);
+                response = responseObj.getString(AppConstant.KEY_RESPONSE);
                 if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
                     new MotivatorCategoryList().execute(responseObj.getJSONArray(AppConstant.JSON_DATA));
                 } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("NO_RECORD")) {
@@ -433,6 +602,8 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                 Log.d("MotivatorCategoryList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
             }
             if ("DistrictList".equals(urlType) && responseObj != null) {
+                status  = responseObj.getString(AppConstant.KEY_STATUS);
+                response = responseObj.getString(AppConstant.KEY_RESPONSE);
                 if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
                    new  InsertDistrictTask().execute(responseObj.getJSONArray(AppConstant.JSON_DATA));
                 } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("NO_RECORD")) {
@@ -442,6 +613,8 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             }
 
             if ("BlockList".equals(urlType) && responseObj != null) {
+                status  = responseObj.getString(AppConstant.KEY_STATUS);
+                response = responseObj.getString(AppConstant.KEY_RESPONSE);
                 if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
                     new  InsertBlockTask().execute(responseObj.getJSONArray(AppConstant.JSON_DATA));
                 } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("NO_RECORD")) {
@@ -451,6 +624,8 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             }
 
             if ("VillageList".equals(urlType) && responseObj != null) {
+                status  = responseObj.getString(AppConstant.KEY_STATUS);
+                response = responseObj.getString(AppConstant.KEY_RESPONSE);
                 if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
                     new  InsertVillageTask().execute(responseObj.getJSONArray(AppConstant.JSON_DATA));
                 } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("NO_RECORD")) {
@@ -460,6 +635,8 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             }
 
             if ("BankNameList".equals(urlType) && responseObj != null) {
+                status  = responseObj.getString(AppConstant.KEY_STATUS);
+                response = responseObj.getString(AppConstant.KEY_RESPONSE);
                 if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
                     new  InsertBankNameTask().execute(responseObj.getJSONArray(AppConstant.JSON_DATA));
                 } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("NO_RECORD")) {
@@ -469,12 +646,52 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             }
 
             if ("BankBranchList".equals(urlType) && responseObj != null) {
+                status  = responseObj.getString(AppConstant.KEY_STATUS);
+                response = responseObj.getString(AppConstant.KEY_RESPONSE);
                 if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
                     new  InsertBankBranchTask().execute(responseObj.getJSONArray(AppConstant.JSON_DATA));
                 } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("NO_RECORD")) {
                     Log.d("Record", responseObj.getString(AppConstant.KEY_MESSAGE));
                 }
                 Log.d("BankBranchList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
+            }
+            if ("Gender".equals(urlType) && responseObj != null) {
+                status  = responseObj.getString(AppConstant.KEY_STATUS);
+                response = responseObj.getString(AppConstant.KEY_RESPONSE);
+                JSONArray jsonarray = responseObj.getJSONArray(AppConstant.JSON_DATA);
+                if(jsonarray != null && jsonarray.length() >0) {
+                    ArrayList<ODFMonitoringListValue> genderList = new ArrayList<>();
+                    for (int i = 0; i < jsonarray.length(); i++) {
+                        JSONObject jsonobject = jsonarray.getJSONObject(i);
+                        String gender_code = jsonobject.getString("gender_code");
+                        String gender_name_en = (jsonobject.getString("gender_name_en"));
+                        String gender_name_ta = (jsonobject.getString("gender_name_ta"));
+                        ODFMonitoringListValue roadListValue = new ODFMonitoringListValue();
+                        roadListValue.setGenderCode(gender_code);
+                        roadListValue.setGenderEn(gender_name_en);
+                        roadListValue.setGenderTa(gender_name_ta);
+                        genderList.add(roadListValue);
+                    }
+                }
+                Log.d("Gender", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
+            }
+            if ("EducationalQualification".equals(urlType) && responseObj != null) {
+                status  = responseObj.getString(AppConstant.KEY_STATUS);
+                response = responseObj.getString(AppConstant.KEY_RESPONSE);
+                JSONArray jsonarray = responseObj.getJSONArray(AppConstant.JSON_DATA);
+                if(jsonarray != null && jsonarray.length() >0) {
+                    ArrayList<ODFMonitoringListValue> List = new ArrayList<>();
+                    for (int i = 0; i < jsonarray.length(); i++) {
+                        JSONObject jsonobject = jsonarray.getJSONObject(i);
+                        String education_code = jsonobject.getString("education_code");
+                        String education_name = (jsonobject.getString("education_name"));
+                        ODFMonitoringListValue roadListValue = new ODFMonitoringListValue();
+                        roadListValue.setEducationCode(education_code);
+                        roadListValue.setEducationName(education_name);
+                        List.add(roadListValue);
+                    }
+                }
+                Log.d("EducationalQua", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
             }
 
         } catch (JSONException e) {
@@ -694,7 +911,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 //    }
 
     public void showHomeScreen() {
-        Intent intent = new Intent(LoginScreen.this,HomePage.class);
+        Intent intent = new Intent(LoginScreen.this,AddParticipantsActivity.class);
         intent.putExtra("Home", "Login");
         startActivity(intent);
         finish();

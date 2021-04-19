@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -31,7 +32,9 @@ import android.widget.Toast;
 
 import com.nic.ODFPlusMonitoring.Activity.CameraScreen;
 import com.nic.ODFPlusMonitoring.Activity.FullImageActivity;
+import com.nic.ODFPlusMonitoring.Activity.PendingScreen;
 import com.nic.ODFPlusMonitoring.Constant.AppConstant;
+import com.nic.ODFPlusMonitoring.DataBase.DBHelper;
 import com.nic.ODFPlusMonitoring.DataBase.dbData;
 import com.nic.ODFPlusMonitoring.Dialog.MyDialog;
 import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
@@ -144,7 +147,9 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
             holder.activity_type_name.setText(activityListValues.get(position).getActivityTypeName()+" (Rs.200)");
             holder.activity_type_name.setTextColor(context.getResources().getColor(R.color.dot_dark_screen3));
         }
-        Utils.addReadMore(context,activityListValues.get(position).getActivityName(), holder.activity_name,0);
+        if(activityListValues.get(position).getActivityName().length() > 35) {
+            Utils.addReadMore(context, activityListValues.get(position).getActivityName(), holder.activity_name, 0);
+        }
         if(position %2 == 1)
         {
             holder.sportsImage.setImageResource(R.drawable.img_cycling);
@@ -298,7 +303,7 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
             }
         });
 
-        final Integer no_of_photos = 5/*activityListValues.get(position).getNoOfPhotos()*/;
+        final Integer no_of_photos = activityListValues.get(position).getNoOfPhotos();
 
         if(no_of_photos > 2) {
             holder.multiple_photo_layout.setVisibility(View.VISIBLE);
@@ -310,10 +315,7 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
         holder.multiple_photo_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArrayList<ODFMonitoringListValue> activityEndImage1 = dbData.selectImageActivity(dcode, bcode, pvcode, schedule_id, activity_id, "End");
-
                 if (!activity_status.equalsIgnoreCase("y")) {
-                    if (!(activityEndImage1.size() > 0)) {
 
                         ArrayList<ODFMonitoringListValue> activityImage1 = dbData.selectImageActivity(dcode, bcode, pvcode, schedule_id, activity_id, "Start");
 
@@ -324,15 +326,17 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
 
                             if (activityImage.size() > 0 && activityImage.size() == (no_of_photos - 2)) {
                                 Utils.showAlert((Activity) context, "Limit Exceed");
-                            } else {
+                            } else if (activityImage.size() == 0 ) {
+                                System.out.println("serialNo"+String.valueOf(activityImage.size() + 1));
                                 cameraScreen(position, "Middle", String.valueOf(activityImage.size() + 1));
+                            }else {
+                                System.out.println("serialNo"+String.valueOf(activityImage.get(activityImage.size()-1).getSerialNo() + 1));
+                                cameraScreen(position, "Middle", String.valueOf(activityImage.get(activityImage.size()-1).getSerialNo() + 1));
                             }
                         }
 
-                    }else{
-                        Utils.showAlert((Activity) context, "Already Captured");
                     }
-                }else {
+                else {
                     Utils.showAlert((Activity) context, "Activity Completed");
                 }
             }
@@ -507,22 +511,7 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
             submit_audio.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    boolean flag =false;
-                    flag=new MyDialog(activity).flagDialog(activity, "Are you sure to submit audio file?", "Audio");
-                    if(flag){
-                        stop_record.setEnabled(true);
-                        add_cpts_search_alert.dismiss();
-                        isOpen=false;
-                        if(!chronometer.getText().toString().equals("00:00")){
-                            ODFMonitoringListValue odfMonitoringListValue = activityListValues.get(position);
-                            odfMonitoringListValue.setActivityAudio(AudioSavePathInDevice);
-                            odfMonitoringListValue.setAudioSize(chronometer.getText().toString());
-                            activityListValues.set(position,odfMonitoringListValue);
-                            notifyDataSetChanged();
-                        }
-                    }else {
-                    }
-
+                    flagDialog(context,activity, "Are you sure to submit audio file?", position);
                 }
             });
 
@@ -736,6 +725,45 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
             start_record.setEnabled(true);
             add_cpts_search_alert.setCancelable(true);
         }
+    }
+
+    public  void flagDialog(Context context, final Activity activity, String message, final int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View dialogView = inflater.inflate(R.layout.alert_dialog, null);
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.setView(dialogView, 0, 0, 0, 0);
+        alertDialog.setCancelable(false);
+        alertDialog.show();
+
+        MyCustomTextView tv_message = (MyCustomTextView) dialogView.findViewById(R.id.tv_message);
+        tv_message.setText(message);
+
+        Button btnOk = (Button) dialogView.findViewById(R.id.btn_ok);
+        btnOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stop_record.setEnabled(true);
+                add_cpts_search_alert.dismiss();
+                isOpen=false;
+                if(!chronometer.getText().toString().equals("00:00")){
+                    ODFMonitoringListValue odfMonitoringListValue = activityListValues.get(position);
+                    odfMonitoringListValue.setActivityAudio(AudioSavePathInDevice);
+                    odfMonitoringListValue.setAudioSize(chronometer.getText().toString());
+                    activityListValues.set(position,odfMonitoringListValue);
+                    notifyDataSetChanged();}
+                alertDialog.dismiss();
+
+            }
+        });
+        Button btnCancel = (Button) dialogView.findViewById(R.id.btn_cancel);
+        btnCancel.setVisibility(View.VISIBLE);
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
     }
 
 }

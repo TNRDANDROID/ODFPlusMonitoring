@@ -84,7 +84,11 @@ public class PendingScreenAdapter extends RecyclerView.Adapter<PendingScreenAdap
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         holder.village_tv.setText(String.valueOf(pendingListValues.get(position).getPvName()));
-        holder.activity_name.setText(String.valueOf(pendingListValues.get(position).getActivityName()));
+        holder.activity_name.setText("Activity : "+String.valueOf(pendingListValues.get(position).getActivityName()));
+
+        if(String.valueOf(pendingListValues.get(position).getActivityName()).length() > 35) {
+            Utils.addReadMore(context, "Activity : "+String.valueOf(pendingListValues.get(position).getActivityName()), holder.activity_name, 2);
+        }
         final String dcode = pendingListValues.get(position).getDistictCode();
         final String bcode = pendingListValues.get(position).getBlockCode();
         final String pvcode = pendingListValues.get(position).getPvCode();
@@ -159,7 +163,7 @@ public class PendingScreenAdapter extends RecyclerView.Adapter<PendingScreenAdap
                         String image_str = Base64.encodeToString(imageInByte, Base64.DEFAULT);
 
                         activityJson.put(AppConstant.KEY_IMAGE,image_str);
-                        activityJson.put(AppConstant.KEY_AUDIO,saveActivityLists.get(i).getActivityAudio());
+//                        activityJson.put(AppConstant.KEY_AUDIO,saveActivityLists.get(i).getActivityAudio());
 
                         saveAcivityArray.put(activityJson);
                     }

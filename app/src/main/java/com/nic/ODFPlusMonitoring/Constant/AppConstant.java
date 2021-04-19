@@ -68,7 +68,11 @@ public class AppConstant {
     public static String KEY_REGISTER_ADDRESS = "address";
     public static String KEY_MOTIVATOR_PHOTO = "motivator_photo";
     public static String KEY_REGISTER_ACC_NO = "ac_number";
+    public static String KEY_GENDER_CODE = "gender_code";
+    public static String KEY_EDUCATION_CODE = "education_code";
     public static String KEY_MOTIVATOR_NO_OF_STATE_LEVEL_TRAINEE = "no_of_state_level_training_attended";
+    public static String KEY_MOTIVATOR_NO_OF_DISTRICT_LEVEL_TRAINEE = "no_of_district_level_training_attended";
+    public static String KEY_MOTIVATOR_NO_OF_BLOCK_LEVEL_TRAINEE = "no_of_block_level_training_attended";
     public static String KEY_REGISTER_CATEGORY = "category";
     public static String KEY_REGISTER_CATEGORY_OTHERS = "category_other";
     public static String KEY_REGISTER_MOTIVATOR_POSITION = "motivator_position";
@@ -112,6 +116,7 @@ public class AppConstant {
     public static String KEY_DATE_TIME = "datetime";
     public static String KEY_SERIAL_NUMBER = "serial_number";
     public static String KEY_ACTIVITY_STATUS = "activity_status";
+    public static String KEY_ACTIVITY_REJECTED_STATUS = "previously_rejected";
     public static String KEY_ACTIVITY_START = "activity_start";
     public static String KEY_ACTIVITY_END = "activity_end";
 

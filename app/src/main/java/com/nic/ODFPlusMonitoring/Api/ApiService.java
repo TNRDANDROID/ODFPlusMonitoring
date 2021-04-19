@@ -107,6 +107,7 @@ public class ApiService {
             request.setShouldCache(false);
         }
         NICApplication.getInstance().addToRequestQueue(request);
+        Log.d("url", "" + url);
     }
 
     public void makeJSONObjectRequest(String api, int method, String url, JSONObject parmas, String type, final Api.ServerResponseListener listener) {
@@ -114,6 +115,7 @@ public class ApiService {
         JRequest request = getJSONObjectRequest(api, method, url, parmas, type, listener);
         request.setTimeout();
         NICApplication.getInstance().addToRequestQueue(request);
+        Log.d("url", "" + url);
     }
     void hideProgress() {
         try {

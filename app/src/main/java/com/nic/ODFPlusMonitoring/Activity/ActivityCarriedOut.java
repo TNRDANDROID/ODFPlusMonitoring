@@ -26,38 +26,54 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.android.volley.VolleyError;
 import com.nic.ODFPlusMonitoring.Adapter.ActivityCarriedOutAdapter;
 import com.nic.ODFPlusMonitoring.Adapter.CommonAdapter;
+import com.nic.ODFPlusMonitoring.Api.Api;
+import com.nic.ODFPlusMonitoring.Api.ApiService;
+import com.nic.ODFPlusMonitoring.Api.ServerResponse;
 import com.nic.ODFPlusMonitoring.Constant.AppConstant;
 import com.nic.ODFPlusMonitoring.DataBase.dbData;
 import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
+import com.nic.ODFPlusMonitoring.Utils.DateInterface;
+import com.nic.ODFPlusMonitoring.Utils.UrlGenerator;
 import com.nic.ODFPlusMonitoring.Utils.Utils;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class ActivityCarriedOut extends AppCompatActivity implements View.OnClickListener{
+public class ActivityCarriedOut extends AppCompatActivity implements Api.ServerResponseListener, View.OnClickListener, DateInterface {
 
     private RecyclerView recyclerView;
     private PrefManager prefManager;
     public dbData dbData = new dbData(this);
     private ActivityCarriedOutAdapter activityCarriedOutAdapter;
     private ImageView back_img,home_img,search_img;
-    RelativeLayout complete,incomplete,tabSelection,searchLayout;
+    RelativeLayout complete,incomplete,rejected,searchLayout,date_layout;
     ArrayList<ODFMonitoringListValue> finYearList = new ArrayList<>();
     ArrayList<ODFMonitoringListValue> monthList = new ArrayList<>();
     Spinner fin_year,month_sp;
-    View v_inCom,v_Com;
-    boolean status=false;
+    View v_inCom,v_Com,v_Rej;
+    int status=0;
     private AlertDialog alert;
     String selected_fin_year,selected_month;
     Button continue_btn;
     NestedScrollView scroll_view;
+    TextView date,not_found_tv;
+    LinearLayout tabSelection;
+    String fromDate,toDate;
+    Context context;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,6 +83,7 @@ public class ActivityCarriedOut extends AppCompatActivity implements View.OnClic
     }
 
     public void intializeUI() {
+        context=this;
         prefManager = new PrefManager(this);
 
 
@@ -76,12 +93,17 @@ public class ActivityCarriedOut extends AppCompatActivity implements View.OnClic
         search_img = (ImageView) findViewById(R.id.search_img);
         complete = (RelativeLayout) findViewById(R.id.complete);
         incomplete = (RelativeLayout) findViewById(R.id.incomplete);
-        tabSelection = (RelativeLayout) findViewById(R.id.tabSelection);
+        rejected = (RelativeLayout) findViewById(R.id.rejected);
+        tabSelection = (LinearLayout) findViewById(R.id.tabSelection);
         scroll_view = (NestedScrollView) findViewById(R.id.scroll_view);
         searchLayout = (RelativeLayout) findViewById(R.id.searchLayout);
+        date_layout = (RelativeLayout) findViewById(R.id.date_layout);
+        date = (TextView) findViewById(R.id.date);
+        not_found_tv = (TextView) findViewById(R.id.not_found_tv);
         continue_btn = (Button) findViewById(R.id.continue_btn);
         v_inCom = (View) findViewById(R.id.v_1);
         v_Com = (View) findViewById(R.id.v_2);
+        v_Rej = (View) findViewById(R.id.v_3);
 
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -96,6 +118,8 @@ public class ActivityCarriedOut extends AppCompatActivity implements View.OnClic
         continue_btn.setOnClickListener(this);
         complete.setOnClickListener(this);
         incomplete.setOnClickListener(this);
+        rejected.setOnClickListener(this);
+        date_layout.setOnClickListener(this);
 
 //        new fetchActivityHistorytask().execute();
         v_inCom.setVisibility(View.VISIBLE);
@@ -104,8 +128,6 @@ public class ActivityCarriedOut extends AppCompatActivity implements View.OnClic
         searchLayout.setVisibility(View.VISIBLE);
         tabSelection.setVisibility(View.GONE);
         scroll_view.setVisibility(View.GONE);
-        /*status=false;
-        new fetchFilteredActivityHistorytask().execute();*/
 
     }
 
@@ -127,8 +149,14 @@ public class ActivityCarriedOut extends AppCompatActivity implements View.OnClic
             case R.id.incomplete:
                 getInCompleteActivityList();
                 break;
-             case R.id.continue_btn:
+            case R.id.rejected:
+                getRejectedActivityList();
+                break;
+            case R.id.continue_btn:
                  getActivityList();
+                break;
+            case R.id.date_layout:
+                Utils.showDatePickerDialog(context);
                 break;
         }
 
@@ -136,11 +164,12 @@ public class ActivityCarriedOut extends AppCompatActivity implements View.OnClic
 
     private void getCompleteActivityList() {
         v_inCom.setVisibility(View.GONE);
+        v_Rej.setVisibility(View.GONE);
         v_Com.setVisibility(View.VISIBLE);
         scroll_view.setVisibility(View.VISIBLE);
         searchLayout.setVisibility(View.GONE);
         tabSelection.setVisibility(View.VISIBLE);
-        status=true;
+        status=1;
         new fetchFilteredActivityHistorytask().execute();
     }
 
@@ -149,8 +178,19 @@ public class ActivityCarriedOut extends AppCompatActivity implements View.OnClic
         tabSelection.setVisibility(View.VISIBLE);
         searchLayout.setVisibility(View.GONE);
         v_inCom.setVisibility(View.VISIBLE);
+        v_Rej.setVisibility(View.GONE);
         v_Com.setVisibility(View.GONE);
-        status=false;
+        status=2;
+        new fetchFilteredActivityHistorytask().execute();
+    }
+    private void getRejectedActivityList() {
+        scroll_view.setVisibility(View.VISIBLE);
+        tabSelection.setVisibility(View.VISIBLE);
+        searchLayout.setVisibility(View.GONE);
+        v_Rej.setVisibility(View.VISIBLE);
+        v_inCom.setVisibility(View.GONE);
+        v_Com.setVisibility(View.GONE);
+        status=3;
         new fetchFilteredActivityHistorytask().execute();
     }
 
@@ -204,10 +244,12 @@ public class ActivityCarriedOut extends AppCompatActivity implements View.OnClic
         protected ArrayList<ODFMonitoringListValue> doInBackground(Void... params) {
             dbData.open();
             ArrayList<ODFMonitoringListValue> activityList = new ArrayList<>();
-            if(status){
+            if(status == 1){
                 activityList = dbData.getFilteredActivity(1);
-            }else {
+            }else if(status == 2){
                 activityList = dbData.getFilteredActivity(2);
+            } else if(status == 3){
+                activityList = dbData.getFilteredActivity(3);
             }
 
             Log.d("ACTIVITY_HISTORY_COUNT", String.valueOf(activityList.size()));
@@ -217,10 +259,16 @@ public class ActivityCarriedOut extends AppCompatActivity implements View.OnClic
         @Override
         protected void onPostExecute(ArrayList<ODFMonitoringListValue> scheduleList) {
             super.onPostExecute(scheduleList);
-            activityCarriedOutAdapter = new ActivityCarriedOutAdapter(ActivityCarriedOut.this,
-                    scheduleList, dbData);
-            recyclerView.setAdapter(activityCarriedOutAdapter);
-
+            if(scheduleList.size() >0){
+                activityCarriedOutAdapter = new ActivityCarriedOutAdapter(ActivityCarriedOut.this,
+                        scheduleList, dbData);
+                recyclerView.setAdapter(activityCarriedOutAdapter);
+                recyclerView.setVisibility(View.VISIBLE);
+                not_found_tv.setVisibility(View.GONE);
+            }else {
+                recyclerView.setVisibility(View.GONE);
+                not_found_tv.setVisibility(View.VISIBLE);
+            }
 
         }
 
@@ -336,4 +384,94 @@ public class ActivityCarriedOut extends AppCompatActivity implements View.OnClic
         fin_year.setAdapter(new CommonAdapter(this, finYearList, "ScheduleVillage"));
         month_sp.setAdapter(new CommonAdapter(this, monthList, "ScheduleVillage"));
     }
- }
+    @Override
+    public void getDate(String dateValue) {
+        String[] separated = dateValue.split(":");
+        fromDate = separated[0]; // this will contain "Fruit"
+        toDate = separated[1];
+        date.setText(fromDate+" to "+toDate);
+        getInCompleteActivityList();
+        /*if(Utils.isOnline()) {
+              getMotivatorScheduleHistory();
+        }
+        else {
+            Utils.showAlert(ActivityCarriedOut.this,"No Internet Connection");
+        }*/
+    }
+    public void getMotivatorScheduleHistory() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("MotivatorScheduleHistory", Api.Method.POST, UrlGenerator.getMotivatorSchedule(), motivatorScheduleHistoryJsonParams(), "not cache", ActivityCarriedOut.this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public JSONObject motivatorScheduleHistoryJsonParams() throws JSONException {
+
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), motivatorScheduleHistoryParams().toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("MotivatorSchHistory", "" + authKey);
+        return dataSet;
+
+    }
+    public JSONObject motivatorScheduleHistoryParams() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_MOTIVATOR_SCHEDULE_HISTORY);
+        dataSet.put("fromdate", updateLabel(fromDate));
+        dataSet.put("todate", updateLabel(toDate));
+        Log.d("object", "" + dataSet);
+        return dataSet;
+    }
+    private String updateLabel(String dateStr) {
+        String myFormat="";
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+        try {
+            Date date1 = format.parse(dateStr);
+            System.out.println(date1);
+            String dateTime = format.format(date1);
+            System.out.println("Current Date Time : " + dateTime);
+            myFormat = dateTime; //In which you need put here
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return myFormat;
+    }
+
+    @Override
+    public void OnMyResponse(ServerResponse serverResponse) {
+        try {
+            JSONObject responseObj = serverResponse.getJsonResponse();
+            String urlType = serverResponse.getApi();
+               if ("MotivatorScheduleHistory".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    HomePage.getInstance().loadScheduleCompleteList(jsonObject.getJSONArray(AppConstant.JSON_DATA));
+                    HomePage.getInstance().clearAnimations();
+                } else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD") && jsonObject.getString("MESSAGE").equalsIgnoreCase("NO_RECORD")) {
+                    HomePage.getInstance().clearAnimations();
+                }
+                Log.d("MotivatorSchHistory", "" + responseDecryptedBlockKey);
+                String authKey = responseDecryptedBlockKey;
+                int maxLogSize = 2000;
+                for (int i = 0; i <= authKey.length() / maxLogSize; i++) {
+                    int start = i * maxLogSize;
+                    int end = (i + 1) * maxLogSize;
+                    end = end > authKey.length() ? authKey.length() : end;
+                    Log.v("to_send_plain", authKey.substring(start, end));
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void OnError(VolleyError volleyError) {
+
+    }
+}

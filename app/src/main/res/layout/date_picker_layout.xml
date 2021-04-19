@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="20dp"
+    android:padding="10dp"
+    android:background="@color/full_transparent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <android.support.v7.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_gravity="center"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="5dp"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorAccent"
+                android:weightSum="2">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:padding="10dp"
+                    android:id="@+id/f_layout"
+                    android:orientation="vertical"
+                    android:background="@color/colorAccent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:gravity="center"
+                        android:layout_height="wrap_content"
+                        android:text="From"
+                        android:textSize="@dimen/_13sdp"
+                        android:textColor="@color/white"
+                        android:id="@+id/from"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:gravity="center"
+                        android:textSize="@dimen/_13sdp"
+                        android:layout_height="wrap_content"
+                        android:text="dd-mm-yyyy"
+                        android:textColor="@color/white"
+                        android:id="@+id/fromDateValue"/>
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:id="@+id/t_layout"
+                    android:padding="10dp"
+                    android:orientation="vertical"
+                    android:background="@color/colorAccent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:gravity="center"
+                        android:textSize="@dimen/_13sdp"
+                        android:id="@+id/to"
+                        android:text="To"
+                        android:textColor="@color/grey2"
+                        android:layout_height="wrap_content"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:gravity="center"
+                        android:textSize="@dimen/_13sdp"
+                        android:layout_height="wrap_content"
+                        android:text="dd-mm-yyyy"
+                        android:textColor="@color/grey2"
+                        android:id="@+id/toDateValue"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+            <DatePicker
+                android:verticalScrollbarPosition="right"
+                android:scrollbars="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:id="@+id/datePicker"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/button_layout">
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="Cancel"
+                    android:id="@+id/cancel"
+                    android:gravity="top|center_horizontal"
+                    android:layout_toLeftOf="@+id/ok"
+                    android:textColor="@color/colorAccent"
+                    android:layout_marginRight="20dp"
+                    android:paddingBottom="10dp"/>
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="OK"
+                    android:layout_alignParentEnd="true"
+                    android:id="@+id/ok"
+                    android:gravity="top|center_horizontal"
+                    android:textColor="@color/colorAccent"
+                    android:paddingBottom="10dp"/>
+            </RelativeLayout>
+
+        </LinearLayout>
+
+
+
+    </android.support.v7.widget.CardView>
+</LinearLayout>

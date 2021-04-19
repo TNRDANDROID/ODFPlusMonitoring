@@ -7,7 +7,7 @@
     <color name="black">#000000</color>
     <color name="yellow">#fff5f504</color>
     <color name="red">#B71C1C</color>
-
+    <color name="full_transparent">#00FF0000</color>
     <color name="profilePrimaryDark">#FF3B30</color>
     <color name="profileAccentColor">#F7F7F7</color>
     <color name="whiteTextColor">#fff</color>

@@ -52,6 +52,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="13dp"
+                                android:minHeight="90dp"
                                 android:text="Activity Name"
                                 android:textColor="@color/tool_bar_blue"
                                 android:textSize="@dimen/_15sdp"

@@ -767,6 +767,8 @@ public class dbData {
                     ODFMonitoringListValue card = new ODFMonitoringListValue();
                     card.setPhotoID(cursor.getInt(cursor
                             .getColumnIndex(AppConstant.KEY_PHOTO_ID)));
+                    card.setSerialNo(cursor.getInt(cursor
+                            .getColumnIndex(AppConstant.KEY_SERIAL_NUMBER)));
                     card.setMotivatorId(cursor.getInt(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_MOTIVATOR_ID)));
                     card.setActivityId(cursor.getInt(cursor
@@ -791,8 +793,8 @@ public class dbData {
                             .getColumnIndexOrThrow(AppConstant.KEY_IMAGE_REMARK)));
                     card.setActivityName(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_NAME)));
-                    card.setActivityAudio(cursor.getString(cursor
-                            .getColumnIndexOrThrow(AppConstant.KEY_AUDIO)));
+                   /* card.setActivityAudio(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_AUDIO)));*/
                     card.setImage(decodedByte);
 
                     cards.add(card);
@@ -830,6 +832,7 @@ public class dbData {
         values.put(AppConstant.BLOCK_CODE,odfMonitoringListValue.getBlockCode());
         values.put(AppConstant.PV_CODE,odfMonitoringListValue.getPvCode());
         values.put(AppConstant.KEY_ACTIVITY_STATUS,odfMonitoringListValue.getActivityStatus());
+        values.put(AppConstant.KEY_ACTIVITY_REJECTED_STATUS,odfMonitoringListValue.getRejected_status());
 
         long id = db.insert(DBHelper.ACTIVITY_COMPLETED,null,values);
         Log.d("Inser_id_Activ_compl",String.valueOf(id));
@@ -879,6 +882,8 @@ public class dbData {
                             .getColumnIndexOrThrow(AppConstant.PV_CODE)));
                     card.setActivityStatus(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_STATUS)));
+                    card.setRejected_status(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_REJECTED_STATUS)));
                     cards.add(card);
                 }
             }
@@ -930,6 +935,8 @@ public class dbData {
                             .getColumnIndexOrThrow(AppConstant.PV_CODE)));
                     card.setActivityStatus(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_STATUS)));
+                    card.setRejected_status(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_REJECTED_STATUS)));
                     if(status == 1){
                         if(cursor.getString(cursor
                                 .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_STATUS)).equals("Y")){
@@ -937,7 +944,16 @@ public class dbData {
                         }else { }
                     }else if(status == 2){
                         if(cursor.getString(cursor
-                                .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_STATUS)).equals("N")){
+                                .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_STATUS)).equals("N") &&
+                                cursor.getString(cursor
+                                .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_REJECTED_STATUS)).equals("N")){
+                            cards.add(card);
+                        }else { }
+                    }else if(status == 3){
+                        if(cursor.getString(cursor
+                                .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_STATUS)).equals("N") &&
+                                cursor.getString(cursor
+                                        .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_REJECTED_STATUS)).equals("Y")){
                             cards.add(card);
                         }else { }
                     }

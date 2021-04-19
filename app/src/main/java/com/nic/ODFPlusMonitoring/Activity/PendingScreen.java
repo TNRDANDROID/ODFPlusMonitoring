@@ -156,6 +156,7 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        Log.d("savedDataSet req", "" + savedDataSet);
         return savedDataSet;
     }
 
@@ -171,12 +172,23 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-                    Utils.showAlert(this, "Your Activity is Synchronized to the server!");
+                   JSONObject object=new JSONObject();
+                    object=jsonObject.getJSONObject("JSON_DATA");
+                   int acceptCount=object.getInt("accepted_activity_count");
+                   int rejectCount=object.getInt("rejected_activity_count");
+                   if(acceptCount>0){
+                       Utils.showAlert(this, "Your Activity is Synchronized to the server!");
+                   }else if(rejectCount>0){
+                       Utils.showAlert(this, "Your Activity is Rejected!");
+                   }
+//                    Utils.showAlert(this, "Your Activity is Synchronized to the server!");
                     ODFMonitoringListValue value = prefManager.getLocalSaveDeletedKeyList();
                     pendingScreenAdapter.notifyDataSetChanged();
                     long id = db.delete(DBHelper.SAVE_ACTIVITY,"dcode = ? and bcode = ? and pvcode = ? and schedule_id = ? and activity_id = ?",new String[] {value.getDistictCode(),value.getBlockCode(),value.getPvCode(), String.valueOf(value.getScheduleId()), String.valueOf(value.getActivityId())});
                     new fetchpendingtask().execute();
                     HomePage.getInstance().getMotivatorSchedule();
+                }else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("ERROR")) {
+                    Utils.showAlert(this, jsonObject.getString("MESSAGE"));
                 }
                 Log.d("savedImage", "" + responseDecryptedBlockKey);
             }

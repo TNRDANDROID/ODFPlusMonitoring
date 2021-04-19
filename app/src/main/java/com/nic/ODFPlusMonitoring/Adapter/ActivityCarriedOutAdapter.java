@@ -66,13 +66,20 @@ public class ActivityCarriedOutAdapter extends RecyclerView.Adapter<ActivityCarr
 
 
         holder.activity_name.setText(scheduleListValues.get(position).getActivityName());
-        Utils.addReadMore(context,scheduleListValues.get(position).getActivityName(), holder.activity_name,1);
-
+        if(scheduleListValues.get(position).getActivityName().length() > 35) {
+            Utils.addReadMore(context, scheduleListValues.get(position).getActivityName(), holder.activity_name, 1);
+        }
         if (scheduleListValues.get(position).getActivityStatus().equalsIgnoreCase("Y")) {
             holder.activity_status.setText("Completed");
-        } else if (scheduleListValues.get(position).getActivityStatus().equalsIgnoreCase("N")) {
+        } else if (scheduleListValues.get(position).getActivityStatus().equalsIgnoreCase("N") &&
+                scheduleListValues.get(position).getRejected_status().equalsIgnoreCase("N") ) {
             holder.activity_status.setText("Incomplete");
+        } else if (scheduleListValues.get(position).getActivityStatus().equalsIgnoreCase("N") &&
+                scheduleListValues.get(position).getRejected_status().equalsIgnoreCase("Y") ) {
+            holder.activity_status.setText("Rejected");
+            holder.activity_status.setTextColor(context.getResources().getColor(R.color.subscription_type_red_color));
         }
+
         if ( from_date != null && (!from_date.equalsIgnoreCase(""))) {
             holder.activity_start_date_time.setText(Utils.parseDateForChart(from_date));
             holder.start_time_layout.setVisibility(View.VISIBLE);

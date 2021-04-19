@@ -81,6 +81,7 @@ public class ODFMonitoringListValue {
     private String dateTime;
     private String imageAvailable;
     private String activityStatus;
+    private String rejected_status;
     private String motivatorName;
     private Bitmap motivatorImage;
     private String motivatorEmail;
@@ -90,6 +91,68 @@ public class ODFMonitoringListValue {
 
     private String finYear;
     private String month;
+
+    private String genderCode;
+    private String genderEn;
+    private String genderTa;
+
+    private String educationCode;
+    private String educationName;
+
+
+    public String getGenderCode() {
+        return genderCode;
+    }
+
+    public ODFMonitoringListValue setGenderCode(String genderCode) {
+        this.genderCode = genderCode;
+        return this;
+    }
+
+    public String getGenderEn() {
+        return genderEn;
+    }
+
+    public ODFMonitoringListValue setGenderEn(String genderEn) {
+        this.genderEn = genderEn;
+        return this;
+    }
+
+    public String getGenderTa() {
+        return genderTa;
+    }
+
+    public ODFMonitoringListValue setGenderTa(String genderTa) {
+        this.genderTa = genderTa;
+        return this;
+    }
+
+    public String getEducationCode() {
+        return educationCode;
+    }
+
+    public ODFMonitoringListValue setEducationCode(String educationCode) {
+        this.educationCode = educationCode;
+        return this;
+    }
+
+    public String getEducationName() {
+        return educationName;
+    }
+
+    public ODFMonitoringListValue setEducationName(String educationName) {
+        this.educationName = educationName;
+        return this;
+    }
+
+    public String getRejected_status() {
+        return rejected_status;
+    }
+
+    public ODFMonitoringListValue setRejected_status(String rejected_status) {
+        this.rejected_status = rejected_status;
+        return this;
+    }
 
     public String getAudioSize() {
         return AudioSize;

@@ -142,6 +142,7 @@
             android:theme="@style/AppTheme.ProfileTheme"
             android:screenOrientation="portrait"
               />
+        <activity android:name=".Activity.AddParticipantsActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

@@ -25,6 +25,7 @@ import com.nic.ODFPlusMonitoring.Api.ApiService;
 import com.nic.ODFPlusMonitoring.Api.ServerResponse;
 import com.nic.ODFPlusMonitoring.Constant.AppConstant;
 import com.nic.ODFPlusMonitoring.DataBase.dbData;
+import com.nic.ODFPlusMonitoring.Dialog.MyDialog;
 import com.nic.ODFPlusMonitoring.Fragment.SlideshowDialogFragment;
 import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 import com.nic.ODFPlusMonitoring.R;
@@ -52,7 +53,11 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     private static  ArrayList<ODFMonitoringListValue> activityImage = new ArrayList<>();
     final Handler handler = new Handler();
     public String OnOffType;
+    private static FullImageActivity instance;
 
+    public static FullImageActivity getInstance() {
+        return instance;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,6 +66,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         intializeUI();
     }
     public void intializeUI() {
+        instance = this;
         prefManager = new PrefManager(this);
         image_preview_recyclerview = (RecyclerView) findViewById(R.id.image_preview_recyclerview);
         back_img = (ImageView) findViewById(R.id.back_img);
@@ -130,30 +136,31 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         @Override
         protected void onPostExecute(final ArrayList<ODFMonitoringListValue> imageList) {
             super.onPostExecute(imageList);
-            setAdapter();
+            setAdapter(OnOffType);
         }
     }
 
-    public void setAdapter(){
+    public void setAdapter( String OnOffType){
         fullImageAdapter = new FullImageAdapter(FullImageActivity.this,getApplicationContext(),
-                activityImage, dbData);
+                activityImage, dbData,OnOffType);
+/*
         image_preview_recyclerview.addOnItemTouchListener(new FullImageAdapter.RecyclerTouchListener(getApplicationContext(), image_preview_recyclerview, new FullImageAdapter.ClickListener() {
             @Override
             public void onClick(View view, int position) {
                 Bundle bundle = new Bundle();
-                prefManager.setLocalSaveHaccpList(activityImage);
-                 bundle.putInt("position", position);
-                bundle.putString(AppConstant.KEY_ACTIVITY_ID, getIntent().getStringExtra(AppConstant.KEY_ACTIVITY_ID));
-                bundle.putString(AppConstant.KEY_SCHEDULE_ID, schedule_id);
-                bundle.putString(AppConstant.DISTRICT_CODE, prefManager.getDistrictCode());
-                bundle.putString(AppConstant.BLOCK_CODE, prefManager.getBlockCode());
-                bundle.putString(AppConstant.PV_CODE, prefManager.getPvCode());
-                bundle.putString("OnOffType",getIntent().getStringExtra("OnOffType"));
+        prefManager.setLocalSaveHaccpList(activityImage);
+        bundle.putInt("position", position);
+        bundle.putString(AppConstant.KEY_ACTIVITY_ID, getIntent().getStringExtra(AppConstant.KEY_ACTIVITY_ID));
+        bundle.putString(AppConstant.KEY_SCHEDULE_ID, schedule_id);
+        bundle.putString(AppConstant.DISTRICT_CODE, prefManager.getDistrictCode());
+        bundle.putString(AppConstant.BLOCK_CODE, prefManager.getBlockCode());
+        bundle.putString(AppConstant.PV_CODE, prefManager.getPvCode());
+        bundle.putString("OnOffType",getIntent().getStringExtra("OnOffType"));
 
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                SlideshowDialogFragment newFragment = SlideshowDialogFragment.newInstance();
-                newFragment.setArguments(bundle);
-                newFragment.show(ft, "slideshow");
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        SlideshowDialogFragment newFragment = SlideshowDialogFragment.newInstance();
+        newFragment.setArguments(bundle);
+        newFragment.show(ft, "slideshow");
             }
 
             @Override
@@ -161,9 +168,26 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
             }
         }));
+*/
         image_preview_recyclerview.setAdapter(fullImageAdapter);
     }
 
+    public void getFullImage(int position) {
+        Bundle bundle = new Bundle();
+        prefManager.setLocalSaveHaccpList(activityImage);
+        bundle.putInt("position", position);
+        bundle.putString(AppConstant.KEY_ACTIVITY_ID, getIntent().getStringExtra(AppConstant.KEY_ACTIVITY_ID));
+        bundle.putString(AppConstant.KEY_SCHEDULE_ID, schedule_id);
+        bundle.putString(AppConstant.DISTRICT_CODE, prefManager.getDistrictCode());
+        bundle.putString(AppConstant.BLOCK_CODE, prefManager.getBlockCode());
+        bundle.putString(AppConstant.PV_CODE, prefManager.getPvCode());
+        bundle.putString("OnOffType",getIntent().getStringExtra("OnOffType"));
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        SlideshowDialogFragment newFragment = SlideshowDialogFragment.newInstance();
+        newFragment.setArguments(bundle);
+        newFragment.show(ft, "slideshow");
+    }
     public void getOnlineImage() {
         try {
             new ApiService(this).makeJSONObjectRequest("OnlineImage", Api.Method.POST, UrlGenerator.getMotivatorSchedule(), ImagesJsonParams(), "not cache", this);
@@ -238,7 +262,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
             }
 
-            setAdapter();
+            setAdapter(OnOffType);
         }
     }
 

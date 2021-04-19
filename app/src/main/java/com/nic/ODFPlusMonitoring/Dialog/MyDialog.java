@@ -82,42 +82,4 @@ public class MyDialog {
             }
         });
     }
-    public boolean flagDialog(final Activity activity, String message, final String type) {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View dialogView = inflater.inflate(R.layout.alert_dialog, null);
-        final AlertDialog alertDialog = builder.create();
-        alertDialog.setView(dialogView, 0, 0, 0, 0);
-        alertDialog.setCancelable(false);
-        alertDialog.show();
-
-        MyCustomTextView tv_message = (MyCustomTextView) dialogView.findViewById(R.id.tv_message);
-        tv_message.setText(message);
-
-        Button btnOk = (Button) dialogView.findViewById(R.id.btn_ok);
-        btnOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                myListener.onButtonClick(alertDialog, type);
-                if(type.equals("Audio")) {
-                    flag= true;
-                }
-                if(type.equals("Delete")) {
-                    flag= true;
-                }
-
-
-            }
-        });
-        Button btnCancel = (Button) dialogView.findViewById(R.id.btn_cancel);
-        btnCancel.setVisibility(View.VISIBLE);
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-            }
-        });
-        return  flag;
-    }
 }

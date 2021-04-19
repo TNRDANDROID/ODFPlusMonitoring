@@ -124,6 +124,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "schedule_id INTEGER," +
                 "activity_id INTEGER," +
                 "activity_status TEXT," +
+                "previously_rejected TEXT," +
                 "activity_name TEXT," +
                 "activity_start TEXT," +
                 "activity_end TEXT," +

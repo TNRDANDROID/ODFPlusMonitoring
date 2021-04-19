@@ -416,7 +416,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("scheduleListWise", "" + authKey);
+        Log.d("scheduleListWise", "" + dataSet);
         return dataSet;
 
     }
@@ -435,7 +435,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("MotivatorSchHistory", "" + authKey);
+        Log.d("MotivatorSchHistory", "" + dataSet);
         return dataSet;
 
     }
@@ -640,6 +640,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                         scheduleActivityValue.setBlockCode(jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE));
                         scheduleActivityValue.setPvCode(jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE));
                         scheduleActivityValue.setActivityStatus(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ACTIVITY_STATUS));
+                        scheduleActivityValue.setRejected_status(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ACTIVITY_REJECTED_STATUS));
 
                         dbData.insertActivityCompleted(scheduleActivityValue);
                     } catch (JSONException e) {

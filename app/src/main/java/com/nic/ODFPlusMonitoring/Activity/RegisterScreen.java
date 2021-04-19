@@ -97,7 +97,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
 
     private Button btn_register;
     private Handler handler = new Handler();
-    private MyEditTextView motivator_name, motivator_address, motivator_mobileNO, motivator_email_id, motivator_state_level_tv, motivator_position_tv, motivator_account_tv, verify_motivator_account_tv, motivator_ifsc_tv;
+    private MyEditTextView motivator_name, motivator_address, motivator_mobileNO, motivator_email_id, motivator_state_level_tv,motivator_district_level_tv,motivator_block_level_tv, motivator_position_tv, motivator_account_tv, verify_motivator_account_tv, motivator_ifsc_tv;
     private MyCustomTextView motivator_bank_tv, motivator_branch_tv;
     private LinearLayout account_layout, verify_account_layout_show_hide, ifsc_layout, bank_layout, branch_layout;
     private static MyCustomTextView motivator_dob_tv;
@@ -165,6 +165,8 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         motivator_mobileNO = (MyEditTextView) findViewById(R.id.motivator_mobile_no);
         motivator_email_id = (MyEditTextView) findViewById(R.id.motivator_email_id);
         motivator_state_level_tv = (MyEditTextView) findViewById(R.id.motivator_state_level_tv);
+        motivator_district_level_tv = (MyEditTextView) findViewById(R.id.motivator_district_level_tv);
+        motivator_block_level_tv = (MyEditTextView) findViewById(R.id.motivator_block_level_tv);
         motivator_account_tv = (MyEditTextView) findViewById(R.id.motivator_account_tv);
         verify_motivator_account_tv = (MyEditTextView) findViewById(R.id.verify_motivator_account_tv);
         motivator_bank_tv = (MyCustomTextView) findViewById(R.id.motivator_bank_tv);
@@ -746,6 +748,8 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         if (!motivator_dob_tv.getText().toString().isEmpty()) {
 
             if (!motivator_state_level_tv.getText().toString().isEmpty()) {
+            if (!motivator_district_level_tv.getText().toString().isEmpty()) {
+            if (!motivator_block_level_tv.getText().toString().isEmpty()) {
                 if (!"Select Category".equalsIgnoreCase(Category.get(sp_category.getSelectedItemPosition()).getMotivatorCategoryName())) {
                     if ((prefManager.getSpinnerSelectedCategoryName()).equalsIgnoreCase("others")) {
                         if (!motivator_position_tv.getText().toString().isEmpty()) {
@@ -760,6 +764,12 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                     Utils.showAlert(this, "வகையைத் தேர்ந்தெடுக்கவும்!");
                 }
             } else {
+                Utils.showAlert(this, "கலந்துகொண்ட தொகுதி-நிலை பயிற்சியின் எண்ணிக்கையை உள்ளிடவும்!");
+            }
+            } else {
+                Utils.showAlert(this, "கலந்துகொண்ட மாவட்ட அளவிலான பயிற்சியின் எண்ணிக்கையை உள்ளிடவும்!");
+            }
+        } else {
                 Utils.showAlert(this, "கலந்துகொண்ட மாநில அளவிலான பயிற்சியின் எண்ணிக்கையை உள்ளிடவும்!");
             }
 
@@ -1061,7 +1071,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_REGISTER_SIGNUP);
         dataSet.put(AppConstant.KEY_MOTIVATOR_NAME, motivator_name.getText().toString());
         dataSet.put(AppConstant.KEY_REGISTER_DOB, motivator_dob_tv.getText().toString());
-        dataSet.put(AppConstant.KEY_MOTIVATOR_OTHERS, isMotivatorOthers);
+        dataSet.put(AppConstant.KEY_MOTIVATOR_OTHERS, 1/*isMotivatorOthers*/);
         dataSet.put(AppConstant.KEY_REGISTER_MOBILE, motivator_mobileNO.getText().toString());
         dataSet.put(AppConstant.KEY_REGISTER_EMAIL, motivator_email_id.getText().toString());
         dataSet.put(AppConstant.KEY_REGISTER_ADDRESS, motivator_address.getText().toString());
@@ -1074,6 +1084,10 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         dataSet.put(AppConstant.BRANCH_ID, prefManager.getKeyAutocompleteSelectedBranchID());
         dataSet.put(AppConstant.KEY_REGISTER_IFSC_CODE, prefManager.getKeyAutocompleteSelectedIfscCode());
         dataSet.put(AppConstant.KEY_MOTIVATOR_NO_OF_STATE_LEVEL_TRAINEE, motivator_state_level_tv.getText().toString());
+        dataSet.put(AppConstant.KEY_GENDER_CODE, "F");
+        dataSet.put(AppConstant.KEY_EDUCATION_CODE, "1");
+        dataSet.put(AppConstant.KEY_MOTIVATOR_NO_OF_DISTRICT_LEVEL_TRAINEE, motivator_district_level_tv.getText().toString());
+        dataSet.put(AppConstant.KEY_MOTIVATOR_NO_OF_BLOCK_LEVEL_TRAINEE, motivator_block_level_tv.getText().toString());
         if ((prefManager.getSpinnerSelectedCategoryName()).equalsIgnoreCase("others")) {
             dataSet.put(AppConstant.KEY_REGISTER_CATEGORY_OTHERS, prefManager.getSpinnerSelectedCategoryId());
             dataSet.put(AppConstant.KEY_REGISTER_MOTIVATOR_POSITION, motivator_position_tv.getText().toString());
