@@ -98,7 +98,24 @@ public class ODFMonitoringListValue {
 
     private String educationCode;
     private String educationName;
+    private String designation_code;
+    private String designation_name;
 
+    public String getDesignation_name() {
+        return designation_name;
+    }
+
+    public void setDesignation_name(String designation_name) {
+        this.designation_name = designation_name;
+    }
+
+    public String getDesignation_code() {
+        return designation_code;
+    }
+
+    public void setDesignation_code(String designation_code) {
+        this.designation_code = designation_code;
+    }
 
     public String getGenderCode() {
         return genderCode;

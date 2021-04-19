@@ -47,7 +47,7 @@
                 android:layout_gravity="center"
                 android:layout_centerVertical="true"
                 android:textSize="15sp"
-                android:text="Add Other Participants"
+                android:text="Edit Detail"
                 android:fontFamily="sans-serif" />
         </RelativeLayout>
         <LinearLayout
@@ -353,7 +353,7 @@
                 android:layout_marginTop="20dp"
                 android:background="@drawable/button_background"
                 android:visibility="visible"
-                android:text="Submit"
+                android:text="Update"
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center"
                 android:textAllCaps="true"

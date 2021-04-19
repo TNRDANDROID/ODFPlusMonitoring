@@ -74,6 +74,7 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
     private PrefManager prefManager;
     ArrayList<ODFMonitoringListValue> designationList;
     String selectedDesignation,selectedDesignationId;
+    Dialog dialog;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -133,6 +134,7 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
     }
     public void addStructureView(int designation_id,String participates_name,String mobile_number){
         Spinner designation;
+        loadDesignationList();
         try {
             //We need to get the instance of the LayoutInflater, use the context of this activity
             final LayoutInflater inflater = (LayoutInflater) context
@@ -206,7 +208,7 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
 
     public void imageWithDescription() {
         appParticipatesJson=new JSONObject();
-        final Dialog dialog = new Dialog(this,R.style.AppTheme);
+        dialog = new Dialog(this,R.style.AppTheme);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.add_participates);
         dialog.setCanceledOnTouchOutside(false);
@@ -225,6 +227,13 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
         Button done = (Button) dialog.findViewById(R.id.btn_save_inspection);
         done.setGravity(Gravity.CENTER);
         done.setVisibility(View.VISIBLE);
+        TextView close_id=dialog.findViewById(R.id.close_id);
+        close_id.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
 
 
         done.setOnClickListener(new View.OnClickListener() {
@@ -242,7 +251,7 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
                         View vv = mobileNumberLayout.getChildAt(i);
                         m_mobile=vv.findViewById(R.id.mobile_number);
                         m_name=vv.findViewById(R.id.name);
-                        designation=vv.findViewById(R.id.designation_name);
+                        designation=vv.findViewById(R.id.designation);
                         if(!m_mobile.getText().toString().equals("")&&!m_name.getText().toString().equals("")&&
                         designation.getSelectedItemPosition()!=0) {
                             if (Utils.isOnline()) {
@@ -255,19 +264,21 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
                         }
                         else {
                             Utils.showAlert(AddParticipantsActivity.this,"Please fill all details in all view!");
+                            break;
                         }
 
                     }
                     try {
                         appParticipatesJson.put("data",imageJson);
+                        addParticipatesApiService();
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
 
 
                 }
-                dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-                dialog.dismiss();
+
                 //focusOnView(scrollView);
 
             }
@@ -354,6 +365,8 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
                     status  = responseObj.getString(AppConstant.KEY_STATUS);
                     response = responseObj.getString(AppConstant.KEY_RESPONSE);
                     if (status.equalsIgnoreCase("OK")) {
+                        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+                        dialog.dismiss();
                     }
                 }
 
@@ -366,20 +379,22 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
 
     private void loadDesignationList() {
         try {
-            JSONArray jsonarray=new JSONArray();
+            JSONArray jsonarray=new JSONArray(prefManager.getDesignationList());
+            designationList=new ArrayList<>();
             if(jsonarray != null && jsonarray.length() >0) {
                 ODFMonitoringListValue ODFMonitoringListValue = new ODFMonitoringListValue();
-                ODFMonitoringListValue.setGenderEn("Select Designation");
+                ODFMonitoringListValue.setDesignation_name("Select Designation");
+                ODFMonitoringListValue.setDesignation_code("0");
                 designationList.add(ODFMonitoringListValue);
                 for (int i = 0; i < jsonarray.length(); i++) {
                     JSONObject jsonobject = jsonarray.getJSONObject(i);
-                    String gender_code = jsonobject.getString("gender_code");
-                    String gender_name_en = (jsonobject.getString("gender_name_en"));
-                    String gender_name_ta = (jsonobject.getString("gender_name_ta"));
+                    String designation_code = jsonobject.getString("designation_code");
+                    String designation_name = (jsonobject.getString("designation_name"));
+                    /*String gender_name_ta = (jsonobject.getString("gender_name_ta"));*/
                     ODFMonitoringListValue roadListValue = new ODFMonitoringListValue();
-                    roadListValue.setGenderCode(gender_code);
-                    roadListValue.setGenderEn(gender_name_en);
-                    roadListValue.setGenderTa(gender_name_ta);
+                    roadListValue.setDesignation_code(designation_code);
+                    roadListValue.setDesignation_name(designation_name);
+
                     designationList.add(roadListValue);
                 }
                 designation.setAdapter(new CommonAdapter(this, designationList, "DesignationList"));

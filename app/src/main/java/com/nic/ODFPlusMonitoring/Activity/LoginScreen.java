@@ -709,7 +709,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                 }
             }
             if ("DesignationList".equals(urlType) /*&& responseObj != null*/) {
-                String s="{\"STATUS\":\"SUCCESS\",\"JSON_DATA\":[{\"designation_code\":\"1\",\"designation_name\":\"Anganwadi Worker\"},{\"designation_code\":\"2\",\"designation\":\"VHN\"},{\"designation_code\":\"3\",\"designation_name\":\"School Teacher\"},{\"designation\":\"4\",\"designation\":\"Village Pt. Sec\"}]}";
+                String s="{\"STATUS\":\"SUCCESS\",\"JSON_DATA\":[{\"designation_code\":\"1\",\"designation_name\":\"Anganwadi Worker\"},{\"designation_code\":\"2\",\"designation_name\":\"VHN\"},{\"designation_code\":\"3\",\"designation_name\":\"School Teacher\"},{\"designation_code\":\"4\",\"designation_name\":\"Village Pt. Sec\"}]}";
                 responseObj=new JSONObject(s);
                 status  = responseObj.getString(AppConstant.KEY_STATUS);
 //                response = responseObj.getString(AppConstant.KEY_RESPONSE);

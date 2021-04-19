@@ -64,6 +64,8 @@ public class CommonAdapter extends BaseAdapter {
             tv_type.setText(ODFMonitoringList.getGenderEn());
         }else if (type.equalsIgnoreCase("EducationList")) {
             tv_type.setText(ODFMonitoringList.getEducationName());
+        }else if (type.equalsIgnoreCase("DesignationList")) {
+            tv_type.setText(ODFMonitoringList.getDesignation_name());
         }
         return view;
     }
