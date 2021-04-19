@@ -33,6 +33,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
+import com.nic.ODFPlusMonitoring.Adapter.CommonAdapter;
 import com.nic.ODFPlusMonitoring.Adapter.NotificationAdapter;
 import com.nic.ODFPlusMonitoring.Api.Api;
 import com.nic.ODFPlusMonitoring.Api.ApiService;
@@ -241,6 +242,8 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         getBankNameList();
         getBankBranchList();
         getGenderList();
+        getNotificationList();
+        getDesignationList();
         getEducationalQualificationList();
     }
 
@@ -257,7 +260,6 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                 showPassword();
                 break;
             case R.id.notification:
-                GetNotificationDetails();
                 sheetBehavior.setPeekHeight(180);
                 sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 break;
@@ -268,30 +270,20 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     }
 
 
-    private void GetNotificationDetails() {
+    private void LoadNotificationDetails(JSONArray jsonarray) {
         NotificationList = new ArrayList<NotificationList>();
-        for (int i = 0; i < 8; i++) {
-            if (i == 0) {
-                NotificationList Detail = new NotificationList();
-                Detail.setTittle("New Activity");
-                Detail.setDescription("Attend meeting at next week.");
-                Detail.setDate("10-10-2020");
-                NotificationList.add(Detail);
-            }else if (i == 1) {
-                NotificationList Detail = new NotificationList();
-                Detail.setTittle("Recent Activity");
-                Detail.setDescription("Make report.");
-                Detail.setDate("02-05-2020");
-                NotificationList.add(Detail);
-            }else {
-                NotificationList Detail = new NotificationList();
-                Detail.setTittle("Recent Activity");
-                Detail.setDescription("Make report.");
-                Detail.setDate("08-12-2020");
-                NotificationList.add(Detail);
+        try {
+        if(jsonarray != null && jsonarray.length() >0) {
+            for (int i = 0; i < jsonarray.length(); i++) {
+                JSONObject jsonobject = jsonarray.getJSONObject(i);
+                    NotificationList Detail = new NotificationList();
+                    Detail.setTittle(jsonobject.getString("tittle"));
+                    Detail.setDescription(jsonobject.getString("description"));
+                    Detail.setDate(jsonobject.getString("date"));
+                    NotificationList.add(Detail);
             }
+            SortAndReverseList(NotificationList);
         }
-        SortAndReverseList(NotificationList);
         if(NotificationList != null && NotificationList.size() >0) {
             NotificationAdapter adapter = new NotificationAdapter(LoginScreen.this,NotificationList);
             adapter.notifyDataSetChanged();
@@ -301,6 +293,9 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         }else {
             recycler_view_notifications.setVisibility(View.GONE);
             no_records.setVisibility(View.VISIBLE);
+        }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
@@ -485,6 +480,20 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             e.printStackTrace();
         }
     }
+    public void getNotificationList() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("NotificationList", Api.Method.POST, UrlGenerator.getOpenUrl(), notificationParams(), "not cache", this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void getDesignationList() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("DesignationList", Api.Method.POST, UrlGenerator.getOpenUrl(), DesignationListParams(), "not cache", this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     public void getEducationalQualificationList() {
         try {
             new ApiService(this).makeJSONObjectRequest("EducationalQualification", Api.Method.POST, UrlGenerator.getOpenUrl(), EducationalQualificationParams(), "not cache", this);
@@ -496,6 +505,16 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     public JSONObject genderParams() throws JSONException {
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_SERVICE_ID, "OS_Gender");
+        return dataSet;
+    }
+    public JSONObject notificationParams() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, "OS_Notification");
+        return dataSet;
+    }
+    public JSONObject DesignationListParams() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, "OS_DesignationList");
         return dataSet;
     }
     public JSONObject EducationalQualificationParams() throws JSONException {
@@ -655,43 +674,50 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                 }
                 Log.d("BankBranchList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
             }
-            if ("Gender".equals(urlType) && responseObj != null) {
+            if ("Gender".equals(urlType) /*&& responseObj != null*/) {
+                String s="{\"STATUS\":\"SUCCESS\",\"JSON_DATA\":[{\"gender_code\":\"F\",\"gender_name_en\":\"Female\",\"gender_name_ta\":\"Female\"},{\"gender_code\":\"M\",\"gender_name_en\":\"Male\",\"gender_name_ta\":\"Male\"},{\"gender_code\":\"T\",\"gender_name_en\":\"Transgender\",\"gender_name_ta\":\"Transgender\"}]}";
+                responseObj=new JSONObject(s);
                 status  = responseObj.getString(AppConstant.KEY_STATUS);
-                response = responseObj.getString(AppConstant.KEY_RESPONSE);
-                JSONArray jsonarray = responseObj.getJSONArray(AppConstant.JSON_DATA);
-                if(jsonarray != null && jsonarray.length() >0) {
-                    ArrayList<ODFMonitoringListValue> genderList = new ArrayList<>();
-                    for (int i = 0; i < jsonarray.length(); i++) {
-                        JSONObject jsonobject = jsonarray.getJSONObject(i);
-                        String gender_code = jsonobject.getString("gender_code");
-                        String gender_name_en = (jsonobject.getString("gender_name_en"));
-                        String gender_name_ta = (jsonobject.getString("gender_name_ta"));
-                        ODFMonitoringListValue roadListValue = new ODFMonitoringListValue();
-                        roadListValue.setGenderCode(gender_code);
-                        roadListValue.setGenderEn(gender_name_en);
-                        roadListValue.setGenderTa(gender_name_ta);
-                        genderList.add(roadListValue);
-                    }
+//                response = responseObj.getString(AppConstant.KEY_RESPONSE);
+                if (status.equalsIgnoreCase("SUCCESS")){
+                    JSONArray jsonarray = responseObj.getJSONArray(AppConstant.JSON_DATA);
+                    prefManager.setGenderList(jsonarray.toString());
+                    Log.d("Gender", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
                 }
-                Log.d("Gender", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
+
             }
-            if ("EducationalQualification".equals(urlType) && responseObj != null) {
+            if ("EducationalQualification".equals(urlType) /*&& responseObj != null*/) {
+                String s="{\"STATUS\":\"SUCCESS\",\"JSON_DATA\":[{\"education_code\":\"1\",\"education_name\":\"9th Pass\"},{\"education_code\":\"2\",\"education_name\":\"10th Pass\"},{\"education_code\":\"3\",\"education_name\":\"12th Pass\"},{\"education_code\":\"4\",\"education_name\":\"Degree Holder\"}]}";
+                responseObj=new JSONObject(s);
                 status  = responseObj.getString(AppConstant.KEY_STATUS);
-                response = responseObj.getString(AppConstant.KEY_RESPONSE);
-                JSONArray jsonarray = responseObj.getJSONArray(AppConstant.JSON_DATA);
-                if(jsonarray != null && jsonarray.length() >0) {
-                    ArrayList<ODFMonitoringListValue> List = new ArrayList<>();
-                    for (int i = 0; i < jsonarray.length(); i++) {
-                        JSONObject jsonobject = jsonarray.getJSONObject(i);
-                        String education_code = jsonobject.getString("education_code");
-                        String education_name = (jsonobject.getString("education_name"));
-                        ODFMonitoringListValue roadListValue = new ODFMonitoringListValue();
-                        roadListValue.setEducationCode(education_code);
-                        roadListValue.setEducationName(education_name);
-                        List.add(roadListValue);
-                    }
+//                response = responseObj.getString(AppConstant.KEY_RESPONSE);
+                if (status.equalsIgnoreCase("SUCCESS")) {
+                    JSONArray jsonarray = responseObj.getJSONArray(AppConstant.JSON_DATA);
+                    prefManager.setEducationalQualification(jsonarray.toString());
+                    Log.d("EducationalQua", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
                 }
-                Log.d("EducationalQua", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
+            }
+            if ("NotificationList".equals(urlType) /*&& responseObj != null*/) {
+                String s="{\"STATUS\":\"SUCCESS\",\"JSON_DATA\":[{\"id\":\"1\",\"tittle\":\"test\",\"description\":\"testing\",\"date\":\"10-03-2021\"},{\"id\":\"2\",\"tittle\":\"test2\",\"description\":\"testing2\",\"date\":\"18-03-2021\"}]}";
+                responseObj=new JSONObject(s);
+                status  = responseObj.getString(AppConstant.KEY_STATUS);
+//                response = responseObj.getString(AppConstant.KEY_RESPONSE);
+                if (status.equalsIgnoreCase("SUCCESS")) {
+                    JSONArray jsonarray = responseObj.getJSONArray(AppConstant.JSON_DATA);
+                    LoadNotificationDetails(jsonarray);
+                    Log.d("NotificationList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
+                }
+            }
+            if ("DesignationList".equals(urlType) /*&& responseObj != null*/) {
+                String s="{\"STATUS\":\"SUCCESS\",\"JSON_DATA\":[{\"designation_code\":\"1\",\"designation_name\":\"Anganwadi Worker\"},{\"designation_code\":\"2\",\"designation\":\"VHN\"},{\"designation_code\":\"3\",\"designation_name\":\"School Teacher\"},{\"designation\":\"4\",\"designation\":\"Village Pt. Sec\"}]}";
+                responseObj=new JSONObject(s);
+                status  = responseObj.getString(AppConstant.KEY_STATUS);
+//                response = responseObj.getString(AppConstant.KEY_RESPONSE);
+                if (status.equalsIgnoreCase("SUCCESS")) {
+                    JSONArray jsonarray = responseObj.getJSONArray(AppConstant.JSON_DATA);
+                    prefManager.setDesignationList(jsonarray.toString());
+                    Log.d("DesignationList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
+                }
             }
 
         } catch (JSONException e) {

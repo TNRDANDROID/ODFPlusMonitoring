@@ -60,6 +60,10 @@ public class CommonAdapter extends BaseAdapter {
             tv_type.setText(ODFMonitoringList.getMotivatorCategoryName());
         } else if (type.equalsIgnoreCase("ScheduleVillage")) {
             tv_type.setText(ODFMonitoringList.getPvName());
+        }else if (type.equalsIgnoreCase("GenderList")) {
+            tv_type.setText(ODFMonitoringList.getGenderEn());
+        }else if (type.equalsIgnoreCase("EducationList")) {
+            tv_type.setText(ODFMonitoringList.getEducationName());
         }
         return view;
     }

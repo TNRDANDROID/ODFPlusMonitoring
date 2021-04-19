@@ -69,6 +69,10 @@ public class PrefManager {
     private static final String KEY_JSON_OBJECT_DELETED_KEY= "KEY_JSON_OBJECT_DELETED_KEY";
     private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
 
+    private static final String GENDER_LIST = "GENDER";
+    private static final String EDUCATIONAL_QUALIFICATION = "EDUCATION";
+    private static final String DESIGNATION_LIST = "DESIGNATION_LIST";
+
 
     public PrefManager(Context context) {
         this._context = context;
@@ -359,6 +363,32 @@ public class PrefManager {
 
     public String   getActivityName() {
         return pref.getString(KEY_ACTIVITY_NAME, null);
+    }
+
+    public void setGenderList(String genderList) {
+        editor.putString(GENDER_LIST, genderList);
+        editor.commit();
+    }
+
+    public String   getGenderList() {
+        return pref.getString(GENDER_LIST, null);
+    }
+
+    public void setDesignationList(String designationList) {
+        editor.putString(DESIGNATION_LIST, designationList);
+        editor.commit();
+    }
+
+    public String   getDesignationList() {
+        return pref.getString(DESIGNATION_LIST, null);
+    }
+    public void setEducationalQualification(String educationalQualification) {
+        editor.putString(EDUCATIONAL_QUALIFICATION, educationalQualification);
+        editor.commit();
+    }
+
+    public String   getEducationalQualification() {
+        return pref.getString(EDUCATIONAL_QUALIFICATION, null);
     }
 
     public void setDeletedkeyList(ODFMonitoringListValue localSaveHaccp) {

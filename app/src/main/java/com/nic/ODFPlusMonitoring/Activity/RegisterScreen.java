@@ -70,6 +70,7 @@ import com.nic.ODFPlusMonitoring.Utils.CameraUtils;
 import com.nic.ODFPlusMonitoring.Utils.UrlGenerator;
 import com.nic.ODFPlusMonitoring.Utils.Utils;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -103,13 +104,15 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
     private static MyCustomTextView motivator_dob_tv;
     private RelativeLayout dob_layout, edit_image, verify_account_layout, phone_no_layout, email_id_layout;
     private LinearLayout position_layout;
-    private Spinner sp_block, sp_district, sp_village, sp_category;
+    private Spinner sp_block, sp_district, sp_village, sp_category,gender_spinner,educational_qualification_spinner;
     private RadioButton motivator, other;
     private PrefManager prefManager;
     private List<ODFMonitoringListValue> Block = new ArrayList<>();
     private List<ODFMonitoringListValue> District = new ArrayList<>();
     private List<ODFMonitoringListValue> Village = new ArrayList<>();
     private List<ODFMonitoringListValue> Category = new ArrayList<>();
+    ArrayList<ODFMonitoringListValue> genderList = new ArrayList<>();
+    ArrayList<ODFMonitoringListValue> educationList = new ArrayList<>();
     private List<ODFMonitoringListValue> BankDetails = new ArrayList<>();
     private List<ODFMonitoringListValue> BranchDetails = new ArrayList<>();
     private ProgressHUD progressHUD;
@@ -135,6 +138,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
     public static final int BITMAP_SAMPLE_SIZE = 8;
     private ExifInterface exifObject;
     private Integer isMotivatorOthers;
+    String selectedGender,selectedGenderId,selectedEducation,selectedEducationId;
 
 
 
@@ -161,6 +165,8 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         sp_district = (Spinner) findViewById(R.id.district);
         sp_village = (Spinner) findViewById(R.id.village);
         sp_category = (Spinner) findViewById(R.id.category);
+        gender_spinner = (Spinner) findViewById(R.id.gender_spinner);
+        educational_qualification_spinner = (Spinner) findViewById(R.id.educational_qualification_spinner);
         motivator_address = (MyEditTextView) findViewById(R.id.motivator_address);
         motivator_mobileNO = (MyEditTextView) findViewById(R.id.motivator_mobile_no);
         motivator_email_id = (MyEditTextView) findViewById(R.id.motivator_email_id);
@@ -310,6 +316,30 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
 
             }
         });
+        gender_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedGender=(genderList.get(position).getGenderEn());
+                selectedGenderId=(genderList.get(position).getGenderCode());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        educational_qualification_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedEducation=(educationList.get(position).getEducationName());
+                selectedEducationId=(educationList.get(position).getEducationCode());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         motivator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -349,7 +379,58 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         });
         loadOfflineDistrictListDBValues();
         loadCategoryListDBValues();
+        loadGenderList();
+        loadEducationList();
         textFieldValidation();
+    }
+
+    private void loadEducationList() {
+        try {
+            JSONArray jsonarray=new JSONArray(prefManager.getEducationalQualification());
+            if(jsonarray != null && jsonarray.length() >0) {
+                ODFMonitoringListValue ODFMonitoringListValue = new ODFMonitoringListValue();
+                ODFMonitoringListValue.setEducationName("Select Educational Qualification");
+                educationList.add(ODFMonitoringListValue);
+                    for (int i = 0; i < jsonarray.length(); i++) {
+                        JSONObject jsonobject = jsonarray.getJSONObject(i);
+                        String education_code = jsonobject.getString("education_code");
+                        String education_name = (jsonobject.getString("education_name"));
+                        ODFMonitoringListValue roadListValue = new ODFMonitoringListValue();
+                        roadListValue.setEducationCode(education_code);
+                        roadListValue.setEducationName(education_name);
+                        educationList.add(roadListValue);
+                }
+                educational_qualification_spinner.setAdapter(new CommonAdapter(this, educationList, "EducationList"));
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    private void loadGenderList() {
+        try {
+            JSONArray jsonarray=new JSONArray(prefManager.getGenderList());
+            if(jsonarray != null && jsonarray.length() >0) {
+                ODFMonitoringListValue ODFMonitoringListValue = new ODFMonitoringListValue();
+                ODFMonitoringListValue.setGenderEn("Select Gender");
+                genderList.add(ODFMonitoringListValue);
+                for (int i = 0; i < jsonarray.length(); i++) {
+                    JSONObject jsonobject = jsonarray.getJSONObject(i);
+                    String gender_code = jsonobject.getString("gender_code");
+                    String gender_name_en = (jsonobject.getString("gender_name_en"));
+                    String gender_name_ta = (jsonobject.getString("gender_name_ta"));
+                    ODFMonitoringListValue roadListValue = new ODFMonitoringListValue();
+                    roadListValue.setGenderCode(gender_code);
+                    roadListValue.setGenderEn(gender_name_en);
+                    roadListValue.setGenderTa(gender_name_ta);
+                    genderList.add(roadListValue);
+                }
+                gender_spinner.setAdapter(new CommonAdapter(this, genderList, "GenderList"));
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public void textFieldValidation() {
@@ -751,6 +832,8 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
             if (!motivator_district_level_tv.getText().toString().isEmpty()) {
             if (!motivator_block_level_tv.getText().toString().isEmpty()) {
                 if (!"Select Category".equalsIgnoreCase(Category.get(sp_category.getSelectedItemPosition()).getMotivatorCategoryName())) {
+                if (!"Select Gender".equalsIgnoreCase(genderList.get(gender_spinner.getSelectedItemPosition()).getGenderEn())) {
+                if (!"Select Educational Qualification".equalsIgnoreCase(educationList.get(educational_qualification_spinner.getSelectedItemPosition()).getEducationName())) {
                     if ((prefManager.getSpinnerSelectedCategoryName()).equalsIgnoreCase("others")) {
                         if (!motivator_position_tv.getText().toString().isEmpty()) {
                             signUP();
@@ -760,6 +843,12 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                     } else {
                         signUP();
                     }
+                } else {
+                    Utils.showAlert(this, "கல்வித் தகுதியைத் தேர்ந்தெடுக்கவும்!");
+                }
+                } else {
+                    Utils.showAlert(this, "பாலினத்தைத் தேர்ந்தெடுக்கவும்!");
+                }
                 } else {
                     Utils.showAlert(this, "வகையைத் தேர்ந்தெடுக்கவும்!");
                 }
@@ -1084,8 +1173,8 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         dataSet.put(AppConstant.BRANCH_ID, prefManager.getKeyAutocompleteSelectedBranchID());
         dataSet.put(AppConstant.KEY_REGISTER_IFSC_CODE, prefManager.getKeyAutocompleteSelectedIfscCode());
         dataSet.put(AppConstant.KEY_MOTIVATOR_NO_OF_STATE_LEVEL_TRAINEE, motivator_state_level_tv.getText().toString());
-        dataSet.put(AppConstant.KEY_GENDER_CODE, "F");
-        dataSet.put(AppConstant.KEY_EDUCATION_CODE, "1");
+        dataSet.put(AppConstant.KEY_GENDER_CODE, selectedGenderId);
+        dataSet.put(AppConstant.KEY_EDUCATION_CODE, selectedEducationId);
         dataSet.put(AppConstant.KEY_MOTIVATOR_NO_OF_DISTRICT_LEVEL_TRAINEE, motivator_district_level_tv.getText().toString());
         dataSet.put(AppConstant.KEY_MOTIVATOR_NO_OF_BLOCK_LEVEL_TRAINEE, motivator_block_level_tv.getText().toString());
         if ((prefManager.getSpinnerSelectedCategoryName()).equalsIgnoreCase("others")) {
