@@ -72,6 +72,7 @@ public class PrefManager {
     private static final String GENDER_LIST = "GENDER";
     private static final String EDUCATIONAL_QUALIFICATION = "EDUCATION";
     private static final String DESIGNATION_LIST = "DESIGNATION_LIST";
+    private static final String PARTICIPATES_LIST = "PARTICIPATES_LIST";
 
 
     public PrefManager(Context context) {
@@ -416,4 +417,14 @@ public class PrefManager {
         editor.putBoolean(KEY_IS_LOGGED_IN, value);
         editor.commit();
     }
+
+    public void setParticipatesList(String designationList) {
+        editor.putString(PARTICIPATES_LIST, designationList);
+        editor.commit();
+    }
+
+    public String   getParticipatesList() {
+        return pref.getString(PARTICIPATES_LIST, null);
+    }
+
 }

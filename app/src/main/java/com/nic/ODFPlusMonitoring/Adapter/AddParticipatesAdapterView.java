@@ -9,14 +9,19 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.nic.ODFPlusMonitoring.Activity.AddParticipantsActivity;
+import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 import com.nic.ODFPlusMonitoring.R;
+
+import java.util.ArrayList;
 
 public class AddParticipatesAdapterView extends RecyclerView.Adapter<AddParticipatesAdapterView.ViewHolder> {
 
     Context context;
+    ArrayList<ODFMonitoringListValue> participatesList;
 
-    public AddParticipatesAdapterView(Context context) {
+    public AddParticipatesAdapterView(Context context, ArrayList<ODFMonitoringListValue> participatesList) {
         this.context = context;
+        this.participatesList=participatesList;
     }
 
     @NonNull
@@ -27,18 +32,21 @@ public class AddParticipatesAdapterView extends RecyclerView.Adapter<AddParticip
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AddParticipatesAdapterView.ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull AddParticipatesAdapterView.ViewHolder viewHolder, final int i) {
+        viewHolder.designation_name.setText(participatesList.get(i).getExist_designation_name());
+        viewHolder.participates_name.setText(participatesList.get(i).getExist_participate_name());
+        viewHolder.mobile_number.setText(participatesList.get(i).getExist_participates_mobile());
                     viewHolder.edit_fun.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ((AddParticipantsActivity)context).addStructureView(0,"Sample","9976787876");
+                            ((AddParticipantsActivity)context).addStructureView(0,participatesList.get(i).getExist_participate_name(),participatesList.get(i).getExist_participates_mobile());
                         }
                     });
     }
 
     @Override
     public int getItemCount() {
-        return 4;
+        return participatesList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

@@ -101,6 +101,34 @@ public class ODFMonitoringListValue {
     private String designation_code;
     private String designation_name;
 
+    private String exist_designation_name;
+    private String exist_participate_name;
+    private String exist_participates_mobile;
+
+    public String getExist_designation_name() {
+        return exist_designation_name;
+    }
+
+    public void setExist_designation_name(String exist_designation_name) {
+        this.exist_designation_name = exist_designation_name;
+    }
+
+    public String getExist_participate_name() {
+        return exist_participate_name;
+    }
+
+    public void setExist_participate_name(String exist_participate_name) {
+        this.exist_participate_name = exist_participate_name;
+    }
+
+    public String getExist_participates_mobile() {
+        return exist_participates_mobile;
+    }
+
+    public void setExist_participates_mobile(String exist_participates_mobile) {
+        this.exist_participates_mobile = exist_participates_mobile;
+    }
+
     public String getDesignation_name() {
         return designation_name;
     }

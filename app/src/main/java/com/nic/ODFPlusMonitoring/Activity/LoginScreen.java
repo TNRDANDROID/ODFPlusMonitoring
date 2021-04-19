@@ -245,6 +245,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         getNotificationList();
         getDesignationList();
         getEducationalQualificationList();
+        getParticipationList();
     }
 
     @Override
@@ -487,6 +488,13 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             e.printStackTrace();
         }
     }
+    public void getParticipationList() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("ParticipatesList", Api.Method.POST, UrlGenerator.getOpenUrl(), participationParams(), "not cache", this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     public void getDesignationList() {
         try {
             new ApiService(this).makeJSONObjectRequest("DesignationList", Api.Method.POST, UrlGenerator.getOpenUrl(), DesignationListParams(), "not cache", this);
@@ -510,6 +518,11 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     public JSONObject notificationParams() throws JSONException {
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_SERVICE_ID, "OS_Notification");
+        return dataSet;
+    }
+    public JSONObject participationParams() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, "OS_get_other_participants");
         return dataSet;
     }
     public JSONObject DesignationListParams() throws JSONException {
@@ -687,7 +700,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
             }
             if ("EducationalQualification".equals(urlType) /*&& responseObj != null*/) {
-                String s="{\"STATUS\":\"SUCCESS\",\"JSON_DATA\":[{\"education_code\":\"1\",\"education_name\":\"9th Pass\"},{\"education_code\":\"2\",\"education_name\":\"10th Pass\"},{\"education_code\":\"3\",\"education_name\":\"12th Pass\"},{\"education_code\":\"4\",\"education_name\":\"Degree Holder\"}]}";
+                String s="{\"STATUS\":\"SUCCESS\",\"JSON_DATA\":[{\"education_code\":\"1\",\"education_name\":\"09th Pass\"},{\"education_code\":\"2\",\"education_name\":\"10th Pass\"},{\"education_code\":\"3\",\"education_name\":\"12th Pass\"},{\"education_code\":\"4\",\"education_name\":\"Degree Holder\"}]}";
                 responseObj=new JSONObject(s);
                 status  = responseObj.getString(AppConstant.KEY_STATUS);
 //                response = responseObj.getString(AppConstant.KEY_RESPONSE);
@@ -719,6 +732,18 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                     Log.d("DesignationList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
                 }
             }
+            if ("ParticipatesList".equals(urlType) /*&& responseObj != null*/) {
+                String s="{\"STATUS\":\"SUCCESS\",\"JSON_DATA\":[{\"participants_id\":\"1\",\"participants_name\":\"raj\",\"participants_mobileno\":\"1234567890\",\"participants_designation_Name\":\"VHN\"},{\"participants_id\":\"2\",\"participants_name\":\"kumar\",\"participants_mobileno\":\"123890\",\"participants_designation_Name\":\"Anganwadi worker\"}]}";
+                responseObj=new JSONObject(s);
+                status  = responseObj.getString(AppConstant.KEY_STATUS);
+//                response = responseObj.getString(AppConstant.KEY_RESPONSE);
+                if (status.equalsIgnoreCase("SUCCESS")) {
+                    JSONArray jsonarray = responseObj.getJSONArray(AppConstant.JSON_DATA);
+                    prefManager.setParticipatesList(jsonarray.toString());
+                    Log.d("NotificationList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
+                }
+            }
+
 
         } catch (JSONException e) {
             e.printStackTrace();
