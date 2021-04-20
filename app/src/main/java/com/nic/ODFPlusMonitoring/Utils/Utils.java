@@ -89,6 +89,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -250,7 +251,6 @@ public class Utils {
         dialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LoginScreen.getInstance().showHomeScreen();
                 dialog.dismiss();
             }
         });
@@ -1570,12 +1570,15 @@ public class Utils {
         textView.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
-    public static boolean duration(String strDate){
+    public static boolean duration(String strDate,String duration){
         boolean flag =false;
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date currentdate = new Date();
         String currentDate= dateFormat.format(currentdate);
         System.out.println("currentdate >>"+currentDate);
+
+        long timeInMilliseconds = millsecondsConverter(duration);
+        System.out.println("timeInMilliseconds >>"+ timeInMilliseconds);
 
 //        final long millisToAdd = 7200000; //two hours
         final long millisToAdd = 60000; //one mins
@@ -1585,7 +1588,7 @@ public class Utils {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        d2.setTime(d2.getTime() + millisToAdd);
+        d2.setTime(d2.getTime() + timeInMilliseconds);
         String endDate= dateFormat.format(d2);
         System.out.println("endDate: " + endDate);
 
@@ -1603,6 +1606,16 @@ public class Utils {
         return flag;
     }
 
+    public static long millsecondsConverter(String time){
+        String[] units = time.split(":"); //will break the string up into an array
+        int hours = Integer.parseInt(units[0]);//first
+        int minutes = Integer.parseInt(units[1]); //second
+        int seconds = Integer.parseInt(units[2]); //third
+        int duration = 3600*hours + 60 * minutes + seconds; //add up our values
+        long result = TimeUnit.SECONDS.toMillis(duration);
+
+        return result;
+    }
 
     public static void playAudio(final Activity activity, final String url) {
         try {

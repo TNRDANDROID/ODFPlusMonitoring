@@ -137,14 +137,12 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final String activity_status = activityListValues.get(position).getActivityStatus();
         holder.activity_name.setText(activityListValues.get(position).getActivityName());
-        holder.activity_type_name.setText(activityListValues.get(position).getActivityTypeName());
-
+//        holder.activity_type_name.setText(activityListValues.get(position).getActivityTypeName());
+        holder.activity_type_name.setText(activityListValues.get(position).getActivityTypeName()+" (Rs."+activityListValues.get(position).getActivity_amount()+")");
 
         if(activityListValues.get(position).getActivityTypeName().toLowerCase().contains("general")){
-            holder.activity_type_name.setText(activityListValues.get(position).getActivityTypeName()+" (Rs.100)");
             holder.activity_type_name.setTextColor(context.getResources().getColor(R.color.account_status_green_color));
         }else {
-            holder.activity_type_name.setText(activityListValues.get(position).getActivityTypeName()+" (Rs.200)");
             holder.activity_type_name.setTextColor(context.getResources().getColor(R.color.dot_dark_screen3));
         }
         if(activityListValues.get(position).getActivityName().length() > 35) {
@@ -202,7 +200,7 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
                     } else {
                         String StartTime=activityImage1.get(0).getDateTime();
                         System.out.println("StartTime >>"+StartTime);
-                        boolean flag=Utils.duration(StartTime);
+                        boolean flag=Utils.duration(StartTime,activityListValues.get(position).getActivity_duration());
 
                         ArrayList<ODFMonitoringListValue> activityImage = dbData.selectImageActivity(dcode, bcode, pvcode, schedule_id, activity_id, "End");
 

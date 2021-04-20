@@ -52,6 +52,7 @@ public class AppConstant {
     public static String KEY_MOTIVATOR_CATEGORY = "motivator_category";
     public static String KEY_MOTIVATOR_CATEGORY_ID = "motivator_category_id";
     public static String KEY_MOTIVATOR_CATEGORY_NAME = "motivator_category_name";
+    public static String KEY_MOTIVATOR_CATEGORY_NAME_FULL_FORM = "motivator_category_full_form";
     public static String FINANCIAL_YEAR = "fin_year";
 
     public static String KEY_REGISTER_SIGNUP = "signup";
@@ -68,8 +69,8 @@ public class AppConstant {
     public static String KEY_REGISTER_ADDRESS = "address";
     public static String KEY_MOTIVATOR_PHOTO = "motivator_photo";
     public static String KEY_REGISTER_ACC_NO = "ac_number";
-    public static String KEY_GENDER_CODE = "gender_code";
-    public static String KEY_EDUCATION_CODE = "education_code";
+    public static String KEY_GENDER_CODE = "gender";
+    public static String KEY_EDUCATION_CODE = "qualification_id";
     public static String KEY_MOTIVATOR_NO_OF_STATE_LEVEL_TRAINEE = "no_of_state_level_training_attended";
     public static String KEY_MOTIVATOR_NO_OF_DISTRICT_LEVEL_TRAINEE = "no_of_district_level_training_attended";
     public static String KEY_MOTIVATOR_NO_OF_BLOCK_LEVEL_TRAINEE = "no_of_block_level_training_attended";
@@ -119,6 +120,10 @@ public class AppConstant {
     public static String KEY_ACTIVITY_REJECTED_STATUS = "previously_rejected";
     public static String KEY_ACTIVITY_START = "activity_start";
     public static String KEY_ACTIVITY_END = "activity_end";
+    public static String KEY_ACTIVITY_DURATION = "activity_duration";
+    public static String KEY_ACTIVITY_AMOUNT = "activity_amount";
+    public static String KEY_ACTIVITY_DOC_AVAILABLE = "activity_desc_doc_available";
+    public static String KEY_ACTIVITY_AUDIO_AVAILABLE = "activity_desc_audio_available";
 
     public static String KEY_TRACK_DATA = "track_data";
     public static String KEY_ACTIVITY_IMAGE_SAVE = "activity_image_save";

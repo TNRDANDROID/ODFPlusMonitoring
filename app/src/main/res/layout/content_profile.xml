@@ -25,8 +25,7 @@
             <RelativeLayout style="@style/profileDetailsLayout">
                 <ImageView
                     android:id="@+id/nameImageView"
-                    android:background="@drawable/ic_name"
-                    android:backgroundTint="@color/colorPrimary"
+                    android:background="@drawable/ic_man"
                     style="@style/profileDetailsImage" />
 
                 <TextView
@@ -47,9 +46,7 @@
             <RelativeLayout style="@style/profileDetailsLayout">
                 <ImageView
                     android:id="@+id/mobileImageView"
-                    android:background="@drawable/ic_mobile"
-                    android:backgroundTint="#E8526D"
-
+                    android:background="@drawable/ic_profile"
                     style="@style/profileDetailsImage" />
 
                 <TextView
@@ -69,8 +66,7 @@
             <RelativeLayout style="@style/profileDetailsLayout">
                 <ImageView
                     android:id="@+id/emailImageView"
-                    android:background="@drawable/ic_email"
-                    android:backgroundTint="#C15CF5"
+                    android:background="@drawable/ic_gmail"
                     style="@style/profileDetailsImage" />
 
                 <TextView
@@ -93,8 +89,7 @@
                 android:layout_marginTop="@dimen/_19sdp">
                 <ImageView
                     android:id="@+id/addressImageView"
-                    android:background="@drawable/ic_address"
-                    android:backgroundTint="#FF0000"
+                    android:background="@drawable/ic_home"
                     style="@style/profileDetailsImage" />
 
                 <TextView
@@ -118,8 +113,7 @@
             <RelativeLayout style="@style/profileDetailsLayout">
                 <ImageView
                     android:id="@+id/dobImageView"
-                    android:background="@drawable/ic_dob"
-                    android:backgroundTint="#00bfff"
+                    android:background="@drawable/ic_date"
                     style="@style/profileDetailsImage" />
 
                 <TextView

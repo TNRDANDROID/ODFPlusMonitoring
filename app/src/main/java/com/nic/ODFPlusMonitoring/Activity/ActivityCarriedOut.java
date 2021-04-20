@@ -74,12 +74,18 @@ public class ActivityCarriedOut extends AppCompatActivity implements Api.ServerR
     LinearLayout tabSelection;
     String fromDate,toDate;
     Context context;
+    public static ActivityCarriedOut activityCarriedOut;
+
+    public static ActivityCarriedOut getInstance() {
+        return activityCarriedOut;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_carried_out);
         intializeUI();
+        activityCarriedOut=this;
     }
 
     public void intializeUI() {
@@ -173,7 +179,7 @@ public class ActivityCarriedOut extends AppCompatActivity implements Api.ServerR
         new fetchFilteredActivityHistorytask().execute();
     }
 
-    private void getInCompleteActivityList() {
+    public void getInCompleteActivityList() {
         scroll_view.setVisibility(View.VISIBLE);
         tabSelection.setVisibility(View.VISIBLE);
         searchLayout.setVisibility(View.GONE);
@@ -292,6 +298,7 @@ public class ActivityCarriedOut extends AppCompatActivity implements Api.ServerR
                 public void onClick(View view) {
                     if( fin_year.getSelectedItem()!= null && !selected_fin_year.equals("Select Year")){
                         if( month_sp.getSelectedItem()!= null && !selected_month.equals("Select Month")){
+                            getMotivatorScheduleHistory();
                             getInCompleteActivityList();
                             alert.dismiss();
                         }else {
@@ -390,13 +397,13 @@ public class ActivityCarriedOut extends AppCompatActivity implements Api.ServerR
         fromDate = separated[0]; // this will contain "Fruit"
         toDate = separated[1];
         date.setText(fromDate+" to "+toDate);
-        getInCompleteActivityList();
-        /*if(Utils.isOnline()) {
+//        getInCompleteActivityList();
+        if(Utils.isOnline()) {
               getMotivatorScheduleHistory();
         }
         else {
             Utils.showAlert(ActivityCarriedOut.this,"No Internet Connection");
-        }*/
+        }
     }
     public void getMotivatorScheduleHistory() {
         try {
@@ -419,8 +426,8 @@ public class ActivityCarriedOut extends AppCompatActivity implements Api.ServerR
     public JSONObject motivatorScheduleHistoryParams() throws JSONException {
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_MOTIVATOR_SCHEDULE_HISTORY);
-        dataSet.put("fromdate", updateLabel(fromDate));
-        dataSet.put("todate", updateLabel(toDate));
+        dataSet.put("from_date", updateLabel(fromDate));
+        dataSet.put("to_date", updateLabel(toDate));
         Log.d("object", "" + dataSet);
         return dataSet;
     }
@@ -451,8 +458,10 @@ public class ActivityCarriedOut extends AppCompatActivity implements Api.ServerR
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     HomePage.getInstance().loadScheduleCompleteList(jsonObject.getJSONArray(AppConstant.JSON_DATA));
                     HomePage.getInstance().clearAnimations();
+                    getInCompleteActivityList();
                 } else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD") && jsonObject.getString("MESSAGE").equalsIgnoreCase("NO_RECORD")) {
                     HomePage.getInstance().clearAnimations();
+                    Utils.showAlert(ActivityCarriedOut.this,jsonObject.getString("RESPONSE"));
                 }
                 Log.d("MotivatorSchHistory", "" + responseDecryptedBlockKey);
                 String authKey = responseDecryptedBlockKey;

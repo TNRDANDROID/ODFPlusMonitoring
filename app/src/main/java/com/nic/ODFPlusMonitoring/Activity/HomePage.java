@@ -324,12 +324,13 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                 }
                 break;
             case R.id.activity_carried_out:
-                if(recordContain) {
+                openActivityCarriedOut();
+               /* if(recordContain) {
                     openActivityCarriedOut();
 //                    getActivityList();
                 }else{
                     Utils.showAlert(this, "No Record Found!");
-                }
+                }*/
                 break;
         }
 
@@ -362,7 +363,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
 
     public void fetchApi() {
         getMotivatorSchedule();
-        getMotivatorScheduleHistory();
+//        getMotivatorScheduleHistory();
     }
 
     public void openPendingScreen() {
@@ -556,6 +557,10 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                         scheduleActivityValue.setBlockCode(jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE));
                         scheduleActivityValue.setPvCode(jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE));
                         scheduleActivityValue.setActivityStatus(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ACTIVITY_STATUS));
+                        scheduleActivityValue.setActivity_duration(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ACTIVITY_DURATION));
+                        scheduleActivityValue.setActivity_amount(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ACTIVITY_AMOUNT));
+                        scheduleActivityValue.setActivity_desc_doc_available(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ACTIVITY_DOC_AVAILABLE));
+                        scheduleActivityValue.setActivity_desc_audio_available(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ACTIVITY_AUDIO_AVAILABLE));
 
                         dbData.insertScheduleActivity(scheduleActivityValue);
                     } catch (JSONException e) {
@@ -648,6 +653,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                     }
 
                 }
+                ActivityCarriedOut.getInstance().getInCompleteActivityList();
             }
             return null;
         }

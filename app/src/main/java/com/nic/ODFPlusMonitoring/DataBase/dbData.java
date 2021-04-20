@@ -480,6 +480,14 @@ public class dbData {
                             .getColumnIndexOrThrow(AppConstant.PV_CODE)));
                     card.setActivityStatus(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_STATUS)));
+                    card.setActivity_amount(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_AMOUNT)));
+                    card.setActivity_duration(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_DURATION)));
+                    card.setActivity_desc_doc_available(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_DOC_AVAILABLE)));
+                    card.setActivity_desc_audio_available(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_AUDIO_AVAILABLE)));
                     cards.add(card);
                 }
             }
@@ -513,6 +521,14 @@ public class dbData {
                             .getColumnIndexOrThrow(AppConstant.PV_CODE)));
                     card1.setActivityStatus(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_STATUS)));
+                    card1.setActivity_amount(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_AMOUNT)));
+                    card1.setActivity_duration(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_DURATION)));
+                    card1.setActivity_desc_doc_available(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_DOC_AVAILABLE)));
+                    card1.setActivity_desc_audio_available(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ACTIVITY_AUDIO_AVAILABLE)));
                     cards.add(card1);
                 }
             }
@@ -540,6 +556,10 @@ public class dbData {
         values.put(AppConstant.BLOCK_CODE,odfMonitoringListValue.getBlockCode());
         values.put(AppConstant.PV_CODE,odfMonitoringListValue.getPvCode());
         values.put(AppConstant.KEY_ACTIVITY_STATUS,odfMonitoringListValue.getActivityStatus());
+        values.put(AppConstant.KEY_ACTIVITY_DURATION,odfMonitoringListValue.getActivity_duration());
+        values.put(AppConstant.KEY_ACTIVITY_AMOUNT,odfMonitoringListValue.getActivity_amount());
+        values.put(AppConstant.KEY_ACTIVITY_DOC_AVAILABLE,odfMonitoringListValue.getActivity_desc_doc_available());
+        values.put(AppConstant.KEY_ACTIVITY_AUDIO_AVAILABLE,odfMonitoringListValue.getActivity_desc_audio_available());
 
         long id = db.insert(DBHelper.SCHEDULED_ACTIVITY,null,values);
         Log.d("Inserted_id_sche_Activ",String.valueOf(id));

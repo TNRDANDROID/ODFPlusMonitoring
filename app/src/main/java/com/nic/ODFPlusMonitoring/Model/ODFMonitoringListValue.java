@@ -104,6 +104,56 @@ public class ODFMonitoringListValue {
     private String exist_designation_name;
     private String exist_participate_name;
     private String exist_participates_mobile;
+    private String activity_duration;
+    private String activity_amount;
+    private String activity_desc_doc_available;
+    private String activity_desc_audio_available;
+    private String participants_id;
+
+    public String getParticipants_id() {
+        return participants_id;
+    }
+
+    public ODFMonitoringListValue setParticipants_id(String participants_id) {
+        this.participants_id = participants_id;
+        return this;
+    }
+
+    public String getActivity_amount() {
+        return activity_amount;
+    }
+
+    public ODFMonitoringListValue setActivity_amount(String activity_amount) {
+        this.activity_amount = activity_amount;
+        return this;
+    }
+
+    public String getActivity_desc_doc_available() {
+        return activity_desc_doc_available;
+    }
+
+    public ODFMonitoringListValue setActivity_desc_doc_available(String activity_desc_doc_available) {
+        this.activity_desc_doc_available = activity_desc_doc_available;
+        return this;
+    }
+
+    public String getActivity_desc_audio_available() {
+        return activity_desc_audio_available;
+    }
+
+    public ODFMonitoringListValue setActivity_desc_audio_available(String activity_desc_audio_available) {
+        this.activity_desc_audio_available = activity_desc_audio_available;
+        return this;
+    }
+
+    public String getActivity_duration() {
+        return activity_duration;
+    }
+
+    public ODFMonitoringListValue setActivity_duration(String activity_duration) {
+        this.activity_duration = activity_duration;
+        return this;
+    }
 
     public String getExist_designation_name() {
         return exist_designation_name;
