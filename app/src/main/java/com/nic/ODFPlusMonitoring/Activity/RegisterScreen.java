@@ -393,8 +393,8 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                 educationList.add(ODFMonitoringListValue);
                     for (int i = 0; i < jsonarray.length(); i++) {
                         JSONObject jsonobject = jsonarray.getJSONObject(i);
-                        String education_code = jsonobject.getString("education_code");
-                        String education_name = (jsonobject.getString("education_name"));
+                        String education_code = jsonobject.getString("qualification_id");
+                        String education_name = (jsonobject.getString("qualification_name"));
                         ODFMonitoringListValue roadListValue = new ODFMonitoringListValue();
                         roadListValue.setEducationCode(education_code);
                         roadListValue.setEducationName(education_name);

@@ -39,7 +39,7 @@ public class AddParticipatesAdapterView extends RecyclerView.Adapter<AddParticip
                     viewHolder.edit_fun.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ((AddParticipantsActivity)context).addStructureView(0,participatesList.get(i).getExist_participate_name(),participatesList.get(i).getExist_participates_mobile());
+                            ((AddParticipantsActivity)context).addStructureView(participatesList.get(i).getDesignation_code(),participatesList.get(i).getExist_participate_name(),participatesList.get(i).getExist_participates_mobile(),participatesList.get(i).getParticipants_id());
                         }
                     });
     }
