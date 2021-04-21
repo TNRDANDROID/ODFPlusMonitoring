@@ -69,6 +69,8 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
     String selectedDesignation,selectedDesignationId;
     Dialog dialog;
     ArrayList<ODFMonitoringListValue> ParticipatesList;
+    String dialog_flag="";
+    JSONArray jsonArray;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +79,7 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
         prefManager = new PrefManager(this);
         floatingActionButton=findViewById(R.id.add_participants);
         home=findViewById(R.id.home_img);
+        ParticipatesList=new ArrayList<>();
         if(Utils.isOnline()){
             getParticipationList();
         }
@@ -99,12 +102,12 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
                 showHomeScreen();
             }
         });
-        LoadParticipationDetails();
+        //LoadParticipationDetails();
 
     }
     public void addParticipatesApiService() {
         try {
-            new ApiService(this).makeJSONObjectRequest("AddParticipates", Api.Method.POST, UrlGenerator.getOpenUrl(), addParticipatesJsonParams(), "not cache", this);
+            new ApiService(this).makeJSONObjectRequest("AddParticipates", Api.Method.POST, UrlGenerator.getMotivatorSchedule(), addParticipatesJsonParams(), "not cache", this);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -129,11 +132,12 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
         addParticipatesAdapterView=new AddParticipatesAdapterView(this,ParticipatesList);
         add_participants_recyler.setAdapter(addParticipatesAdapterView);
     }
-    public void addStructureView(String designation_id,String participates_name,String mobile_number,String participates_id){
+    public void addStructureView(String designation_id, String participates_name, String mobile_number, final String participates_id){
+        appParticipatesJson=new JSONObject();
         Spinner designation;
         loadDesignationList(0);
-        JSONObject jsonObject=new JSONObject();
-        final JSONArray jsonArray=new JSONArray();
+        final JSONObject jsonObject=new JSONObject();
+        jsonArray=new JSONArray();
         try {
             //We need to get the instance of the LayoutInflater, use the context of this activity
             final LayoutInflater inflater = (LayoutInflater) context
@@ -141,7 +145,7 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
             //Inflate the view from a predefined XML layout
             final View view = inflater.inflate(R.layout.pop_up_add_other_particepants, null);
             TextView header;
-            EditText m_name,m_mobile;
+            final EditText m_name,m_mobile;
             ImageView close;
             RelativeLayout camera_activity;
             Button submit;
@@ -165,8 +169,8 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
             designation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    selectedDesignation=(designationList.get(position).getGenderEn());
-                    selectedDesignationId=(designationList.get(position).getGenderCode());
+                    selectedDesignation=(designationList.get(position).getDesignation_name());
+                    selectedDesignationId=(designationList.get(position).getDesignation_code());
                 }
 
                 @Override
@@ -174,20 +178,22 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
 
                 }
             });
-            jsonObject.put("contact_person_id",participates_id);
-            jsonObject.put("name_of_contact_person",m_name.getText().toString());
-            jsonObject.put("mobileno",m_mobile.getText().toString());
-            jsonObject.put("contact_person_type_id",selectedDesignationId);
-            jsonObject.put("deleted","N");
 
-            jsonArray.put(jsonObject);
             submit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
                     try {
-                        appParticipatesJson.put(AppConstant.KEY_SERVICE_ID,"edit_other_participants");
-                        appParticipatesJson.put("edit_participants",jsonArray);
+                        jsonObject.put("contact_person_id",participates_id);
+                        jsonObject.put("name_of_contact_person",m_name.getText().toString());
+                        jsonObject.put("mobileno",m_mobile.getText().toString());
+                        jsonObject.put("contact_person_type_id",selectedDesignationId);
+                        /*jsonObject.put("deleted","N");*/
+
+                        jsonArray.put(jsonObject);
+                        appParticipatesJson.put(AppConstant.KEY_SERVICE_ID,"contact_person_aed");
+                        appParticipatesJson.put("contact_person_list",jsonArray);
+                        dialog_flag="add_view";
                         addParticipatesApiService();
 
                     } catch (JSONException e) {
@@ -315,7 +321,7 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
                                     jsonObject.put("name_of_contact_person",m_name.getText().toString());
                                     jsonObject.put("mobileno",m_mobile.getText().toString());
                                     jsonObject.put("contact_person_type_id",selectedDesignationId);
-                                    jsonObject.put("deleted","N");
+                                    /*jsonObject.put("deleted","N");*/
                                     imageJson.put(jsonObject);
                                 }
                             /*}
@@ -339,8 +345,9 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
                                 }
                             }
                             if (flag){
-                                appParticipatesJson.put(AppConstant.KEY_SERVICE_ID,"contact_person_add");
+                                appParticipatesJson.put(AppConstant.KEY_SERVICE_ID,"contact_person_aed");
                                 appParticipatesJson.put("contact_person_list",imageJson);
+                                dialog_flag="image_with_desc";
                                 addParticipatesApiService();
                             }
                             else {
@@ -397,8 +404,8 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
         designation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedDesignation=(designationList.get(position).getGenderEn());
-                selectedDesignationId=(designationList.get(position).getGenderCode());
+                selectedDesignation=(designationList.get(position).getDesignation_name());
+                selectedDesignationId=(designationList.get(position).getDesignation_code());
             }
 
             @Override
@@ -439,15 +446,26 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
                 String urlType = serverResponse.getApi();
                 String status = null;
                 String response = null;
-                if ("AddParticipates".equals(urlType)) {
-                    String s="{\"STATUS\":\"SUCCESS\",\"RESPONSE\":\"OK\",\"MESSAGE\":\"Participants data added succussfully!\"}";
-                    responseObj=new JSONObject(s);
-                    status  = responseObj.getString(AppConstant.KEY_STATUS);
-//                    response = responseObj.getString(AppConstant.KEY_RESPONSE);
-                    if (status.equalsIgnoreCase("SUCCESS")) {
-                        Utils.showAlert(AddParticipantsActivity.this,responseObj.getString("MESSAGE"));
-                        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-                        dialog.dismiss();
+                if ("AddParticipates".equals(urlType)&& responseObj != null) {
+                    /*String s="{\"STATUS\":\"SUCCESS\",\"RESPONSE\":\"OK\",\"MESSAGE\":\"Participants data added succussfully!\"}";
+                    responseObj=new JSONObject(s);*/
+                    String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                    String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                    JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                    if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+
+                        if(dialog_flag.equals("add_view")){
+                            Utils.showAlert(AddParticipantsActivity.this,"Successfully updated");
+                            alert.dismiss();
+                        }
+                        else {
+                            Utils.showAlert(AddParticipantsActivity.this,"Successfully added");
+                            dialog.dismiss();
+                        }
+
+                        getParticipationList();
+                        Log.d("ParticipatesList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
+
                     }
                 }
 
@@ -467,6 +485,7 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
                     if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                         JSONArray jsonarray = jsonObject.getJSONArray(AppConstant.JSON_DATA);
                         prefManager.setParticipatesList(jsonarray.toString());
+                        LoadParticipationDetails();
                         Log.d("ParticipatesList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
 
                     }
