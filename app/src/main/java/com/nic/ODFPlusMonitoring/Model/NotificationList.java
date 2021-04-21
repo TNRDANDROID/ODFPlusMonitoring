@@ -5,6 +5,36 @@ public class NotificationList {
     private String description;
     private String date;
     private String time;
+    private String notification_date;
+    private String note_entry_id;
+    private String notification;
+
+    public String getNotification_date() {
+        return notification_date;
+    }
+
+    public NotificationList setNotification_date(String notification_date) {
+        this.notification_date = notification_date;
+        return this;
+    }
+
+    public String getNote_entry_id() {
+        return note_entry_id;
+    }
+
+    public NotificationList setNote_entry_id(String note_entry_id) {
+        this.note_entry_id = note_entry_id;
+        return this;
+    }
+
+    public String getNotification() {
+        return notification;
+    }
+
+    public NotificationList setNotification(String notification) {
+        this.notification = notification;
+        return this;
+    }
 
     public String getTime() {
         return time;

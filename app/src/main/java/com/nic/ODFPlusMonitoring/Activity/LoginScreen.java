@@ -1,7 +1,6 @@
 package com.nic.ODFPlusMonitoring.Activity;
 
 import android.app.AlertDialog;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,8 +10,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,10 +17,8 @@ import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
@@ -33,8 +28,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
-import com.nic.ODFPlusMonitoring.Adapter.CommonAdapter;
-import com.nic.ODFPlusMonitoring.Adapter.NotificationAdapter;
 import com.nic.ODFPlusMonitoring.Api.Api;
 import com.nic.ODFPlusMonitoring.Api.ApiService;
 import com.nic.ODFPlusMonitoring.Api.ServerResponse;
@@ -54,17 +47,9 @@ import com.nic.ODFPlusMonitoring.Utils.Utils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
-
 
 /**
  * Created by AchanthiSundar on 28-12-2018.
@@ -78,7 +63,6 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     private MyEditTextView userName;
     private MyEditTextView passwordEditText;
     private LinearLayout sign_up;
-    private RelativeLayout notification;
     private int setPType;
     private ImageView redEye;
     public static DBHelper dbHelper;
@@ -86,18 +70,12 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     JSONObject jsonObject;
     private MyCustomTextView versionNumber;
 
-    String sb;
     private PrefManager prefManager;
     private ProgressHUD progressHUD;
     public dbData dbData = new dbData(this);
     private String isLogin;
     private static LoginScreen instance;
-    BottomSheetBehavior sheetBehavior;
-    RecyclerView recycler_view_notifications;
-    TextView no_records;
-    ArrayList<NotificationList> NotificationList;
-    View bottomSheet;
-    ImageView close;
+
 
     public static LoginScreen getInstance() {
         return instance;
@@ -137,55 +115,13 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         prefManager = new PrefManager(this);
         userName = (MyEditTextView) findViewById(R.id.user_name);
         redEye = (ImageView) findViewById(R.id.red_eye);
-        close = (ImageView) findViewById(R.id.close);
         btn_sign_in = (Button) findViewById(R.id.btn_sign_in);
         sign_up = (LinearLayout) findViewById(R.id.sign_up);
-        bottomSheet = (View) findViewById(R.id.bottomSheet);
-        notification = (RelativeLayout) findViewById(R.id.notification);
         passwordEditText = (MyEditTextView) findViewById(R.id.passwordEditText);
         versionNumber = (MyCustomTextView) findViewById(R.id.tv_version_number);
-        recycler_view_notifications=(RecyclerView)findViewById(R.id.recycler_view_notifications);
-        no_records=(TextView)findViewById(R.id.no_records);
-        bottomSheet=(NestedScrollView) findViewById(R.id.bottomSheet);
-        sheetBehavior = BottomSheetBehavior.from(bottomSheet);
 
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recycler_view_notifications.setLayoutManager(mLayoutManager);
-        sheetBehavior.setPeekHeight(0);
-        sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View view, int i) {
-                switch (i) {
-                    case BottomSheetBehavior.STATE_COLLAPSED:
-//                        mTextViewState.setText("Collapsed");
-                        sheetBehavior.setPeekHeight(0);
-                        break;
-                    case BottomSheetBehavior.STATE_DRAGGING:
-//                        mTextViewState.setText("Dragging...");
-                        break;
-                    case BottomSheetBehavior.STATE_EXPANDED:
-//                        mTextViewState.setText("Expanded");
-                        break;
-                    case BottomSheetBehavior.STATE_HIDDEN:
-//                        mTextViewState.setText("Hidden");
-                        break;
-                    case BottomSheetBehavior.STATE_SETTLING:
-//                        mTextViewState.setText("Settling...");
-                        break;
-                }
-
-            }
-
-            @Override
-            public void onSlide(@NonNull View view, float v) {
-
-            }
-        });
         btn_sign_in.setOnClickListener(this);
         sign_up.setOnClickListener(this);
-        notification.setOnClickListener(this);
-        close.setOnClickListener(this);
 
         passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
@@ -242,7 +178,6 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         getBankNameList();
         getBankBranchList();
         getGenderList();
-        getNotificationList();
         getDesignationList();
         getEducationalQualificationList();
         //getParticipationList();
@@ -260,68 +195,10 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             case R.id.red_eye:
                 showPassword();
                 break;
-            case R.id.notification:
-                sheetBehavior.setPeekHeight(180);
-                sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                break;
-            case R.id.close:
-                sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                break;
         }
     }
 
 
-    private void LoadNotificationDetails(JSONArray jsonarray) {
-        NotificationList = new ArrayList<NotificationList>();
-        try {
-        if(jsonarray != null && jsonarray.length() >0) {
-            for (int i = 0; i < jsonarray.length(); i++) {
-                JSONObject jsonobject = jsonarray.getJSONObject(i);
-                    NotificationList Detail = new NotificationList();
-                    Detail.setTittle(jsonobject.getString("tittle"));
-                    Detail.setDescription(jsonobject.getString("description"));
-                    Detail.setDate(jsonobject.getString("date"));
-                    NotificationList.add(Detail);
-            }
-            SortAndReverseList(NotificationList);
-        }
-        if(NotificationList != null && NotificationList.size() >0) {
-            NotificationAdapter adapter = new NotificationAdapter(LoginScreen.this,NotificationList);
-            adapter.notifyDataSetChanged();
-            recycler_view_notifications.setAdapter(adapter);
-            recycler_view_notifications.setVisibility(View.VISIBLE);
-            no_records.setVisibility(View.GONE);
-        }else {
-            recycler_view_notifications.setVisibility(View.GONE);
-            no_records.setVisibility(View.VISIBLE);
-        }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void SortAndReverseList( ArrayList<NotificationList> historyList) {
-        Collections.sort(historyList, new Comparator<NotificationList>() {
-            @Override
-            public int compare(NotificationList o1, NotificationList o2) {
-                String date1=o1.getDate();
-                String date2=o2.getDate();
-                int compareResult = 0;
-                SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
-                try {
-                    Date arg0Date = format.parse(date1);
-                    Date arg1Date = format.parse(date2);
-                    compareResult = arg0Date.compareTo(arg1Date);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                    compareResult = date2.compareTo(date1);
-                }
-                return compareResult;
-            }
-
-        });
-        // Collections.reverse(studentActivityDetails);
-    }
 
     public boolean validate() {
         boolean valid = true;
@@ -481,13 +358,6 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             e.printStackTrace();
         }
     }
-    public void getNotificationList() {
-        try {
-            new ApiService(this).makeJSONObjectRequest("NotificationList", Api.Method.POST, UrlGenerator.getMotivatorCategory(), notificationParams(), "not cache", this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
     public void getDesignationList() {
         try {
             new ApiService(this).makeJSONObjectRequest("DesignationList", Api.Method.POST, UrlGenerator.getMotivatorCategory(), DesignationListParams(), "not cache", this);
@@ -506,11 +376,6 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     public JSONObject genderParams() throws JSONException {
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_SERVICE_ID, "gender");
-        return dataSet;
-    }
-    public JSONObject notificationParams() throws JSONException {
-        JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_SERVICE_ID, "OS_Notification");
         return dataSet;
     }
 
@@ -700,17 +565,6 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                     JSONArray jsonarray = responseObj.getJSONArray(AppConstant.JSON_DATA);
                     prefManager.setEducationalQualification(jsonarray.toString());
                     Log.d("EducationalQua", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
-                }
-            }
-            if ("NotificationList".equals(urlType) && responseObj != null) {
-                /*String s="{\"STATUS\":\"SUCCESS\",\"JSON_DATA\":[{\"id\":\"1\",\"tittle\":\"test\",\"description\":\"testing\",\"date\":\"10-03-2021\"},{\"id\":\"2\",\"tittle\":\"test2\",\"description\":\"testing2\",\"date\":\"18-03-2021\"}]}";
-                responseObj=new JSONObject();*/
-                status  = responseObj.getString(AppConstant.KEY_STATUS);
-                response = responseObj.getString(AppConstant.KEY_RESPONSE);
-                if (status.equalsIgnoreCase("OK")&& response.equalsIgnoreCase("OK")) {
-                    JSONArray jsonarray = responseObj.getJSONArray(AppConstant.JSON_DATA);
-                    LoadNotificationDetails(jsonarray);
-                    Log.d("NotificationList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
                 }
             }
             if ("DesignationList".equals(urlType) && responseObj != null) {

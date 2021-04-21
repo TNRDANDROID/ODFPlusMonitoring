@@ -1,9 +1,11 @@
 package com.nic.ODFPlusMonitoring.Adapter;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -15,9 +17,13 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -30,9 +36,17 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
+import com.github.barteksc.pdfviewer.PDFView;
+import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
+import com.nic.ODFPlusMonitoring.Activity.ActivityScreen;
+import com.nic.ODFPlusMonitoring.Activity.AddParticipantsActivity;
 import com.nic.ODFPlusMonitoring.Activity.CameraScreen;
 import com.nic.ODFPlusMonitoring.Activity.FullImageActivity;
 import com.nic.ODFPlusMonitoring.Activity.PendingScreen;
+import com.nic.ODFPlusMonitoring.Api.Api;
+import com.nic.ODFPlusMonitoring.Api.ApiService;
+import com.nic.ODFPlusMonitoring.Api.ServerResponse;
 import com.nic.ODFPlusMonitoring.Constant.AppConstant;
 import com.nic.ODFPlusMonitoring.DataBase.DBHelper;
 import com.nic.ODFPlusMonitoring.DataBase.dbData;
@@ -41,7 +55,12 @@ import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
 import com.nic.ODFPlusMonitoring.Support.MyCustomTextView;
+import com.nic.ODFPlusMonitoring.Utils.UrlGenerator;
 import com.nic.ODFPlusMonitoring.Utils.Utils;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,15 +70,15 @@ import java.util.Random;
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
-public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapter.MyViewHolder>{
+public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapter.MyViewHolder> {
 
     private final dbData dbData;
     private Context context;
     private List<ODFMonitoringListValue> activityListValues;
     private PrefManager prefManager;
     public final String dcode,bcode,pvcode;
-
-
+    Dialog dialog;
+    int pageNumber;
     // for Audio record
     MediaPlayer mediaPlayer ;
     ImageView start_record,stop_record,close,anim_img;
@@ -83,6 +102,7 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
     RelativeLayout submit_layout;
     Activity activity;
 
+
     public ActivityListAdapter(Activity activity,Context context, List<ODFMonitoringListValue> activityListValues, dbData dbData) {
         this.context = context;
         this.activity = activity;
@@ -99,6 +119,7 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity, parent, false);
         return new MyViewHolder(itemView);
     }
+
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private MyCustomTextView activity_name, view_online_images, view_offline_images, activity_type_name;
@@ -140,6 +161,7 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
 //        holder.activity_type_name.setText(activityListValues.get(position).getActivityTypeName());
         holder.activity_type_name.setText(activityListValues.get(position).getActivityTypeName()+" (Rs."+activityListValues.get(position).getActivity_amount()+")");
 
+        holder.audio_record.setVisibility(View.GONE);
         if(activityListValues.get(position).getActivityTypeName().toLowerCase().contains("general")){
             holder.activity_type_name.setTextColor(context.getResources().getColor(R.color.account_status_green_color));
         }else {
@@ -148,6 +170,18 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
         if(activityListValues.get(position).getActivityName().length() > 35) {
             Utils.addReadMore(context, activityListValues.get(position).getActivityName(), holder.activity_name, 0);
         }
+
+       /* if(activityListValues.get(position).getActivity_desc_audio_available().equalsIgnoreCase("Y")){
+            holder.audio_play.setVisibility(View.VISIBLE);
+        }else {
+            holder.audio_play.setVisibility(View.GONE);
+        }
+        if(activityListValues.get(position).getActivity_desc_doc_available().equalsIgnoreCase("Y")){
+            holder.pdfImage.setVisibility(View.VISIBLE);
+        }else {
+            holder.pdfImage.setVisibility(View.GONE);
+        }*/
+
         if(position %2 == 1)
         {
             holder.sportsImage.setImageResource(R.drawable.img_cycling);
@@ -285,19 +319,22 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
         holder.audio_play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url= "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+                ((ActivityScreen)context).getFile("97"/*activity_id*/,"audio");
+
+                /*String url= "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
                 String url1= "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3";
                 String url2= "http://10.163.19.140/mp3_audio/kalimba.mp3";
-                Utils.playAudio(activity,url2);
+                Utils.playAudio(activity,url2);*/
             }
         });
         holder.pdfImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String URL ="https://www.orimi.com/pdf-test.pdf";
-                String URL2 ="http://www.africau.edu/images/default/sample.pdf";
+                ((ActivityScreen)context).getFile("97"/*activity_id*/,"doc");
 
-                context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(URL2)));
+               /* String URL ="https://www.orimi.com/pdf-test.pdf";
+                String URL2 ="http://www.africau.edu/images/default/sample.pdf";
+                context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(URL2)));*/
             }
         });
 

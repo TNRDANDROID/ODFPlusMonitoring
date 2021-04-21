@@ -1,43 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout android:id="@+id/main_content"
+<android.support.design.widget.CoordinatorLayout xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:customfontdemo="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/login_background"
     tools:context=".Activity.LoginScreen">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:id="@+id/notification"
-        android:layout_margin="10dp">
-        <ImageView
-            android:id="@+id/myButton"
-            android:src="@drawable/ic_notifications_white_24dp"
-            android:layout_width="35dip"
-            android:layout_height="35dip"/>
-        <TextView
-            android:id="@+id/textOne"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@id/myButton"
-            android:layout_alignRight="@id/myButton"
-            android:text="10"
-            android:padding="5dp"
-            android:textColor="#FFF"
-            android:textSize="9sp"
-            android:textStyle="bold"
-            android:background="@drawable/badge_circle"/>
-    </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -88,7 +63,7 @@ android:layout_marginTop="@dimen/_100sdp"
                     android:padding="@dimen/_5sdp"
                     android:textColor="@android:color/black"
                     android:textSize="16dp"
-                    customfontdemo:fontName="@string/font_circular_medium" />
+                    app:fontName="@string/font_circular_medium" />
 
 
             </LinearLayout>
@@ -127,7 +102,7 @@ android:layout_marginTop="@dimen/_100sdp"
                         android:singleLine="true"
                         android:textColor="@android:color/black"
                         android:textSize="16dp"
-                        customfontdemo:fontName="@string/font_circular_medium"
+                        app:fontName="@string/font_circular_medium"
                         tools:ignore="HardcodedText" />
 
                     <ImageView
@@ -262,68 +237,4 @@ android:layout_marginTop="@dimen/_100sdp"
 
 
 </RelativeLayout>
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/bottomSheet"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="true"
-        android:layout_marginTop="50dp"
-        android:background="@drawable/cornered_rect_lite_bg"
-        app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
-        >
-
-        <LinearLayout android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_margin="10dp"
-            android:id="@+id/bottomSheet1">
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="Notifications"
-                    android:layout_centerVertical="true"
-                    android:layout_centerHorizontal="true"/>
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_alignParentEnd="true"
-                    android:padding="5dp"
-                    android:id="@+id/close"
-                    android:src="@mipmap/close_icon"/>
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp">
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recycler_view_notifications"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scrollbars="vertical"
-                    android:scrollbarSize="2dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="No Record Found"
-                    android:visibility="gone"
-                    android:id="@+id/no_records"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:gravity="center"
-                    android:textColor="@color/grey2"/>
-            </RelativeLayout>
-
-        </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
 </android.support.design.widget.CoordinatorLayout>

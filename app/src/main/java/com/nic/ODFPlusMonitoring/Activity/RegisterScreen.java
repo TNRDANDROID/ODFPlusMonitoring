@@ -208,7 +208,8 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         back_img.setOnClickListener(this);
         tick.setOnClickListener(this);
         btn_register.setOnClickListener(this);
-
+        motivator.setChecked(true);
+        other.setChecked(false);
 //        if (childlayout.getMeasuredHeight() > scrollView.getMeasuredHeight()) {
 //            showArrowImage();
 //        }
@@ -752,7 +753,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                                     if (Utils.isValidMobile(motivator_mobileNO.getText().toString())) {
 //                                        if (!motivator_email_id.getText().toString().isEmpty()) {
 //                                            if (Utils.isEmailValid(motivator_email_id.getText().toString())) {
-                                        if ((motivator.isChecked()) || (other.isChecked())) {
+//                                        if ((motivator.isChecked()) || (other.isChecked())) {
                                             if (motivator.isChecked()) {
                                                 if (!motivator_account_tv.getText().toString().isEmpty()) {
                                                     if (!verify_motivator_account_tv.getText().toString().isEmpty()) {
@@ -796,9 +797,9 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                                                 motivator_branch_tv.setText("");
                                                 motivatorOthersValidation();
                                             }
-                                        } else {
+                                        /*} else {
                                             Utils.showAlert(this, "விண்ணப்பதாரர் ஊக்குவிப்பவரா/மற்றவரா என்பதை தேர்வு செய்யவும்!");
-                                        }
+                                        }*/
                                     } else {
                                         Utils.showAlert(this, "சரியான கைபேசி எண்ணை உள்ளிடவும்!");
                                     }

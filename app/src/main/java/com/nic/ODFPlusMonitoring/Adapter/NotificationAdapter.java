@@ -8,16 +8,20 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.nic.ODFPlusMonitoring.Model.NotificationList;
 import com.nic.ODFPlusMonitoring.R;
+import com.nic.ODFPlusMonitoring.Utils.Utils;
+
 import java.util.ArrayList;
 
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.SummaryViewHolder> {
     private Context context;
     ArrayList<NotificationList> notificationList;
+    String type;
 
-    public NotificationAdapter(Context context, ArrayList<NotificationList> notificationList) {
+    public NotificationAdapter(Context context, ArrayList<NotificationList> notificationList, String type) {
         this.context = context;
         this.notificationList = notificationList;
+        this.type = type;
     }
 
     @Override
@@ -39,10 +43,18 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     public void onBindViewHolder(final SummaryViewHolder holder,final int position) {
 
         try {
-                holder.notification_title.setText(notificationList.get(position).getTittle());
-                holder.notification_message.setText(notificationList.get(position).getDescription());
-                holder.notification_date.setText(notificationList.get(position).getDate());
-                holder.notification_time.setText(notificationList.get(position).getTime());
+                holder.notification_title.setText(notificationList.get(position).getNotification());
+                holder.notification_date.setText(notificationList.get(position).getNotification_date());
+            if(type.equalsIgnoreCase("NotificationList")){
+                if(notificationList.get(position).getNotification().length() > 0) {
+                    Utils.addReadMoreNotification(context, notificationList.get(position).getNote_entry_id(), notificationList.get(position).getNotification(), holder.notification_title);
+                }
+            }else {
+                if(notificationList.get(position).getNotification().length() > 35) {
+                    Utils.addReadMore(context,notificationList.get(position).getNotification(), holder.notification_title,3);
+                }
+            }
+
         } catch (Exception exp){
             exp.printStackTrace();
         }
@@ -56,15 +68,15 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     class SummaryViewHolder extends RecyclerView.ViewHolder {
 
-        TextView notification_title, notification_message, notification_date,notification_time;
+        TextView notification_title, notification_date/*,notification_time,notification_message*/;
 
         SummaryViewHolder(View view) {
             super(view);
 
             notification_title = (TextView) view.findViewById(R.id.tittle);
-            notification_message = (TextView) view.findViewById(R.id.description);
+//            notification_message = (TextView) view.findViewById(R.id.description);
             notification_date = (TextView) view.findViewById(R.id.date);
-            notification_time = (TextView) view.findViewById(R.id.time);
+//            notification_time = (TextView) view.findViewById(R.id.time);
 
         }
 

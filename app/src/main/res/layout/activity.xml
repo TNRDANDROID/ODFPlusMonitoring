@@ -71,6 +71,7 @@
                 android:layout_height="30dp"
                 android:layout_centerVertical="true"
                 android:layout_margin="10dp"
+                android:visibility="gone"
                 android:layout_alignParentEnd="true"
                 android:layout_alignBottom="@id/sportsImage"
                 android:background="@drawable/circle_white"

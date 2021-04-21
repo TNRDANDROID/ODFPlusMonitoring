@@ -101,4 +101,6 @@ dependencies {
     implementation files('libs/volley.jar')
     implementation 'com.google.code.gson:gson:2.8.5'
 
+    //PDF viewer
+    implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
 }

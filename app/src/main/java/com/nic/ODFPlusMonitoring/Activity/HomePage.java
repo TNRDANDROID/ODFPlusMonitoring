@@ -6,7 +6,10 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -34,6 +37,7 @@ import android.widget.TextView;
 import com.android.volley.VolleyError;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 import com.nic.ODFPlusMonitoring.Adapter.CommonAdapter;
+import com.nic.ODFPlusMonitoring.Adapter.NotificationAdapter;
 import com.nic.ODFPlusMonitoring.Adapter.ScheduleListAdapter;
 import com.nic.ODFPlusMonitoring.Api.Api;
 import com.nic.ODFPlusMonitoring.Api.ApiService;
@@ -41,11 +45,13 @@ import com.nic.ODFPlusMonitoring.Api.ServerResponse;
 import com.nic.ODFPlusMonitoring.Constant.AppConstant;
 import com.nic.ODFPlusMonitoring.DataBase.dbData;
 import com.nic.ODFPlusMonitoring.Dialog.MyDialog;
+import com.nic.ODFPlusMonitoring.Model.NotificationList;
 import com.nic.ODFPlusMonitoring.Model.ODFMonitoringListValue;
 import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
 import com.nic.ODFPlusMonitoring.Support.MyCustomTextView;
 import com.nic.ODFPlusMonitoring.Support.ProgressHUD;
+import com.nic.ODFPlusMonitoring.Utils.DateInterface;
 import com.nic.ODFPlusMonitoring.Utils.UrlGenerator;
 import com.nic.ODFPlusMonitoring.Utils.Utils;
 
@@ -53,17 +59,23 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
-public class HomePage extends AppCompatActivity implements Api.ServerResponseListener, View.OnClickListener, MyDialog.myOnClickListener {
+public class HomePage extends AppCompatActivity implements Api.ServerResponseListener, View.OnClickListener, MyDialog.myOnClickListener, DateInterface {
     private PrefManager prefManager;
     private ImageView logout, refresh_icon, arrowImage, pro_img;
     private MyCustomTextView pro_tv, feedback_tv;
     public dbData dbData = new dbData(this);
-    private RelativeLayout pro, feed;
+    private RelativeLayout pro, feed,notification_layout,notify_history;
     Handler myHandler = new Handler();
     private ScheduleListAdapter scheduleListAdapter;
     private ShimmerRecyclerView recyclerView;
@@ -80,6 +92,17 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     ArrayList<ODFMonitoringListValue> monthList = new ArrayList<>();
     Spinner fin_year,month_sp;
     String selected_fin_year,selected_month;
+
+    BottomSheetBehavior sheetBehavior;
+    RecyclerView recycler_view_notifications;
+    TextView no_records;
+    ArrayList<com.nic.ODFPlusMonitoring.Model.NotificationList> NotificationList;
+    View bottomSheet;
+    TextView close,notificationCount;
+    int notification_read_id;
+    String fromDate,toDate;
+    Context context;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,7 +112,39 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         if (bundle != null) {
             isHome = bundle.getString("Home");
         }
+        context=this;
         intializeUI();
+
+        sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View view, int i) {
+                switch (i) {
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+//                        mTextViewState.setText("Collapsed");
+                        sheetBehavior.setPeekHeight(0);
+                        getNotificationList();
+                        break;
+                    case BottomSheetBehavior.STATE_DRAGGING:
+//                        mTextViewState.setText("Dragging...");
+                        break;
+                    case BottomSheetBehavior.STATE_EXPANDED:
+//                        mTextViewState.setText("Expanded");
+                        break;
+                    case BottomSheetBehavior.STATE_HIDDEN:
+//                        mTextViewState.setText("Hidden");
+                        break;
+                    case BottomSheetBehavior.STATE_SETTLING:
+//                        mTextViewState.setText("Settling...");
+                        break;
+                }
+
+            }
+
+            @Override
+            public void onSlide(@NonNull View view, float v) {
+
+            }
+        });
     }
 
     public void intializeUI() {
@@ -98,21 +153,40 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         homePage = this;
         logout = (ImageView) findViewById(R.id.logout);
         pro_img = (ImageView) findViewById(R.id.pro_img);
+        close = (TextView) findViewById(R.id.close);
+        notificationCount = (TextView) findViewById(R.id.notificationCount);
         pro_tv = (MyCustomTextView) findViewById(R.id.pro_tv);
         feedback_tv = (MyCustomTextView) findViewById(R.id.feedback_tv);
         arrowImage = (ImageView) findViewById(R.id.arrow_image_up);
         refresh_icon = (ImageView) findViewById(R.id.refresh_icon);
         pro = (RelativeLayout) findViewById(R.id.pro);
         feed = (RelativeLayout) findViewById(R.id.feed);
+        notification_layout = (RelativeLayout) findViewById(R.id.notify);
+        notify_history = (RelativeLayout) findViewById(R.id.notify_history);
         sync = (Button) findViewById(R.id.sync);
         recyclerView = (ShimmerRecyclerView) findViewById(R.id.scheduleList);
         activity_carried_out = (LinearLayout)findViewById(R.id.activity_carried_out);
+
+        recycler_view_notifications=(RecyclerView)findViewById(R.id.recycler_view_notifications);
+        no_records=(TextView)findViewById(R.id.no_records);
+        bottomSheet=(NestedScrollView) findViewById(R.id.bottomSheet);
+        sheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        sheetBehavior.setPeekHeight(0);
+        sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        recycler_view_notifications.setLayoutManager(mLayoutManager);
+
+        bottomSheet.setVisibility(View.VISIBLE);
+
         logout.setOnClickListener(this);
         sync.setOnClickListener(this);
         refresh_icon.setOnClickListener(this);
         pro.setOnClickListener(this);
         activity_carried_out.setOnClickListener(this);
         feed.setOnClickListener(this);
+        notification_layout.setOnClickListener(this);
+        notify_history.setOnClickListener(this);
+        close.setOnClickListener(this);
         if(Utils.isOnline()){
             if(!isHome.equalsIgnoreCase("Home")){
                 refreshScreenCallApi();
@@ -121,8 +195,8 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
             Utils.showAlert(this,getResources().getString(R.string.no_internet));
         }
 
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(mLayoutManager);
+        RecyclerView.LayoutManager mLayoutManager1 = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(mLayoutManager1);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setHasFixedSize(true);
         recyclerView.setNestedScrollingEnabled(false);
@@ -150,6 +224,19 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
 
     public void startAnimation() {
 
+    }
+
+    @Override
+    public void getDate(String dateValue) {
+        String[] separated = dateValue.split(":");
+        fromDate = separated[0]; // this will contain "Fruit"
+        toDate = separated[1];
+        if(Utils.isOnline()) {
+            getNotificationHistoryList();
+        }
+        else {
+            Utils.showAlert(HomePage.this,"No Internet Connection");
+        }
     }
 
     public class fetchScheduletask extends AsyncTask<Void, Void,
@@ -213,7 +300,8 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                     end = end > authKey.length() ? authKey.length() : end;
                     Log.v("to_send_plain", authKey.substring(start, end));
                 }
-            } else if ("GeneralFeedback".equals(urlType) && responseObj != null) {
+            }
+            else if ("GeneralFeedback".equals(urlType) && responseObj != null) {
                 String key = responseObj.getString(AppConstant.ENCODE_DATA);
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
@@ -223,7 +311,8 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                     Utils.showAlert(this, "No Feedback Inserted!");
 
                 }
-            }else if ("MotivatorScheduleHistory".equals(urlType) && responseObj != null) {
+            }
+            else if ("MotivatorScheduleHistory".equals(urlType) && responseObj != null) {
                 String key = responseObj.getString(AppConstant.ENCODE_DATA);
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
@@ -246,6 +335,36 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                     Log.v("to_send_plain", authKey.substring(start, end));
                 }
             }
+            else if ("NotificationList".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    JSONArray jsonarray = jsonObject.getJSONArray(AppConstant.JSON_DATA);
+                    LoadNotificationDetails(jsonarray,"NotificationList");
+                    Log.d("NotificationList",jsonObject.getJSONArray(AppConstant.JSON_DATA).toString());
+                }
+            } else if ("NotificationHistoryList".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    JSONArray jsonarray = jsonObject.getJSONArray(AppConstant.JSON_DATA);
+                    LoadNotificationDetails(jsonarray,"NotificationHistoryList");
+                    Log.d("NotificationHistoryList",jsonObject.getJSONArray(AppConstant.JSON_DATA).toString());
+                }
+            }else if ("NotificationRead".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    //Utils.showAlert(this, "Thanks For Your Valuable Feedback!");
+                } else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("FAIL")) {
+                    //Utils.showAlert(this, "No Feedback Inserted!");
+
+                }
+            }
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -274,6 +393,71 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
       //  }
 
     }
+
+    private void LoadNotificationDetails(JSONArray jsonarray,String type) {
+        NotificationList = new ArrayList<NotificationList>();
+        try {
+            if(jsonarray != null && jsonarray.length() >0) {
+                for (int i = 0; i < jsonarray.length(); i++) {
+                    JSONObject jsonobject = jsonarray.getJSONObject(i);
+                    NotificationList Detail = new NotificationList();
+                    /*Detail.setTittle(jsonobject.getString("tittle"));
+                    Detail.setDescription(jsonobject.getString("description"));
+                    Detail.setDate(jsonobject.getString("note_date"));*/
+                    Detail.setNote_entry_id(jsonobject.getString("note_entry_id"));
+                    Detail.setNotification(jsonobject.getString("notification"));
+                    Detail.setNotification_date(jsonobject.getString("note_date"));
+                    NotificationList.add(Detail);
+                }
+                SortAndReverseList(NotificationList);
+            }
+            if(NotificationList != null && NotificationList.size() >0) {
+                NotificationAdapter adapter = new NotificationAdapter(this,NotificationList,type);
+                adapter.notifyDataSetChanged();
+                recycler_view_notifications.setAdapter(adapter);
+                recycler_view_notifications.setVisibility(View.VISIBLE);
+                no_records.setVisibility(View.GONE);
+                if(type.equalsIgnoreCase("NotificationList")){
+                    notificationCount.setText(String.valueOf(NotificationList.size()));
+                }else {
+                    sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                }
+            }else {
+                recycler_view_notifications.setVisibility(View.GONE);
+                no_records.setVisibility(View.VISIBLE);
+                if(type.equalsIgnoreCase("NotificationList")){
+                    notificationCount.setText("0");
+                }else { }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void SortAndReverseList( ArrayList<NotificationList> historyList) {
+        Collections.sort(historyList, new Comparator<NotificationList>() {
+            @Override
+            public int compare(NotificationList o1, NotificationList o2) {
+                String date1=o1.getNotification_date();
+                String date2=o2.getNotification_date();
+                int compareResult = 0;
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+                try {
+                    Date arg0Date = format.parse(date1);
+                    Date arg1Date = format.parse(date2);
+                    compareResult = arg0Date.compareTo(arg1Date);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    compareResult = date2.compareTo(date1);
+                }
+                return compareResult;
+            }
+
+        });
+        // Collections.reverse(studentActivityDetails);
+    }
+
+
 
     @Override
     public void OnError(VolleyError volleyError) {
@@ -332,6 +516,17 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                     Utils.showAlert(this, "No Record Found!");
                 }*/
                 break;
+            case R.id.notify:
+                getNotificationList();
+//                sheetBehavior.setPeekHeight(180);
+                sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                break;
+            case R.id.close:
+                sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                break;
+            case R.id.notify_history:
+                Utils.showDatePickerDialog(context);
+                break;
         }
 
 
@@ -364,6 +559,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     public void fetchApi() {
         getMotivatorSchedule();
 //        getMotivatorScheduleHistory();
+        getNotificationList();
     }
 
     public void openPendingScreen() {
@@ -397,7 +593,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
             Intent intent = new Intent(this, LoginScreen.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.putExtra("EXIT", false);
-            intent.putExtra("Login", "Login");
+            intent.putExtra("Login", "");
             startActivity(intent);
             finish();
             overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
@@ -409,6 +605,70 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public void getNotificationList() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("NotificationList", Api.Method.POST, UrlGenerator.getMotivatorSchedule(), encryptedNotificationParams(), "not cache", this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void getNotificationHistoryList() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("NotificationHistoryList", Api.Method.POST, UrlGenerator.getMotivatorSchedule(), encryptedNotificationHistoryListParams(), "not cache", this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public JSONObject encryptedNotificationParams() throws JSONException {
+
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), notificationParams().toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("NewNotification", "" + dataSet);
+        return dataSet;
+
+    }
+    public JSONObject encryptedNotificationHistoryListParams() throws JSONException {
+
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), NotificationHistoryListParams().toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("NotificationHistoryList", "" + dataSet);
+        return dataSet;
+
+    }
+
+    public JSONObject NotificationHistoryListParams() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, "getNotificationsOld");
+        dataSet.put("app_id", "10");
+        dataSet.put("from_date", updateLabel(fromDate));
+        dataSet.put("to_date", updateLabel(toDate));
+        return dataSet;
+    }
+    public JSONObject notificationParams () throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, "getNotificationsNew");
+        dataSet.put("app_id", "10");
+        return dataSet;
+    }
+    private String updateLabel(String dateStr) {
+        String myFormat="";
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+        try {
+            Date date1 = format.parse(dateStr);
+            System.out.println(date1);
+            String dateTime = format.format(date1);
+            System.out.println("Current Date Time : " + dateTime);
+            myFormat = dateTime; //In which you need put here
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return myFormat;
     }
 
     public JSONObject motivatorScheduleListJsonParams() throws JSONException {
@@ -681,13 +941,14 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     public void showArrowImage() {
         pro.setVisibility(View.VISIBLE);
         feed.setVisibility(View.VISIBLE);
+        notification_layout.setVisibility(View.VISIBLE);
         animation = new AlphaAnimation((float) 3, 0); // Change alpha from fully visible to invisible
         animation.setDuration(500); // duration - half a second
         animation.setInterpolator(new LinearInterpolator()); // do not alter
         animation.setRepeatCount(Animation.INFINITE); // Repeat animation
         animation.setRepeatMode(Animation.REVERSE); // Reverse animation at the
 
-        pro_img.startAnimation(stb2);
+       /* pro_img.startAnimation(stb2);
         pro_tv.setTranslationX(800);
         pro_tv.setAlpha(0);
         pro_tv.animate().translationX(0).alpha(1).setDuration(1000).start();
@@ -696,7 +957,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         feedback_tv.setAlpha(0);
         feedback_tv.animate().translationX(0).alpha(1).setDuration(1000).start();
         arrowImage.startAnimation(animation);
-        feedback_tv.startAnimation(animation);
+        feedback_tv.startAnimation(animation);*/
 
 
         feed.setOnClickListener(new View.OnClickListener() {
@@ -824,6 +1085,39 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         month_sp.setAdapter(new CommonAdapter(this, monthList, "ScheduleVillage"));
     }
 
+    public void sendNotificationReadStatus() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("NotificationRead", Api.Method.POST, UrlGenerator.getMotivatorSchedule(), sendNotificationReadStatusJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    public JSONObject sendNotificationReadStatusJsonParams() throws JSONException {
+
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), sendNotificatinReadStatusNormaJson().toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("setNotificationRead", "" + dataSet);
+        return dataSet;
+
+    }
+    public JSONObject sendNotificatinReadStatusNormaJson(){
+        JSONObject jsonObject=new JSONObject();
+        try {
+            jsonObject.put(AppConstant.KEY_SERVICE_ID,"setNotificationRead");
+            jsonObject.put(AppConstant.KEY_APP_ID,"10");
+            jsonObject.put("note_entry_id",notification_read_id);
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+        return jsonObject;
+    }
+
+    public void notification_read_status(int notification_id){
+        notification_read_id=notification_id;
+        sendNotificationReadStatus();
+    }
 
 
 }

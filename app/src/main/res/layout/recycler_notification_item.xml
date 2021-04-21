@@ -8,6 +8,74 @@
     android:layout_marginBottom="3dp"
     android:paddingLeft="8dp"
     android:paddingRight="8dp"
+    android:orientation="vertical"
+    android:paddingTop="2dp"
+    android:paddingBottom="2dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/linear1"
+            android:layout_gravity="center">
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="10dp"
+                android:id="@+id/notification_img"
+                app:srcCompat="@drawable/ic_notifications_white_24dp"
+                android:padding="6dp"
+                android:background="@drawable/circle_grey_border_bg"/>
+
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Notification"
+                android:id="@+id/tittle"
+                android:gravity="center_vertical"
+                android:layout_centerVertical="true"
+                android:textSize="15sp"
+                android:textColor="@color/grey2"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_height="wrap_content"
+                android:text="2020-02-27"
+                android:layout_margin="5dp"
+                android:visibility="visible"
+                android:id="@+id/date"
+                android:textSize="12sp"
+                android:textColor="@color/grey2"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>
+<!--
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/elevation_design_top_bottom_bg"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="3dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
     android:paddingTop="2dp"
     android:paddingBottom="2dp">
     <LinearLayout
@@ -95,4 +163,4 @@
                 </LinearLayout>
 
             </LinearLayout>
-</LinearLayout>
+</LinearLayout>-->

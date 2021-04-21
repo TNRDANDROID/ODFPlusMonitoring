@@ -37,6 +37,7 @@ import android.text.method.LinkMovementMethod;
 import android.text.method.ScrollingMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -75,6 +76,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -1447,6 +1449,8 @@ public class Utils {
             stringLength=35;
         }else if(color==2){
             stringLength=42;
+        }else if(color==3){
+            stringLength=42;
         }else {
             stringLength=35;
         }
@@ -1499,6 +1503,56 @@ public class Utils {
                     }else {
                         ds.setColor(context.getResources().getColor(R.color.darkblue));
                     }
+                }
+            }
+        };
+        ss.setSpan(clickableSpan, ss.length() - 10, ss.length() , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textView.setText(ss);
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+    public static void addReadMoreNotification(final Context context, final String note_entry_id, final String text, final TextView textView) {
+        int stringLength=4;
+        SpannableString ss;
+        if(textView.getLineCount() > 2){
+            String[] lines = textView.getText().toString().split("\n");
+            int length = 0;
+            int index = 0;
+            for (String line : lines) {
+                length = length+ line.length();
+                index++;
+                if(index==3){
+                    break;
+                }
+            }
+            ss = new SpannableString(text.substring(0, text.length() > length ? length : text.length()) + "... read");
+            if(length > stringLength)
+                ss = new SpannableString(text.substring(0, text.length() > stringLength ? stringLength : text.length()) + "... read");
+        } else {
+            ss = new SpannableString(text.substring(0, text.length() > stringLength ? stringLength : text.length()) + "... read");
+        }
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View view) {
+//                addReadLess(context,text, textView,color);
+//                String text="Let's try to run your application. I assume you have connected your actual Android Mobile device with your computer." +
+//                        " To run the app from android studio, open one of your project's activity files and click the Run icon " +
+//                        "from the toolbar. Select your mobile device as an option and then check your mobile device which will " +
+//                        "display your default screen I assume you have connected your actual Android Mobile device with your computer." +
+//                        " I assume you have connected your actual Android Mobile device with your computer." +
+//                        " I assume you have connected your actual Android Mobile device with your computer." +
+//                        "I assume you have connected your actual Android Mobile device with your computer.";
+
+                HomePage.getInstance().notification_read_status(Integer.parseInt(note_entry_id));
+                showPopUp(context,text);
+            }
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    ds.setColor(context.getResources().getColor(R.color.darkblue, context.getTheme()));
+                } else {
+                    ds.setColor(context.getResources().getColor(R.color.darkblue));
                 }
             }
         };
@@ -1675,8 +1729,24 @@ public class Utils {
                     playmPlayer = new MediaPlayer();
                     playmPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                     try{
-                        System.out.println("uri>"+Uri.parse(url));
-                        playmPlayer.setDataSource(activity,Uri.parse(url));
+                        byte[] decodedString = new byte[0];
+                            try {
+                                //byte[] name = java.util.Base64.getEncoder().encode(fileString.getBytes());
+                                decodedString = Base64.decode(url, Base64.DEFAULT);
+                            } catch (Exception e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+                            // create temp file that will hold byte array
+                            File tempMp3 = File.createTempFile("kurchina", "mp3", activity.getCacheDir());
+                            tempMp3.deleteOnExit();
+                            FileOutputStream fos = new FileOutputStream(tempMp3);
+                            fos.write(decodedString);
+                            fos.close();
+                        FileInputStream fis = new FileInputStream(tempMp3);
+                        playmPlayer.setDataSource(fis.getFD());
+//                          System.out.println("uri>"+Uri.parse(url));
+//                        playmPlayer.setDataSource(activity,Uri.parse(url));
                         playmPlayer.prepare();
                         playmPlayer.start();
                         getAudioStats();
@@ -1704,7 +1774,44 @@ public class Utils {
 
                     });
                 }
+                private MediaPlayer mediaPlayer = new MediaPlayer();
+                private void playMp3(String mp3SoundByteArray) {
+                    try {
+                        byte[] decodedString = new byte[0];
+                        try {
+                            //byte[] name = java.util.Base64.getEncoder().encode(fileString.getBytes());
+                            decodedString = Base64.decode(mp3SoundByteArray/*traders.get(position).getDocument().toString()*/, Base64.DEFAULT);
+                            System.out.println(new String(decodedString));
+                        } catch (Exception e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        // create temp file that will hold byte array
+                        File tempMp3 = File.createTempFile("kurchina", "mp3", activity.getCacheDir());
+                        tempMp3.deleteOnExit();
+                        FileOutputStream fos = new FileOutputStream(tempMp3);
+                        fos.write(decodedString);
+                        fos.close();
 
+                        // resetting mediaplayer instance to evade problems
+                        mediaPlayer.reset();
+
+                        // In case you run into issues with threading consider new instance like:
+                        // MediaPlayer mediaPlayer = new MediaPlayer();
+
+                        // Tried passing path directly, but kept getting
+                        // "Prepare failed.: status=0x1"
+                        // so using file descriptor instead
+                        FileInputStream fis = new FileInputStream(tempMp3);
+                        mediaPlayer.setDataSource(fis.getFD());
+
+                        mediaPlayer.prepare();
+                        mediaPlayer.start();
+                    } catch (IOException ex) {
+                        String s = ex.toString();
+                        ex.printStackTrace();
+                    }
+                }
                 private void initializeSeekBar() {
                     playmHandler = new Handler();
                     seekbar.setMax(playmPlayer.getDuration()/1000);

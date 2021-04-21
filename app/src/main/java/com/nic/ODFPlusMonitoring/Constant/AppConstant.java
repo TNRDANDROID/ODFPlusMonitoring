@@ -7,6 +7,7 @@ public class AppConstant {
     public static final String PREF_NAME = "NIC";
     public static String KEY_SERVICE_ID = "service_id";
     public static String KEY_APP_CODE = "appcode";
+    public static String KEY_APP_ID = "app_id";
     public static String JSON_DATA = "JSON_DATA";
     public static String KEY_VERSION_CHECK= "version_check";
     public static String DATA_CONTENT = "data_content";
