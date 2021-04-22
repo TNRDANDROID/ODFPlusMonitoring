@@ -1244,8 +1244,7 @@ public class Utils {
     public static void showNameChangeDialog(final Activity activity, final String type, String name, final String dcode, final String bcode, final String pvcode, final String scheduleId) {
         prefManager = new PrefManager(activity);
 
-        final BottomSheetDialog dialog = new BottomSheetDialog(activity,
-                R.style.UIChangeAppTheme);
+        final BottomSheetDialog dialog = new BottomSheetDialog(activity);
 
         BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback = new BottomSheetBehavior.BottomSheetCallback() {
             @Override
@@ -1701,6 +1700,15 @@ public class Utils {
                 @Override
                 public void onClick(View v) {
                     //stopPlaying();
+                    if(playmPlayer!=null){
+                        playmPlayer.stop();
+                        playmPlayer.release();
+                        playmPlayer = null;
+                        if(playmHandler!=null){
+                            playmHandler.removeCallbacks(playmRunnable);
+                        }
+                    }
+
                     add_cpts_search_alert.dismiss();
                 }
             });
@@ -1715,12 +1723,17 @@ public class Utils {
                 }
 
                 private void startPlaying() {
+/*
                     if(playmPlayer!=null){
                         playmPlayer.stop();
                         playmPlayer.reset();
                         playmPlayer.release();
                         playmPlayer = null;
                     }
+*/
+                    if (playmPlayer != null) {
+                        playmPlayer.start();
+                    } else {
 
                     mDue.setVisibility(View.GONE);
                     mDuration.setVisibility(View.VISIBLE);
@@ -1728,21 +1741,21 @@ public class Utils {
                     audio_layout.setEnabled(false);
                     playmPlayer = new MediaPlayer();
                     playmPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                    try{
+                    try {
                         byte[] decodedString = new byte[0];
-                            try {
-                                //byte[] name = java.util.Base64.getEncoder().encode(fileString.getBytes());
-                                decodedString = Base64.decode(url, Base64.DEFAULT);
-                            } catch (Exception e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
-                            // create temp file that will hold byte array
-                            File tempMp3 = File.createTempFile("kurchina", "mp3", activity.getCacheDir());
-                            tempMp3.deleteOnExit();
-                            FileOutputStream fos = new FileOutputStream(tempMp3);
-                            fos.write(decodedString);
-                            fos.close();
+                        try {
+                            //byte[] name = java.util.Base64.getEncoder().encode(fileString.getBytes());
+                            decodedString = Base64.decode(url, Base64.DEFAULT);
+                        } catch (Exception e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        // create temp file that will hold byte array
+                        File tempMp3 = File.createTempFile("kurchina", "mp3", activity.getCacheDir());
+                        tempMp3.deleteOnExit();
+                        FileOutputStream fos = new FileOutputStream(tempMp3);
+                        fos.write(decodedString);
+                        fos.close();
                         FileInputStream fis = new FileInputStream(tempMp3);
                         playmPlayer.setDataSource(fis.getFD());
 //                          System.out.println("uri>"+Uri.parse(url));
@@ -1751,13 +1764,13 @@ public class Utils {
                         playmPlayer.start();
                         getAudioStats();
                         initializeSeekBar();
-                    }catch (IOException e){
+                    } catch (IOException e) {
                         e.printStackTrace();
-                    }catch (IllegalArgumentException e){
+                    } catch (IllegalArgumentException e) {
                         e.printStackTrace();
-                    }catch (SecurityException e){
+                    } catch (SecurityException e) {
                         e.printStackTrace();
-                    }catch (IllegalStateException e){
+                    } catch (IllegalStateException e) {
                         e.printStackTrace();
                     }
                     playmPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -1774,6 +1787,7 @@ public class Utils {
 
                     });
                 }
+            }
                 private MediaPlayer mediaPlayer = new MediaPlayer();
                 private void playMp3(String mp3SoundByteArray) {
                     try {
@@ -1868,12 +1882,7 @@ public class Utils {
     }
     private static void stopPlaying() {
         if(playmPlayer!=null){
-            playmPlayer.stop();
-            playmPlayer.release();
-            playmPlayer = null;
-            if(playmHandler!=null){
-                playmHandler.removeCallbacks(playmRunnable);
-            }
+            playmPlayer.pause();
         }
     }
 

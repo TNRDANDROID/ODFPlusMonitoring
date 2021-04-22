@@ -163,9 +163,9 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
 
         holder.audio_record.setVisibility(View.GONE);
         if(activityListValues.get(position).getActivityTypeName().toLowerCase().contains("general")){
-            holder.activity_type_name.setTextColor(context.getResources().getColor(R.color.account_status_green_color));
+            holder.activity_type_name.setTextColor(context.getResources().getColor(R.color.dot_dark_screen5));
         }else {
-            holder.activity_type_name.setTextColor(context.getResources().getColor(R.color.dot_dark_screen3));
+            holder.activity_type_name.setTextColor(context.getResources().getColor(R.color.dot_dark_screen1));
         }
         if(activityListValues.get(position).getActivityName().length() > 35) {
             Utils.addReadMore(context, activityListValues.get(position).getActivityName(), holder.activity_name, 0);
@@ -338,7 +338,7 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
             }
         });
 
-        final Integer no_of_photos = activityListValues.get(position).getNoOfPhotos();
+        final Integer no_of_photos = 4/*activityListValues.get(position).getNoOfPhotos()*/;
 
         if(no_of_photos > 2) {
             holder.multiple_photo_layout.setVisibility(View.VISIBLE);

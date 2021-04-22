@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.widget.NestedScrollView;
@@ -129,7 +130,21 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    checkLoginScreen();
+                    if (android.os.Build.VERSION.SDK_INT >= 17) {
+                        // only for OS 4.2 and newer versions
+                        try {
+                            if(Settings.Global.getInt(getContentResolver(), Settings.Global.AUTO_TIME) == 1)
+                            {// Enabled
+                                checkLoginScreen();
+                                // Utils.showAlert(this,"OKAY SUccess");
+                            } else { Utils.showAlert(LoginScreen.this,"Enable Automatic time in your device settings!");
+                                // Disabed
+                            }
+                        } catch (Settings.SettingNotFoundException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
                 }
                 return false;
             }
@@ -172,11 +187,11 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             Utils.clearApplicationData(this);
         }
         getMotivatorCategoryList();
-        getVillageList();
+//        getVillageList();
         getDistrictList();
         getBlockList();
-        getBankNameList();
-        getBankBranchList();
+//        getBankNameList();
+//        getBankBranchList();
         getGenderList();
         getDesignationList();
         getEducationalQualificationList();
@@ -187,7 +202,23 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_sign_in:
-                checkLoginScreen();
+                if (android.os.Build.VERSION.SDK_INT >= 17) {
+                    // only for OS 4.2 and newer versions
+                    try {
+                        if(Settings.Global.getInt(getContentResolver(), Settings.Global.AUTO_TIME) == 1)
+                        {// Enabled
+                            checkLoginScreen();
+                            // Utils.showAlert(this,"OKAY SUccess");
+                        } else { Utils.showAlert(this,"Enable Automatic time in your device settings!");
+                            // Disabed
+                        }
+                    } catch (Settings.SettingNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+
                 break;
             case R.id.sign_up:
                 ClickSignUp();

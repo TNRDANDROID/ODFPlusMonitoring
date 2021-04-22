@@ -340,19 +340,26 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-                    JSONArray jsonarray = jsonObject.getJSONArray(AppConstant.JSON_DATA);
-                    LoadNotificationDetails(jsonarray,"NotificationList");
-                    Log.d("NotificationList",jsonObject.getJSONArray(AppConstant.JSON_DATA).toString());
+                    if(jsonObject.getJSONArray(AppConstant.JSON_DATA) != null && jsonObject.getJSONArray(AppConstant.JSON_DATA).length()>0){
+                        JSONArray jsonarray = jsonObject.getJSONArray(AppConstant.JSON_DATA);
+                        LoadNotificationDetails(jsonarray,"NotificationList");
+                        Log.d("NotificationList",jsonObject.getJSONArray(AppConstant.JSON_DATA).toString());
+                    }else {
+                        notificationCount.setText("0");
+                    }
+
                 }
             } else if ("NotificationHistoryList".equals(urlType) && responseObj != null) {
                 String key = responseObj.getString(AppConstant.ENCODE_DATA);
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-                    JSONArray jsonarray = jsonObject.getJSONArray(AppConstant.JSON_DATA);
+
+                    if(jsonObject.getJSONArray(AppConstant.JSON_DATA) != null && jsonObject.getJSONArray(AppConstant.JSON_DATA).length()>0){
+                        JSONArray jsonarray = jsonObject.getJSONArray(AppConstant.JSON_DATA);
                     LoadNotificationDetails(jsonarray,"NotificationHistoryList");
                     Log.d("NotificationHistoryList",jsonObject.getJSONArray(AppConstant.JSON_DATA).toString());
-                }
+                }}
             }else if ("NotificationRead".equals(urlType) && responseObj != null) {
                 String key = responseObj.getString(AppConstant.ENCODE_DATA);
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
@@ -405,11 +412,12 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                     Detail.setDescription(jsonobject.getString("description"));
                     Detail.setDate(jsonobject.getString("note_date"));*/
                     Detail.setNote_entry_id(jsonobject.getString("note_entry_id"));
-                    Detail.setNotification(jsonobject.getString("notification"));
+//                    Detail.setNotification(jsonobject.getString("notification"));
+                    Detail.setNotification("Here, we are going to see a simple example to play the audio file. In the next page, we will see the example to control the audio playback like start, stop, pause etc.");
                     Detail.setNotification_date(jsonobject.getString("note_date"));
                     NotificationList.add(Detail);
                 }
-                SortAndReverseList(NotificationList);
+//                SortAndReverseList(NotificationList);
             }
             if(NotificationList != null && NotificationList.size() >0) {
                 NotificationAdapter adapter = new NotificationAdapter(this,NotificationList,type);

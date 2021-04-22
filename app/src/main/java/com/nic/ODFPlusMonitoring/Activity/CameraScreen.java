@@ -2,6 +2,7 @@ package com.nic.ODFPlusMonitoring.Activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,6 +19,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
@@ -27,6 +29,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -45,6 +48,7 @@ import com.nic.ODFPlusMonitoring.DataBase.dbData;
 import com.nic.ODFPlusMonitoring.Fragment.SlideshowDialogFragment;
 import com.nic.ODFPlusMonitoring.R;
 import com.nic.ODFPlusMonitoring.Session.PrefManager;
+import com.nic.ODFPlusMonitoring.Support.MyCustomTextView;
 import com.nic.ODFPlusMonitoring.Support.MyEditTextView;
 import com.nic.ODFPlusMonitoring.Support.MyLocationListener;
 import com.nic.ODFPlusMonitoring.Utils.CameraUtils;
@@ -123,7 +127,45 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         home_img.setOnClickListener(this);
         btn_save.setOnClickListener(this);
 
+        if (android.os.Build.VERSION.SDK_INT >= 17) {
+            // only for OS 4.2 and newer versions
+            try {
+                if(Settings.Global.getInt(getContentResolver(), Settings.Global.AUTO_TIME) == 1)
+                {// Enabled
+                    // Utils.showAlert(this,"OKAY SUccess");
+                } else { showAlert(this,"Enable Automatic time in your device settings!");
+                    // Disabed
+                }
+            } catch (Settings.SettingNotFoundException e) {
+                e.printStackTrace();
+            }
 
+        }
+
+    }
+    public void showAlert(Activity activity, String msg){
+        try {
+            final Dialog dialog = new Dialog(activity);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setCancelable(false);
+            dialog.setContentView(R.layout.alert_dialog);
+
+            MyCustomTextView text = (MyCustomTextView) dialog.findViewById(R.id.tv_message);
+            text.setText(msg);
+
+            Button dialogButton = (Button) dialog.findViewById(R.id.btn_ok);
+            dialogButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                    finish();
+                }
+            });
+
+            dialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

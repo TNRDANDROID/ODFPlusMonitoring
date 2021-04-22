@@ -29,7 +29,10 @@
     <color name="dot_dark_screen1">#FA023C</color>
     <color name="dot_dark_screen2">#14a895</color>
     <color name="dot_dark_screen3">#2278d4</color>
+    <color name="dot_dark_screen5">#0202ff</color>
+    <color name="dot_dark_screen7">#0000ff</color>
     <color name="dot_dark_screen4">#a854d4</color>
+    <color name="dot_dark_screen6">#cae754</color>
     <color name="app_bg">#343434</color>
 
     <color name="greyed_very_lite">#b9d9d9d9</color>
