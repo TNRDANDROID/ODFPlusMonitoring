@@ -1,12 +1,19 @@
 package com.nic.ODFPlusMonitoring.Activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.ParcelUuid;
+import android.os.StatFs;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,10 +28,13 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
+/*import com.github.barteksc.pdfviewer.PDFView;
+import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;*/
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
 import com.nic.ODFPlusMonitoring.Adapter.ActivityListAdapter;
@@ -44,7 +54,14 @@ import com.nic.ODFPlusMonitoring.Utils.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ActivityScreen extends AppCompatActivity implements Api.ServerResponseListener, View.OnClickListener {
     private PrefManager prefManager;
@@ -64,6 +81,12 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
     int pageNumber;
     String Type;
     String ActivityId;
+    private static final int MY_REQUEST_CODE_PERMISSION = 1000;
+    RelativeLayout download_rl;
+    String pdforaaudioflag;
+    File dwldsPath=null;
+    String DocumentString;
+    String audioString;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,6 +106,8 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
         not_found_tv = (MyCustomTextView) findViewById(R.id.not_found_tv);
         back_img = (ImageView) findViewById(R.id.back_img);
         home_img = (ImageView) findViewById(R.id.home_img);
+        download_rl=findViewById(R.id.download_rl);
+        download_rl.setVisibility(View.GONE);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         activityRecycler.setLayoutManager(mLayoutManager);
@@ -222,13 +247,19 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
                     JSONObject object = jsonObject.getJSONObject(AppConstant.JSON_DATA);
                     if(Type.equalsIgnoreCase("audio")){
                         if (object.getString("activity_desc_audio_available").equalsIgnoreCase("Y")){
-                            String audio=object.getString("activity_desc_audio");
-                            Utils.playAudio(activity,audio);
+                            audioString=object.getString("activity_desc_audio");
+                            pdforaaudioflag="AUDIO";
+                            new downloadPDFTask().execute(audioString);
+
                         }
                     }else if(Type.equalsIgnoreCase("doc")){
                         if (object.getString("activity_desc_doc_available").equalsIgnoreCase("Y")){
                             String doc=object.getString("activity_desc_doc");
-                            viewPdf(doc);
+                            if(checkPermissions()) {
+                                //downloadPdf(doc);
+                                pdforaaudioflag="PDF";
+                                new downloadPDFTask().execute(doc);
+                            }
                         }
                     }
 
@@ -239,6 +270,26 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+    private boolean checkPermissions() {
+        String[] permissions = new String[] {
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+
+        };
+        int result;
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        for (String p:permissions) {
+            result = ContextCompat.checkSelfPermission(ActivityScreen.this,p);
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(p);
+            }
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), MY_REQUEST_CODE_PERMISSION);
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -377,5 +428,145 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
                 Utils.showNameChangeDialog(ActivityScreen.this, "ScheduleWiseFeedback", "", prefManager.getDistrictCode(), prefManager.getBlockCode(), prefManager.getPvCode(), getIntent().getStringExtra(AppConstant.KEY_SCHEDULE_ID));
             }
         });
+    }
+    public void downloadPdf(String DocumentString){
+        final File dwldsPath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/"+ "ODFDOC"+ActivityId + ".pdf");
+        if (DocumentString != null && !DocumentString.equals("")) {
+            byte[] decodedString = new byte[0];
+            try {
+                //byte[] name = java.util.Base64.getEncoder().encode(fileString.getBytes());
+                decodedString = Base64.decode(DocumentString/*traders.get(position).getDocument().toString()*/, Base64.DEFAULT);
+                System.out.println(new String(decodedString));
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+
+            FileOutputStream os = null;
+
+        try {
+            os = new FileOutputStream(dwldsPath, false);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            os.write(decodedString);
+            os.flush();
+            os.close();
+            System.out.println("Created");
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+    }
+    public void downloadmP3(String DocumentString){
+
+    }
+
+    public class downloadPDFTask extends AsyncTask<String,String,String>{
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            download_rl.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            DocumentString=strings[0];
+            String  success="";
+
+            if(pdforaaudioflag.equals("PDF")){
+                dwldsPath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/"+"ODFDoc"+ActivityId + ".pdf");
+
+            }
+            else {
+                dwldsPath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/"+"ODFAudio"+ActivityId + ".mp3");
+
+            }
+            if (DocumentString != null && !DocumentString.equals("")) {
+                byte[] decodedString = new byte[0];
+                try {
+                    //byte[] name = java.util.Base64.getEncoder().encode(fileString.getBytes());
+                    decodedString = Base64.decode(DocumentString/*traders.get(position).getDocument().toString()*/, Base64.DEFAULT);
+                    System.out.println(new String(decodedString));
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                    success="Failure";
+                }
+
+
+                FileOutputStream os = null;
+
+                try {
+                    os = new FileOutputStream(dwldsPath, false);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    success="Failure";
+                }
+                try {
+                    os.write(decodedString);
+                    os.flush();
+                    os.close();
+                    success="Success";
+                    System.out.println("Created");
+
+
+                } catch (IOException e) {
+                    success="Failure";
+                    e.printStackTrace();
+                    download_rl.setVisibility(View.GONE);
+                }
+
+            }
+            return success;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            if(s.equals("Success")){
+                download_rl.setVisibility(View.GONE);
+               Utils.showAlert(ActivityScreen.this,"Download Successfully File Path: "+dwldsPath);
+                if(pdforaaudioflag.equals("PDF")){
+                   viewPdf(DocumentString);
+               }
+                else {
+                    Utils.playAudio(activity,audioString);
+                }
+                //storageaviable();
+            }
+            else {
+                download_rl.setVisibility(View.GONE);
+                Utils.showAlert(ActivityScreen.this,"Download Fail!");
+                if(pdforaaudioflag.equals("PDF")){
+                    viewPdf(DocumentString);
+                }
+                else {
+                    Utils.playAudio(activity,audioString);
+                }
+
+            }
+        }
+    }
+
+    public void storageaviable(){
+        StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
+        long bytesAvailable;
+        if (android.os.Build.VERSION.SDK_INT >=
+                android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            bytesAvailable = stat.getBlockSizeLong() * stat.getAvailableBlocksLong();
+        }
+        else {
+            bytesAvailable = (long)stat.getBlockSize() * (long)stat.getAvailableBlocks();
+        }
+        long megAvailable = bytesAvailable / (1024 * 1024);
+        Log.e("","Available MB : "+megAvailable);
+
     }
 }

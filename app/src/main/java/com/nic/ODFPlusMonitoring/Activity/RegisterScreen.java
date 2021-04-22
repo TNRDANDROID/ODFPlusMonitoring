@@ -139,6 +139,8 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
     private ExifInterface exifObject;
     private Integer isMotivatorOthers;
     String selectedGender,selectedGenderId,selectedEducation,selectedEducationId;
+    String dcode,bcode,ifsc_code;
+    ArrayList<ODFMonitoringListValue> VillageList;
 
 
 
@@ -155,6 +157,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         }
 
         intializeUI();
+
     }
 
     public void intializeUI() {
@@ -244,6 +247,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                 } else {
                     sp_block.setClickable(true);
                     sp_block.setVisibility(View.VISIBLE);
+                    dcode=District.get(position).getDistictCode();
                 }
                 pref_district = District.get(position).getDistrictName();
                 prefManager.setDistrictName(pref_district);
@@ -268,12 +272,20 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                 } else {
                     sp_village.setClickable(true);
                     sp_village.setVisibility(View.VISIBLE);
+                    bcode=Block.get(position).getBlockCode();
+                    if(Utils.isOnline()) {
+                        getVillageList();
+                    }
+                    else {
+                        Utils.showAlert(RegisterScreen.this,"Turn on Mobile Data!");
+                    }
                 }
                 pref_Block = Block.get(position).getBlockName();
                 prefManager.setBlockName(pref_Block);
                 prefManager.setKeySpinnerSelectedBlockcode(Block.get(position).getBlockCode());
 
-                villageFilterSpinner(Block.get(position).getBlockCode());
+
+                //villageFilterSpinner(Block.get(position).getBlockCode());
 
 
             }
@@ -384,6 +396,15 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         loadEducationList();
         textFieldValidation();
     }
+    public JSONObject villageListJsonParams() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID,AppConstant.KEY_VILLAGE_LIST_DISTRICT_BLOCK_WISE);
+        dataSet.put(AppConstant.DISTRICT_CODE,dcode);
+        dataSet.put(AppConstant.BLOCK_CODE,bcode);
+        Log.d("VillageList", "" + dataSet);
+        return dataSet;
+    }
+
 
     private void loadEducationList() {
         try {
@@ -430,6 +451,29 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
             }
 
         } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    private void loadVillageSpinner(JSONArray jsonArray) {
+        try {
+            VillageList=new ArrayList<>();
+            for (int i = 0; i < jsonArray.length(); i++) {
+                ODFMonitoringListValue villageListValue = new ODFMonitoringListValue();
+                try {
+                    villageListValue.setDistictCode(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE));
+                    villageListValue.setBlockCode(jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE));
+                    villageListValue.setPvCode(jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE));
+                    villageListValue.setPvName(jsonArray.getJSONObject(i).getString(AppConstant.PV_NAME));
+                    VillageList.add(villageListValue);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+            sp_village.setAdapter(new CommonAdapter(this, Village, "VillageList"));
+
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -526,7 +570,8 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                             if (event == null || !event.isShiftPressed()) {
 // the user is done typing.
                                 Log.d("ifsc_check", motivator_ifsc_tv.getText().toString());
-                                fetchBranchName(motivator_ifsc_tv.getText().toString().toUpperCase());
+                                //fetchBranchNamefetchBranchName(motivator_ifsc_tv.getText().toString().toUpperCase());
+                                getBankandBranchName(motivator_ifsc_tv.getText().toString().toUpperCase());
                                 hide_keyboard();
                                 return true; // consume.
                             }
@@ -735,7 +780,8 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                 onBackPress();
                 break;
             case R.id.tick:
-                fetchBranchName(motivator_ifsc_tv.getText().toString().toUpperCase());
+                //fetchBranchName(motivator_ifsc_tv.getText().toString().toUpperCase());
+                getBankandBranchName(motivator_ifsc_tv.getText().toString().toUpperCase());
                 hide_keyboard();
                 break;
         }
@@ -830,9 +876,10 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         if (!motivator_dob_tv.getText().toString().isEmpty()) {
 
             if (!motivator_state_level_tv.getText().toString().isEmpty()) {
-            if (!motivator_district_level_tv.getText().toString().isEmpty()) {
+           /* if (!motivator_district_level_tv.getText().toString().isEmpty()) {
             if (!motivator_block_level_tv.getText().toString().isEmpty()) {
-                if (!"Select Category".equalsIgnoreCase(Category.get(sp_category.getSelectedItemPosition()).getMotivatorCategoryName())) {
+*/
+           if (!"Select Category".equalsIgnoreCase(Category.get(sp_category.getSelectedItemPosition()).getMotivatorCategoryName())) {
                 if (!"Select Gender".equalsIgnoreCase(genderList.get(gender_spinner.getSelectedItemPosition()).getGenderEn())) {
                 if (!"Select Educational Qualification".equalsIgnoreCase(educationList.get(educational_qualification_spinner.getSelectedItemPosition()).getEducationName())) {
                     if ((prefManager.getSpinnerSelectedCategoryName()).equalsIgnoreCase("others")) {
@@ -853,12 +900,12 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                 } else {
                     Utils.showAlert(this, "வகையைத் தேர்ந்தெடுக்கவும்!");
                 }
-            } else {
+            /*} else {
                 Utils.showAlert(this, "கலந்துகொண்ட தொகுதி-நிலை பயிற்சியின் எண்ணிக்கையை உள்ளிடவும்!");
             }
             } else {
                 Utils.showAlert(this, "கலந்துகொண்ட மாவட்ட அளவிலான பயிற்சியின் எண்ணிக்கையை உள்ளிடவும்!");
-            }
+            }*/
         } else {
                 Utils.showAlert(this, "கலந்துகொண்ட மாநில அளவிலான பயிற்சியின் எண்ணிக்கையை உள்ளிடவும்!");
             }
@@ -1221,6 +1268,29 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                     Utils.showAlert(this, responseObj.getString("MESSAGE"));
                 }
             }
+            if ("VillageList".equals(urlType) && responseObj != null) {
+                status  = responseObj.getString(AppConstant.KEY_STATUS);
+                response = responseObj.getString(AppConstant.KEY_RESPONSE);
+                if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
+                    JSONArray jsonArray= responseObj.getJSONArray(AppConstant.JSON_DATA);
+                    loadVillageSpinner(jsonArray);
+                } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("NO_RECORD")) {
+                    Log.d("Record", responseObj.getString(AppConstant.KEY_MESSAGE));
+                }
+                Log.d("VillageList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
+            }
+            if ("BankandBranchName".equals(urlType) && responseObj != null) {
+                status  = responseObj.getString(AppConstant.KEY_STATUS);
+                response = responseObj.getString(AppConstant.KEY_RESPONSE);
+                if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
+
+                } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("NO_RECORD")) {
+                    Log.d("Record", responseObj.getString(AppConstant.KEY_MESSAGE));
+                }
+                Log.d("BankBranchList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
+            }
+
+
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -1238,4 +1308,29 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         setResult(Activity.RESULT_CANCELED);
         overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
     }
+
+    public void getVillageList() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("VillageList", Api.Method.POST, UrlGenerator.getOpenUrl(), villageListJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getBankandBranchName(String ifsc_code) {
+        try {
+            new ApiService(this).makeJSONObjectRequest("BankandBranchName", Api.Method.POST, UrlGenerator.getOpenUrl(), bankbranchNameListJsonParams(ifsc_code), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    public JSONObject bankbranchNameListJsonParams(String ifsc_code) throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID,AppConstant.KEY_BRANCH_DETAIL_BY_IFSC_CODE);
+        dataSet.put(AppConstant.IFSC_CODE,ifsc_code);
+        Log.d("object", "" + dataSet);
+        return dataSet;
+    }
+
+
 }

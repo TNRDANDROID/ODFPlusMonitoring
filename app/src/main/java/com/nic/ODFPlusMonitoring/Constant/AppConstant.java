@@ -18,6 +18,8 @@ public class AppConstant {
     public static String KEY_VILLAGE_LIST_ALL = "village_list_all";
     public static String KEY_BANK_NAME_LIST = "Generate_bank_name_json";
     public static String KEY_BANK_BRANCH_NAME_LIST = "Generate_branch_name_bank_wise_json";
+    public static String KEY_BRANCH_DETAIL_BY_IFSC_CODE = "branchDetailsByIFSCCode";
+    public static String KEY_VILLAGE_LIST_DISTRICT_BLOCK_WISE = "village_list_district_block_wise";
 
     public static String USER_LOGIN_KEY = "user_login_key";
     public static String KEY_USER_NAME = "user_name";

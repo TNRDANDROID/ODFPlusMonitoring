@@ -42,10 +42,10 @@ android {
             debuggable true
             minifyEnabled false
             signingConfig signingConfigs.debug
-            resValue "string", "LOGIN_URL", "http://10.163.19.140:81/rdweb/project/webservices_forms/login_service/login_services.php"
-            resValue "string", "OPEN_SERVICES_URL", "http://10.163.19.140:81/rdweb/project/webservices_forms/open_services/open_services.php"
-            resValue "string", "ODF_OPEN_SERVICES_URL", "http://10.163.19.140:81/rdweb/project/webservices_forms/odf/odf_open_services.php"
-            resValue "string", "ODF_SERVICES_TEST_URL", "http://10.163.19.140:81/rdweb/project/webservices_forms/odf/odf_services_test.php"
+            resValue "string", "LOGIN_URL", "http://10.163.19.140:8080/rdweb/project/webservices_forms/login_service/login_services.php"
+            resValue "string", "OPEN_SERVICES_URL", "http://10.163.19.140:8080/rdweb/project/webservices_forms/open_services/open_services.php"
+            resValue "string", "ODF_OPEN_SERVICES_URL", "http://10.163.19.140:8080/rdweb/project/webservices_forms/odf/odf_open_services.php"
+            resValue "string", "ODF_SERVICES_TEST_URL", "http://10.163.19.140:8080/rdweb/project/webservices_forms/odf/odf_services_test.php"
             resValue "string", "TNRD_HOST_NAME", "10.163.19.140:81"
             resValue "string", "SUB_DOMAIN", "10.163.19.140:81"
             /*resValue "string", "LOGIN_URL", "http://10.163.19.140/rdweb/project/webservices_forms/login_service/login_services.php"
