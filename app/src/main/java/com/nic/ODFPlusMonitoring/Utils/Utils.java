@@ -1958,8 +1958,8 @@ public class Utils {
         f_layout.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
         fromDateValue.setTextColor(context.getResources().getColor(R.color.white));
         from.setTextColor(context.getResources().getColor(R.color.white));
-        toDateValue.setTextColor(context.getResources().getColor(R.color.grey2));
-        to.setTextColor(context.getResources().getColor(R.color.grey2));
+        toDateValue.setTextColor(context.getResources().getColor(R.color.unselect));
+        to.setTextColor(context.getResources().getColor(R.color.unselect));
         t_layout.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
 
         datePicker.setMaxDate(new Date().getTime());
@@ -1980,8 +1980,8 @@ public class Utils {
                 f_layout.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
                 fromDateValue.setTextColor(context.getResources().getColor(R.color.white));
                 from.setTextColor(context.getResources().getColor(R.color.white));
-                toDateValue.setTextColor(context.getResources().getColor(R.color.grey2));
-                to.setTextColor(context.getResources().getColor(R.color.grey2));
+                toDateValue.setTextColor(context.getResources().getColor(R.color.unselect));
+                to.setTextColor(context.getResources().getColor(R.color.unselect));
                 t_layout.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
 
                 datePicker.setMaxDate(new Date().getTime());
@@ -1993,8 +1993,8 @@ public class Utils {
             public void onClick(View v) {
                 date_flag=false;
                 f_layout.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
-                fromDateValue.setTextColor(context.getResources().getColor(R.color.grey2));
-                from.setTextColor(context.getResources().getColor(R.color.grey2));
+                fromDateValue.setTextColor(context.getResources().getColor(R.color.unselect));
+                from.setTextColor(context.getResources().getColor(R.color.unselect));
                 toDateValue.setTextColor(context.getResources().getColor(R.color.white));
                 to.setTextColor(context.getResources().getColor(R.color.white));
                 t_layout.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
@@ -2039,8 +2039,8 @@ public class Utils {
 
                     date_flag=false;
                     f_layout.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
-                    fromDateValue.setTextColor(context.getResources().getColor(R.color.grey2));
-                    from.setTextColor(context.getResources().getColor(R.color.grey2));
+                    fromDateValue.setTextColor(context.getResources().getColor(R.color.unselect));
+                    from.setTextColor(context.getResources().getColor(R.color.unselect));
                     toDateValue.setTextColor(context.getResources().getColor(R.color.white));
                     to.setTextColor(context.getResources().getColor(R.color.white));
                     t_layout.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
@@ -2085,8 +2085,8 @@ public class Utils {
 
                     date_flag=false;
                     f_layout.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
-                    fromDateValue.setTextColor(context.getResources().getColor(R.color.grey2));
-                    from.setTextColor(context.getResources().getColor(R.color.grey2));
+                    fromDateValue.setTextColor(context.getResources().getColor(R.color.unselect));
+                    from.setTextColor(context.getResources().getColor(R.color.unselect));
                     toDateValue.setTextColor(context.getResources().getColor(R.color.white));
                     to.setTextColor(context.getResources().getColor(R.color.white));
                     t_layout.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));

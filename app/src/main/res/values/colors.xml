@@ -38,8 +38,10 @@
     <color name="greyed_very_lite">#b9d9d9d9</color>
     <color name="grey2">#505454</color>
     <color name="grey">#E5E5E5</color>
-    <color name="light_grey">#f9f9fa</color>
-
+    <color name="light_grey">#c5ffff</color>
+ \<color name="light_grey1">#f5efff</color>
+    <color name="light_grey2">#dcf6ed</color>
+    <color name="unselect">#a0a0a0</color>
 
     <!-- dots active colors -->
     <color name="dot_light_screen1">#f98da5</color>

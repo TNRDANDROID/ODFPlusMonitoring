@@ -173,7 +173,7 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
             Utils.addReadMore(context, activityListValues.get(position).getActivityName(), holder.activity_name, 0);
         }
 
-       /* if(activityListValues.get(position).getActivity_desc_audio_available().equalsIgnoreCase("Y")){
+        if(activityListValues.get(position).getActivity_desc_audio_available().equalsIgnoreCase("Y")){
             holder.audio_play.setVisibility(View.VISIBLE);
         }else {
             holder.audio_play.setVisibility(View.GONE);
@@ -182,7 +182,7 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
             holder.pdfImage.setVisibility(View.VISIBLE);
         }else {
             holder.pdfImage.setVisibility(View.GONE);
-        }*/
+        }
 
         if(position %2 == 1)
         {
@@ -321,7 +321,7 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
         holder.audio_play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((ActivityScreen)context).getFile("97"/*activity_id*/,"audio",activityListValues.get(position).getActivityName());
+                ((ActivityScreen)context).getFile(activity_id,"audio",activityListValues.get(position).getActivityName());
 
                 /*String url= "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
                 String url1= "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3";
@@ -332,7 +332,7 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
         holder.pdfImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((ActivityScreen)context).getFile("97"/*activity_id*/,"doc",activityListValues.get(position).getActivityName());
+                ((ActivityScreen)context).getFile(activity_id,"doc",activityListValues.get(position).getActivityName());
 
                /* String URL ="https://www.orimi.com/pdf-test.pdf";
                 String URL2 ="http://www.africau.edu/images/default/sample.pdf";

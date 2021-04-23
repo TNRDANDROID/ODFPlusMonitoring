@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:background="@color/light_grey"
+            android:background="@drawable/activity_bg"
             android:id="@+id/activityTypeLayout"
             android:orientation="vertical">
 

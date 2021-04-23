@@ -346,14 +346,15 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     try {
-                    if(jsonObject.getJSONArray(AppConstant.JSON_DATA) != null && jsonObject.getJSONArray(AppConstant.JSON_DATA).length()>0){
-                        JSONArray jsonarray = jsonObject.getJSONArray(AppConstant.JSON_DATA);
-                        LoadNotificationDetails(jsonarray,"NotificationList");
-                        Log.d("NotificationList",jsonObject.getJSONArray(AppConstant.JSON_DATA).toString());
+                    if(jsonObject.getJSONArray(AppConstant.JSON_DATA) != null && jsonObject.getJSONArray(AppConstant.JSON_DATA).length()>0) {
+                        if(jsonObject.getJSONArray(AppConstant.JSON_DATA) != null && jsonObject.getJSONArray(AppConstant.JSON_DATA).length()>0){
+                            JSONArray jsonarray = jsonObject.getJSONArray(AppConstant.JSON_DATA);
+                        LoadNotificationDetails(jsonarray, "NotificationList");
+                        Log.d("NotificationList", jsonObject.getJSONArray(AppConstant.JSON_DATA).toString());
                         notification_layout.setVisibility(View.VISIBLE);
                         animation = AnimationUtils.loadAnimation(context, R.anim.blink);
                         notification_layout.startAnimation(animation);
-                    }else {
+                    } }else {
                         recycler_view_notifications.setAdapter(null);
                         no_records.setVisibility(View.VISIBLE);
                         notification_layout.setVisibility(View.GONE);
