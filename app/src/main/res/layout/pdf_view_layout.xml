@@ -6,7 +6,44 @@
     android:background="@color/white"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp"
+        android:id="@+id/header_layout"
+        android:background="@color/colorPrimary">
+
+        <TextView
+            android:drawableRight="@drawable/ic_download_white"
+            android:drawablePadding="@dimen/_5sdp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/download_icon"
+            android:text="Download"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_14sdp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/_10sdp"></TextView>
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:padding="10dp"
+            android:text="Document"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_14sdp"
+            android:textStyle="bold" />
+
+
+    </RelativeLayout>
+
     <com.github.barteksc.pdfviewer.PDFView
+        android:layout_below="@+id/header_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/pageNum"

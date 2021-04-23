@@ -250,8 +250,6 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
                     if(Type.equalsIgnoreCase("audio")){
                         if (object.getString("activity_desc_audio_available").equalsIgnoreCase("Y")){
                             audioString=object.getString("activity_desc_audio");
-                            pdforaaudioflag="AUDIO";
-                            new downloadPDFTask().execute(audioString);
                             Utils.playAudio(activity,audioString);
 
                         }
@@ -260,8 +258,8 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
                             String doc=object.getString("activity_desc_doc");
                             if(checkPermissions()) {
                                 //downloadPdf(doc);
-                                pdforaaudioflag="PDF";
-                                new downloadPDFTask().execute(doc);
+                                /*pdforaaudioflag="PDF";
+                                new downloadPDFTask().execute(doc);*/
                                 viewPdf(doc);
                             }
                         }
@@ -301,7 +299,7 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
 
     }
 
-    public void viewPdf(String DocumentString) {
+    public void viewPdf(final String DocumentString) {
         dialog = new Dialog(activity,R.style.AppTheme);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.pdf_view_layout);
@@ -317,6 +315,8 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
 
         final PDFView pdfView = (PDFView) dialog.findViewById(R.id.documentViewer);
         final TextView pageNum = (TextView) dialog.findViewById(R.id.pageNum);
+        final TextView title = (TextView) dialog.findViewById(R.id.title);
+        final TextView download_icon = (TextView) dialog.findViewById(R.id.download_icon);
         pageNumber = 0;
         if (DocumentString != null && !DocumentString.equals("")) {
             byte[] decodedString = new byte[0];
@@ -342,9 +342,21 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
             Utils.showAlert(activity,"No Record Found!");
         }
 
+        download_icon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                callDownloadMethod(DocumentString,"PDF");
+            }
+        });
+
 
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
+    }
+
+    public void callDownloadMethod(String document,String type){
+        pdforaaudioflag=type;
+        new downloadPDFTask().execute(document);
     }
 
     public void getFile(String activity_id, String actType,String activity_name) {
