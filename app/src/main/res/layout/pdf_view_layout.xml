@@ -12,19 +12,6 @@
         android:id="@+id/header_layout"
         android:background="@color/colorPrimary">
 
-        <TextView
-            android:drawableRight="@drawable/ic_download_white"
-            android:drawablePadding="@dimen/_5sdp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/download_icon"
-            android:text="Download"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_14sdp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/_10sdp"></TextView>
 
         <TextView
             android:id="@+id/title"
@@ -42,8 +29,30 @@
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:layout_marginRight="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:id="@+id/download_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/header_layout">
+        <TextView
+            android:drawableRight="@drawable/ic_download_white"
+            android:drawablePadding="@dimen/_5sdp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Download"
+            android:textStyle="bold"
+            android:textColor="#A30202FF"
+            android:textSize="@dimen/_14sdp"
+            android:layout_marginRight="@dimen/_10sdp"></TextView>
+
+    </RelativeLayout>
+
     <com.github.barteksc.pdfviewer.PDFView
-        android:layout_below="@+id/header_layout"
+        android:layout_below="@+id/download_icon"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/pageNum"
