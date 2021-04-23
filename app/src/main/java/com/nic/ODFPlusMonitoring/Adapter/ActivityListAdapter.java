@@ -63,8 +63,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 import static android.Manifest.permission.RECORD_AUDIO;
@@ -159,7 +161,7 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
         final String activity_status = activityListValues.get(position).getActivityStatus();
         holder.activity_name.setText(activityListValues.get(position).getActivityName());
 //        holder.activity_type_name.setText(activityListValues.get(position).getActivityTypeName());
-        holder.activity_type_name.setText(activityListValues.get(position).getActivityTypeName()+" (Rs."+activityListValues.get(position).getActivity_amount()+")");
+        holder.activity_type_name.setText(activityListValues.get(position).getActivityTypeName()+" ("+indianCurrency(Double.parseDouble(activityListValues.get(position).getActivity_amount()))+")");
 
         holder.audio_record.setVisibility(View.GONE);
         if(activityListValues.get(position).getActivityTypeName().toLowerCase().contains("general")){
@@ -799,6 +801,11 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
                 alertDialog.dismiss();
             }
         });
+    }
+    public String indianCurrency(double money){
+        String format = NumberFormat.getCurrencyInstance(new Locale("en", "in")).format(money);
+        System.out.println(format);
+        return format;
     }
 
 }
