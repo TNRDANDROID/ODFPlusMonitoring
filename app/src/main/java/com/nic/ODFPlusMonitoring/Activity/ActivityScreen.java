@@ -316,7 +316,7 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
         final PDFView pdfView = (PDFView) dialog.findViewById(R.id.documentViewer);
         final TextView pageNum = (TextView) dialog.findViewById(R.id.pageNum);
         final TextView title = (TextView) dialog.findViewById(R.id.title);
-        final TextView download_icon = (TextView) dialog.findViewById(R.id.download_icon);
+        final RelativeLayout download_icon = (RelativeLayout) dialog.findViewById(R.id.download_icon);
         pageNumber = 0;
         if (DocumentString != null && !DocumentString.equals("")) {
             byte[] decodedString = new byte[0];
