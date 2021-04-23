@@ -300,9 +300,9 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                pref_Village = Village.get(position).getVillageListPvName();
+                pref_Village = VillageList.get(position).getPvName();
                 prefManager.setVillageListPvName(pref_Village);
-                prefManager.setKeySpinnerSelectedPvcode(Village.get(position).getVillageListPvCode());
+                prefManager.setKeySpinnerSelectedPvcode(VillageList.get(position).getPvCode());
 
             }
 
@@ -457,6 +457,9 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
     private void loadVillageSpinner(JSONArray jsonArray) {
         try {
             VillageList=new ArrayList<>();
+            ODFMonitoringListValue villageListValue1 = new ODFMonitoringListValue();
+            villageListValue1.setPvName("Select Village");
+            VillageList.add(villageListValue1);
             for (int i = 0; i < jsonArray.length(); i++) {
                 ODFMonitoringListValue villageListValue = new ODFMonitoringListValue();
                 try {
@@ -470,7 +473,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                 }
 
             }
-            sp_village.setAdapter(new CommonAdapter(this, Village, "VillageList"));
+            sp_village.setAdapter(new CommonAdapter(this, VillageList, "VillageList"));
 
 
         } catch (Exception e) {
@@ -570,7 +573,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                             if (event == null || !event.isShiftPressed()) {
 // the user is done typing.
                                 Log.d("ifsc_check", motivator_ifsc_tv.getText().toString());
-                                //fetchBranchNamefetchBranchName(motivator_ifsc_tv.getText().toString().toUpperCase());
+                                //fetchBranchName(motivator_ifsc_tv.getText().toString().toUpperCase());
                                 getBankandBranchName(motivator_ifsc_tv.getText().toString().toUpperCase());
                                 hide_keyboard();
                                 return true; // consume.
@@ -793,7 +796,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
             if (!motivator_name.getText().toString().isEmpty()) {
                 if (!"Select District".equalsIgnoreCase(District.get(sp_district.getSelectedItemPosition()).getDistrictName())) {
                     if (!"Select Block".equalsIgnoreCase(Block.get(sp_block.getSelectedItemPosition()).getBlockName())) {
-                        if (!"Select Village".equalsIgnoreCase(Village.get(sp_village.getSelectedItemPosition()).getVillageListPvName())) {
+                        if (!"Select Village".equalsIgnoreCase(VillageList.get(sp_village.getSelectedItemPosition()).getPvName())) {
                             if (!motivator_address.getText().toString().isEmpty()) {
                                 if (!motivator_mobileNO.getText().toString().isEmpty()) {
                                     if (Utils.isValidMobile(motivator_mobileNO.getText().toString())) {
@@ -1223,8 +1226,19 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         dataSet.put(AppConstant.KEY_MOTIVATOR_NO_OF_STATE_LEVEL_TRAINEE, motivator_state_level_tv.getText().toString());
         dataSet.put(AppConstant.KEY_GENDER_CODE, selectedGenderId);
         dataSet.put(AppConstant.KEY_EDUCATION_CODE, selectedEducationId);
-        dataSet.put(AppConstant.KEY_MOTIVATOR_NO_OF_DISTRICT_LEVEL_TRAINEE, motivator_district_level_tv.getText().toString());
-        dataSet.put(AppConstant.KEY_MOTIVATOR_NO_OF_BLOCK_LEVEL_TRAINEE, motivator_block_level_tv.getText().toString());
+        if(!motivator_district_level_tv.getText().toString().equals("")) {
+            dataSet.put(AppConstant.KEY_MOTIVATOR_NO_OF_DISTRICT_LEVEL_TRAINEE, motivator_district_level_tv.getText().toString());
+        }
+        else {
+            dataSet.put(AppConstant.KEY_MOTIVATOR_NO_OF_DISTRICT_LEVEL_TRAINEE, "0");
+        }
+        if(!motivator_block_level_tv.getText().toString().equals("")){
+            dataSet.put(AppConstant.KEY_MOTIVATOR_NO_OF_BLOCK_LEVEL_TRAINEE, motivator_block_level_tv.getText().toString());
+        }
+        else {
+            dataSet.put(AppConstant.KEY_MOTIVATOR_NO_OF_BLOCK_LEVEL_TRAINEE, "0");
+        }
+
         if ((prefManager.getSpinnerSelectedCategoryName()).equalsIgnoreCase("others")) {
             dataSet.put(AppConstant.KEY_REGISTER_CATEGORY_OTHERS, prefManager.getSpinnerSelectedCategoryId());
             dataSet.put(AppConstant.KEY_REGISTER_MOTIVATOR_POSITION, motivator_position_tv.getText().toString());
@@ -1264,7 +1278,8 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                     };
                     handler.postDelayed(runnable,2000);
 
-                } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("FAIL")) {
+                }
+                else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("FAIL")) {
                     Utils.showAlert(this, responseObj.getString("MESSAGE"));
                 }
             }
@@ -1283,9 +1298,31 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                 status  = responseObj.getString(AppConstant.KEY_STATUS);
                 response = responseObj.getString(AppConstant.KEY_RESPONSE);
                 if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
+                    JSONObject jsonObject=responseObj.getJSONObject(AppConstant.JSON_DATA);
+                    String bank_id;
+                    String branch_id;
+                    String branch;
+                    String bank_name;
+                    String ifsc;
+                    bank_id=jsonObject.getString("bank_id");
+                    branch_id=jsonObject.getString("branch_id");
+                    branch=jsonObject.getString("branch");
+                    bank_name=jsonObject.getString("bank_name");
+                    ifsc=jsonObject.getString("ifsc");
+                    prefManager.setKeyAutocompleteSelectedBranchID(Integer.valueOf(branch_id));
+                    prefManager.setKeyAutocompleteSelectedIfscCode(ifsc);
+                    prefManager.setKeyAutocompleteSelectedBankID(Integer.parseInt(bank_id));
+                    motivator_bank_tv.setText(bank_name);
+                    motivator_branch_tv.setText(branch);
+
 
                 } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("NO_RECORD")) {
                     Log.d("Record", responseObj.getString(AppConstant.KEY_MESSAGE));
+                    //Utils.showAlert(RegisterScreen.this,responseObj.getString(AppConstant.KEY_MESSAGE));
+                    Utils.showAlert(this,"Enter the valid IFSC!");
+                    motivator_bank_tv.setText("");
+                    motivator_branch_tv.setText("");
+
                 }
                 Log.d("BankBranchList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
             }

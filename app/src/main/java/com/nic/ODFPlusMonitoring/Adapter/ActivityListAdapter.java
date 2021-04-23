@@ -319,7 +319,7 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
         holder.audio_play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((ActivityScreen)context).getFile("97"/*activity_id*/,"audio");
+                ((ActivityScreen)context).getFile("97"/*activity_id*/,"audio",activityListValues.get(position).getActivityName());
 
                 /*String url= "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
                 String url1= "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3";
@@ -330,7 +330,7 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
         holder.pdfImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((ActivityScreen)context).getFile("97"/*activity_id*/,"doc");
+                ((ActivityScreen)context).getFile("97"/*activity_id*/,"doc",activityListValues.get(position).getActivityName());
 
                /* String URL ="https://www.orimi.com/pdf-test.pdf";
                 String URL2 ="http://www.africau.edu/images/default/sample.pdf";

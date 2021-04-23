@@ -143,6 +143,7 @@
             android:screenOrientation="portrait"
               />
         <activity android:name=".Activity.AddParticipantsActivity" />
+        <activity android:name=".Activity.AddParticipantsActivityNew" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

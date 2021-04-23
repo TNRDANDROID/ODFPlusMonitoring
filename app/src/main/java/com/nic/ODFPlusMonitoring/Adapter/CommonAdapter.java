@@ -55,7 +55,7 @@ public class CommonAdapter extends BaseAdapter {
         } else if (type.equalsIgnoreCase("BlockList")) {
             tv_type.setText(ODFMonitoringList.getBlockName());
         } else if (type.equalsIgnoreCase("VillageList")) {
-            tv_type.setText(ODFMonitoringList.getVillageListPvName());
+            tv_type.setText(ODFMonitoringList.getPvName());
         } else if (type.equalsIgnoreCase("CategoryList")) {
             tv_type.setText(ODFMonitoringList.getMotivatorCategoryName());
         } else if (type.equalsIgnoreCase("ScheduleVillage")) {

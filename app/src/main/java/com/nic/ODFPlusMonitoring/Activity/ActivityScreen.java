@@ -81,12 +81,14 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
     int pageNumber;
     String Type;
     String ActivityId;
+    String Activity_name;
     private static final int MY_REQUEST_CODE_PERMISSION = 1000;
     RelativeLayout download_rl;
     String pdforaaudioflag;
     File dwldsPath=null;
     String DocumentString;
     String audioString;
+    String path="";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -250,6 +252,7 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
                             audioString=object.getString("activity_desc_audio");
                             pdforaaudioflag="AUDIO";
                             new downloadPDFTask().execute(audioString);
+                            Utils.playAudio(activity,audioString);
 
                         }
                     }else if(Type.equalsIgnoreCase("doc")){
@@ -259,6 +262,7 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
                                 //downloadPdf(doc);
                                 pdforaaudioflag="PDF";
                                 new downloadPDFTask().execute(doc);
+                                viewPdf(doc);
                             }
                         }
                     }
@@ -343,9 +347,10 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
 
     }
 
-    public void getFile(String activity_id, String actType) {
+    public void getFile(String activity_id, String actType,String activity_name) {
         Type=actType;
         ActivityId=activity_id;
+        Activity_name=activity_name;
         try {
             new ApiService(activity).makeJSONObjectRequest("GetFile", Api.Method.POST,
                     UrlGenerator.getMotivatorSchedule(), fileJsonParams(), "not cache", this);
@@ -479,13 +484,19 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
         protected String doInBackground(String... strings) {
             DocumentString=strings[0];
             String  success="";
+            String title="";
 
+            for (int i=0;i<13;i++){
+                title=title+Activity_name.charAt(i);
+            }
             if(pdforaaudioflag.equals("PDF")){
-                dwldsPath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/"+"ODFDoc"+ActivityId + ".pdf");
+                dwldsPath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/"+title+ActivityId + ".pdf");
+                path="PhoneStorage/Download"+"/"+title+"_"+ActivityId + ".pdf";
 
             }
             else {
-                dwldsPath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/"+"ODFAudio"+ActivityId + ".mp3");
+                dwldsPath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/"+title+ActivityId + ".mp3");
+                path="PhoneStorage/Download"+"/"+title+"_"+ActivityId + ".mp3";
 
             }
             if (DocumentString != null && !DocumentString.equals("")) {
@@ -532,24 +543,24 @@ public class ActivityScreen extends AppCompatActivity implements Api.ServerRespo
             super.onPostExecute(s);
             if(s.equals("Success")){
                 download_rl.setVisibility(View.GONE);
-               Utils.showAlert(ActivityScreen.this,"Download Successfully File Path: "+dwldsPath);
-                if(pdforaaudioflag.equals("PDF")){
+               Utils.showAlert(ActivityScreen.this,"Download Successfully File Path:"+path);
+                /*if(pdforaaudioflag.equals("PDF")){
                    viewPdf(DocumentString);
                }
                 else {
                     Utils.playAudio(activity,audioString);
-                }
+                }*/
                 //storageaviable();
             }
             else {
                 download_rl.setVisibility(View.GONE);
                 Utils.showAlert(ActivityScreen.this,"Download Fail!");
-                if(pdforaaudioflag.equals("PDF")){
+               /* if(pdforaaudioflag.equals("PDF")){
                     viewPdf(DocumentString);
                 }
                 else {
                     Utils.playAudio(activity,audioString);
-                }
+                }*/
 
             }
         }

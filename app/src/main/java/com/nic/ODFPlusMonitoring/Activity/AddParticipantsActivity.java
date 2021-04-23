@@ -159,13 +159,18 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
 
             m_name.setText(participates_name);
             m_mobile.setText(mobile_number);
-
+            int selectedDesignationPostion=0;
 
             close.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_close));
 
             commonAdapter=new CommonAdapter(this,designationList,"DesignationList");
             designation.setAdapter(commonAdapter );
-            designation.setSelection(Integer.parseInt(designation_id));
+            for(int i=0;i<designationList.size();i++){
+                if(designation_id.equals(designationList.get(i).getDesignation_code())){
+                    selectedDesignationPostion=i;
+                }
+            }
+            designation.setSelection(selectedDesignationPostion);
             designation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -267,6 +272,17 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if(getIntent().getStringExtra("Home").equalsIgnoreCase("Home")){
+            finish();
+        }else {
+            super.onBackPressed();
+        }
+
+    }
+
+
     public void imageWithDescription() {
         appParticipatesJson=new JSONObject();
         dialog = new Dialog(this,R.style.AppTheme);
@@ -320,7 +336,7 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
                                     jsonObject.put("contact_person_id","");
                                     jsonObject.put("name_of_contact_person",m_name.getText().toString());
                                     jsonObject.put("mobileno",m_mobile.getText().toString());
-                                    jsonObject.put("contact_person_type_id",selectedDesignationId);
+                                    jsonObject.put("contact_person_type_id",designationList.get(designation.getSelectedItemPosition()).getDesignation_code());
                                     /*jsonObject.put("deleted","N");*/
                                     imageJson.put(jsonObject);
                                 }
@@ -420,7 +436,7 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
             public void onClick(View v) {
                 try {
 
-                    if (viewArrayList.size() != 1) {
+                    if (viewArrayList.size() != 0) {
                         ((LinearLayout) hiddenInfo.getParent()).removeView(hiddenInfo);
                         viewArrayList.remove(hiddenInfo);
                     }
