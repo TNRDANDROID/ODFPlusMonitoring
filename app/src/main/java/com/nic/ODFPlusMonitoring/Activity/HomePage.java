@@ -75,7 +75,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     private ImageView logout, refresh_icon, arrowImage, pro_img;
     private MyCustomTextView pro_tv, feedback_tv;
     public dbData dbData = new dbData(this);
-    private RelativeLayout pro, feed,notification_layout,notify_history;
+    private RelativeLayout pro, feed,notification_layout,notify_history,add_participants;
     Handler myHandler = new Handler();
     private ScheduleListAdapter scheduleListAdapter;
     private ShimmerRecyclerView recyclerView;
@@ -125,6 +125,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                         getNotificationList();
                         break;
                     case BottomSheetBehavior.STATE_DRAGGING:
+                        sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 //                        mTextViewState.setText("Dragging...");
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED:
@@ -163,6 +164,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         feed = (RelativeLayout) findViewById(R.id.feed);
         notification_layout = (RelativeLayout) findViewById(R.id.notify);
         notify_history = (RelativeLayout) findViewById(R.id.notify_history);
+        add_participants = (RelativeLayout) findViewById(R.id.add_participants);
         sync = (Button) findViewById(R.id.sync);
         recyclerView = (ShimmerRecyclerView) findViewById(R.id.scheduleList);
         activity_carried_out = (LinearLayout)findViewById(R.id.activity_carried_out);
@@ -173,10 +175,12 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         sheetBehavior = BottomSheetBehavior.from(bottomSheet);
         sheetBehavior.setPeekHeight(0);
         sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recycler_view_notifications.setLayoutManager(mLayoutManager);
 
         bottomSheet.setVisibility(View.VISIBLE);
+        notification_layout.setVisibility(View.GONE);
 
         logout.setOnClickListener(this);
         sync.setOnClickListener(this);
@@ -186,6 +190,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         feed.setOnClickListener(this);
         notification_layout.setOnClickListener(this);
         notify_history.setOnClickListener(this);
+        add_participants.setOnClickListener(this);
         close.setOnClickListener(this);
         if(Utils.isOnline()){
             if(!isHome.equalsIgnoreCase("Home")){
@@ -340,26 +345,53 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    try {
                     if(jsonObject.getJSONArray(AppConstant.JSON_DATA) != null && jsonObject.getJSONArray(AppConstant.JSON_DATA).length()>0){
                         JSONArray jsonarray = jsonObject.getJSONArray(AppConstant.JSON_DATA);
                         LoadNotificationDetails(jsonarray,"NotificationList");
                         Log.d("NotificationList",jsonObject.getJSONArray(AppConstant.JSON_DATA).toString());
+                        notification_layout.setVisibility(View.VISIBLE);
+                        animation = AnimationUtils.loadAnimation(context, R.anim.blink);
+                        notification_layout.startAnimation(animation);
                     }else {
+                        recycler_view_notifications.setAdapter(null);
+                        no_records.setVisibility(View.VISIBLE);
+                        notification_layout.setVisibility(View.GONE);
                         notificationCount.setText("0");
                     }
+                    }catch (Exception e){
+                        recycler_view_notifications.setAdapter(null);
+                        no_records.setVisibility(View.VISIBLE);
+                        notification_layout.setVisibility(View.GONE);
+                        notificationCount.setText("0");
+                        e.printStackTrace();
 
+                    }
                 }
             } else if ("NotificationHistoryList".equals(urlType) && responseObj != null) {
                 String key = responseObj.getString(AppConstant.ENCODE_DATA);
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    try {
 
-                    if(jsonObject.getJSONArray(AppConstant.JSON_DATA) != null && jsonObject.getJSONArray(AppConstant.JSON_DATA).length()>0){
-                        JSONArray jsonarray = jsonObject.getJSONArray(AppConstant.JSON_DATA);
-                    LoadNotificationDetails(jsonarray,"NotificationHistoryList");
-                    Log.d("NotificationHistoryList",jsonObject.getJSONArray(AppConstant.JSON_DATA).toString());
-                }}
+                        if(jsonObject.getJSONArray(AppConstant.JSON_DATA) != null && jsonObject.getJSONArray(AppConstant.JSON_DATA).length()>0){
+                            JSONArray jsonarray = jsonObject.getJSONArray(AppConstant.JSON_DATA);
+                            LoadNotificationDetails(jsonarray,"NotificationHistoryList");
+                            Log.d("NotificationHistoryList",jsonObject.getJSONArray(AppConstant.JSON_DATA).toString());
+                        }else {
+                            Utils.showAlert(HomePage.this,"No Record Found!");
+                            recycler_view_notifications.setAdapter(null);
+                            no_records.setVisibility(View.VISIBLE);
+                        }
+                    }catch (Exception e){
+                        Utils.showAlert(HomePage.this,"No Record Found!");
+                        recycler_view_notifications.setAdapter(null);
+                        no_records.setVisibility(View.VISIBLE);
+                        e.printStackTrace();
+                    }
+
+                }
             }else if ("NotificationRead".equals(urlType) && responseObj != null) {
                 String key = responseObj.getString(AppConstant.ENCODE_DATA);
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
@@ -408,12 +440,8 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                 for (int i = 0; i < jsonarray.length(); i++) {
                     JSONObject jsonobject = jsonarray.getJSONObject(i);
                     NotificationList Detail = new NotificationList();
-                    /*Detail.setTittle(jsonobject.getString("tittle"));
-                    Detail.setDescription(jsonobject.getString("description"));
-                    Detail.setDate(jsonobject.getString("note_date"));*/
                     Detail.setNote_entry_id(jsonobject.getString("note_entry_id"));
-//                    Detail.setNotification(jsonobject.getString("notification"));
-                    Detail.setNotification("Here, we are going to see a simple example to play the audio file. In the next page, we will see the example to control the audio playback like start, stop, pause etc.");
+                    Detail.setNotification(jsonobject.getString("notification"));
                     Detail.setNotification_date(jsonobject.getString("note_date"));
                     NotificationList.add(Detail);
                 }
@@ -525,15 +553,27 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                 }*/
                 break;
             case R.id.notify:
-                getNotificationList();
+                if(!notificationCount.getText().toString().equalsIgnoreCase("0")){
+                    getNotificationList();
+                    sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                }else {
+                    Utils.showAlert(HomePage.this,"No Record Found!");
+                }
+
 //                sheetBehavior.setPeekHeight(180);
-                sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 break;
             case R.id.close:
                 sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 break;
             case R.id.notify_history:
                 Utils.showDatePickerDialog(context);
+                break;
+            case R.id.add_participants:
+                Intent intent = new Intent(HomePage.this,AddParticipantsActivity.class);
+                intent.putExtra("Home", "Home");
+                startActivity(intent);
+                finish();
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 break;
         }
 
@@ -554,10 +594,14 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if(sheetBehavior.getState()==BottomSheetBehavior.STATE_EXPANDED){
+            sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        }else {
+                new MyDialog(this).exitDialog(this, "Are you sure you want to exit ?", "Exit");
+            /*super.onBackPressed();
         setResult(Activity.RESULT_CANCELED);
-        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
-    }
+        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);*/
+    }}
 
     public void refreshScreenCallApi() {
 //        setAnimationView();
@@ -580,22 +624,32 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         new MyDialog(this).exitDialog(this, "Are you sure you want to Logout?", "Logout");
     }
 
+/*
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
-                new MyDialog(this).exitDialog(this, "Are you sure you want to exit ?", "Exit");
-                return false;
+            if(sheetBehavior.getState()==BottomSheetBehavior.STATE_EXPANDED){
+                sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            }else {
+                if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+                    new MyDialog(this).exitDialog(this, "Are you sure you want to exit ?", "Exit");
+                    return false;
+                }
+
             }
         }
         return super.onKeyDown(keyCode, event);
     }
+*/
 
     @Override
     public void onButtonClick(AlertDialog alertDialog, String type) {
         alertDialog.dismiss();
         if ("Exit".equalsIgnoreCase(type)) {
-            onBackPressed();
+//            onBackPressed();
+            super.onBackPressed();
+            setResult(Activity.RESULT_CANCELED);
+            overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
         } else {
 
             Intent intent = new Intent(this, LoginScreen.class);
@@ -949,7 +1003,6 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     public void showArrowImage() {
         pro.setVisibility(View.VISIBLE);
         feed.setVisibility(View.VISIBLE);
-        notification_layout.setVisibility(View.VISIBLE);
         animation = new AlphaAnimation((float) 3, 0); // Change alpha from fully visible to invisible
         animation.setDuration(500); // duration - half a second
         animation.setInterpolator(new LinearInterpolator()); // do not alter

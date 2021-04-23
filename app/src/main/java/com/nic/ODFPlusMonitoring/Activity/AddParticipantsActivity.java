@@ -71,6 +71,7 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
     ArrayList<ODFMonitoringListValue> ParticipatesList;
     String dialog_flag="";
     JSONArray jsonArray;
+    TextView no_records;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,8 +79,8 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
         context=this;
         prefManager = new PrefManager(this);
         floatingActionButton=findViewById(R.id.add_participants);
+        no_records=findViewById(R.id.no_records);
         home=findViewById(R.id.home_img);
-        ParticipatesList=new ArrayList<>();
         if(Utils.isOnline()){
             getParticipationList();
         }
@@ -126,11 +127,51 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
 
         }       return jsonObject;
     }
+    public void deleteParticipatesApiService(JSONArray jsonArray) {
+        try {
+            new ApiService(this).makeJSONObjectRequest("DeleteParticipates", Api.Method.POST, UrlGenerator.getMotivatorSchedule(), deleteParticipatesJsonParams(jsonArray), "not cache", this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private JSONObject deleteParticipatesJsonParams(JSONArray jsonArray) {
+        JSONObject jsonObject=new JSONObject();
+        String authKey1 = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), deleteParticipatesParams(jsonArray).toString());
+
+        try {
+            jsonObject.put(AppConstant.KEY_USER_NAME,prefManager.getUserName());
+            jsonObject.put(AppConstant.DATA_CONTENT,authKey1);
+            Log.d("addPartJsonParams", "" +jsonObject);
+
+        }catch (JSONException e){
+
+        }       return jsonObject;
+    }
+    private JSONObject deleteParticipatesParams(JSONArray jsonArray) {
+        JSONObject jsonObject=new JSONObject();
+        try {
+            jsonObject.put(AppConstant.KEY_SERVICE_ID,"contact_person_aed");
+            jsonObject.put("contact_person_list",jsonArray);
+
+            Log.d("deletedPartJsonParams", "" +jsonObject);
+
+        }catch (JSONException e){
+
+        }       return jsonObject;
+    }
 
     public void setAdapter(){
-        add_participants_recyler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        addParticipatesAdapterView=new AddParticipatesAdapterView(this,ParticipatesList);
-        add_participants_recyler.setAdapter(addParticipatesAdapterView);
+        if(ParticipatesList.size()>0) {
+            add_participants_recyler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+            addParticipatesAdapterView = new AddParticipatesAdapterView(this, ParticipatesList);
+            add_participants_recyler.setAdapter(addParticipatesAdapterView);
+            add_participants_recyler.setVisibility(View.VISIBLE);
+            no_records.setVisibility(View.GONE);
+        }else {
+            add_participants_recyler.setVisibility(View.GONE);
+            no_records.setVisibility(View.VISIBLE);
+        }
     }
     public void addStructureView(String designation_id, String participates_name, String mobile_number, final String participates_id){
         appParticipatesJson=new JSONObject();
@@ -187,7 +228,6 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
             submit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
                     try {
                         jsonObject.put("contact_person_id",participates_id);
                         jsonObject.put("name_of_contact_person",m_name.getText().toString());
@@ -196,10 +236,34 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
                         /*jsonObject.put("deleted","N");*/
 
                         jsonArray.put(jsonObject);
-                        appParticipatesJson.put(AppConstant.KEY_SERVICE_ID,"contact_person_aed");
-                        appParticipatesJson.put("contact_person_list",jsonArray);
-                        dialog_flag="add_view";
-                        addParticipatesApiService();
+
+                        try {
+                            boolean flag =false;
+                            JSONObject jsonObject1=new JSONObject();
+                            for (int i=0;i<jsonArray.length();i++){
+                                jsonObject1=jsonArray.getJSONObject(i);
+                                if(!jsonObject1.getString("name_of_contact_person").equals("")&&jsonObject1.getString("mobileno").length()==10 &&!jsonObject1.getString("mobileno").equals("")&&!jsonObject1.getString("contact_person_type_id").equals("0")){
+                                    flag=true;
+                                }
+                                else {
+                                    flag=false;
+                                    break;
+                                }
+                            }
+                            if (flag){
+                                appParticipatesJson.put(AppConstant.KEY_SERVICE_ID,"contact_person_aed");
+                                appParticipatesJson.put("contact_person_list",jsonArray);
+                                dialog_flag="add_view";
+                                addParticipatesApiService();
+                            }
+                            else {
+                                Utils.showAlert(AddParticipantsActivity.this,"Please fill all the view!");
+                            }
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -236,6 +300,7 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
 
     }
     public void getParticipationList() {
+        ParticipatesList=new ArrayList<>();
         try {
             new ApiService(this).makeJSONObjectRequest("ParticipatesList", Api.Method.POST, UrlGenerator.getMotivatorSchedule(), participationParams(), "not cache", this);
         } catch (Exception e) {
@@ -275,7 +340,11 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
     @Override
     public void onBackPressed() {
         if(getIntent().getStringExtra("Home").equalsIgnoreCase("Home")){
-            finish();
+            if (ParticipatesList.size()>0){
+            showHomeScreen();
+            }else {
+                Utils.showAlert(AddParticipantsActivity.this,"Add Participants");
+            }
         }else {
             super.onBackPressed();
         }
@@ -352,7 +421,7 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
                             JSONObject jsonObject1=new JSONObject();
                             for (int i=0;i<imageJson.length();i++){
                                 jsonObject1=imageJson.getJSONObject(i);
-                                if(!jsonObject1.getString("name_of_contact_person").equals("")&&!jsonObject1.getString("mobileno").equals("")&&!jsonObject1.getString("contact_person_type_id").equals("0")){
+                                if(!jsonObject1.getString("name_of_contact_person").equals("")&&jsonObject1.getString("mobileno").length()==10 &&!jsonObject1.getString("mobileno").equals("")&&!jsonObject1.getString("contact_person_type_id").equals("0")){
                                     flag=true;
                                 }
                                 else {
@@ -484,6 +553,17 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
 
                     }
                 }
+                if ("DeleteParticipates".equals(urlType)&& responseObj != null) {
+                    String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                    String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                    JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                    if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                        Utils.showAlert(AddParticipantsActivity.this,"Successfully Deleted");
+                        getParticipationList();
+                        Log.d("DeleteParticipates", "" + jsonObject);
+
+                    }
+                }
 
                 if ("ParticipatesList".equals(urlType) && responseObj != null) {
                 /*String s="{\"STATUS\":\"SUCCESS\",\"JSON_DATA\":[{\"participants_id\":\"1\",\"participants_name\":\"raj\",\"participants_mobileno\":\"1234567890\",\"participants_designation_Name\":\"VHN\",\"participants_designation_code\":\"2\"},{\"participants_id\":\"2\",\"participants_name\":\"kumar\",\"participants_mobileno\":\"123890\",\"participants_designation_Name\":\"Anganwadi worker\",\"participants_designation_code\":\"1\"}]}";
@@ -506,7 +586,10 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
 
                     }
                     else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD") && jsonObject.getString("MESSAGE").equalsIgnoreCase("NO_RECORD")) {
-                        Utils.showAlert(this, "No Record Found!");
+//                        Utils.showAlert(this, "No Record Found!");
+                        add_participants_recyler.setAdapter(null);
+                        add_participants_recyler.setVisibility(View.GONE);
+                        no_records.setVisibility(View.VISIBLE);
                     }
                 }
 
@@ -558,7 +641,6 @@ public class AddParticipantsActivity extends AppCompatActivity implements Api.Se
     }
 
     private void LoadParticipationDetails() {
-        ParticipatesList = new ArrayList<>();
         try {
             JSONArray jsonarray=new JSONArray(prefManager.getParticipatesList());
             if(jsonarray != null && jsonarray.length() >0) {

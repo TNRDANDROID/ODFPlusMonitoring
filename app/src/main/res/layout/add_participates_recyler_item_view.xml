@@ -41,6 +41,14 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/green_bg">
 
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_margin="10dp"
+                            android:id="@+id/delete"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/ic_trash"/>
                         <TextView
                             android:id="@+id/designation_name"
                             style="@string/font_circular_book"

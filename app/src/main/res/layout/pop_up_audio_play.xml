@@ -24,10 +24,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:id="@+id/tvAlertHeading"
+                android:id="@+id/download"
                 android:layout_centerVertical="true"
-                android:text="Audio"
-                android:textColor="@color/colorPrimaryDark"
+                android:text="Download"
+                android:drawablePadding="5dp"
+                android:drawableRight="@drawable/ic_download"
+                android:textColor="@color/darkblue"
                 android:textSize="@dimen/_13sdp" />
 
             <LinearLayout

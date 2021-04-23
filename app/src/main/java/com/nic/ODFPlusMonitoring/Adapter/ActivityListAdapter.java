@@ -338,7 +338,7 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
             }
         });
 
-        final Integer no_of_photos = 4/*activityListValues.get(position).getNoOfPhotos()*/;
+        final Integer no_of_photos = activityListValues.get(position).getNoOfPhotos();
 
         if(no_of_photos > 2) {
             holder.multiple_photo_layout.setVisibility(View.VISIBLE);

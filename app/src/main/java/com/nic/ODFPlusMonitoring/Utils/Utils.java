@@ -1483,7 +1483,7 @@ public class Utils {
 //                        " I assume you have connected your actual Android Mobile device with your computer." +
 //                        "I assume you have connected your actual Android Mobile device with your computer.";
 
-                showPopUp(context,text);
+//                showPopUp(context,text);
             }
             @Override
             public void updateDrawState(TextPaint ds) {
@@ -1505,6 +1505,12 @@ public class Utils {
                 }
             }
         };
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopUp(context,text);
+            }
+        });
         ss.setSpan(clickableSpan, ss.length() - 10, ss.length() , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         textView.setText(ss);
         textView.setMovementMethod(LinkMovementMethod.getInstance());
@@ -1541,8 +1547,8 @@ public class Utils {
 //                        " I assume you have connected your actual Android Mobile device with your computer." +
 //                        "I assume you have connected your actual Android Mobile device with your computer.";
 
-                HomePage.getInstance().notification_read_status(Integer.parseInt(note_entry_id));
-                showPopUp(context,text);
+//                HomePage.getInstance().notification_read_status(Integer.parseInt(note_entry_id));
+//                showPopUp(context,text);
             }
             @Override
             public void updateDrawState(TextPaint ds) {
@@ -1555,6 +1561,14 @@ public class Utils {
                 }
             }
         };
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HomePage.getInstance().notification_read_status(Integer.parseInt(note_entry_id));
+                showPopUp(context,text);
+            }
+        });
+
         ss.setSpan(clickableSpan, ss.length() - 10, ss.length() , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         textView.setText(ss);
         textView.setMovementMethod(LinkMovementMethod.getInstance());
@@ -1634,7 +1648,7 @@ public class Utils {
         System.out.println("timeInMilliseconds >>"+ timeInMilliseconds);
 
 //        final long millisToAdd = 7200000; //two hours
-        final long millisToAdd = 60000; //one mins
+//        final long millisToAdd = 60000; //one mins
         Date d2 = null;
         try {
             d2 = dateFormat.parse(strDate);
@@ -1670,7 +1684,7 @@ public class Utils {
         return result;
     }
 
-    public static void playAudio(final Activity activity, final String url) {
+    public static void playAudio(final Activity activity, final String document) {
         try {
             //We need to get the instance of the LayoutInflater, use the context of this activity
             final LayoutInflater inflater = (LayoutInflater) activity
@@ -1678,7 +1692,7 @@ public class Utils {
             //Inflate the view from a predefined XML layout
             View edit_cpt_list_layout = inflater.inflate(R.layout.pop_up_audio_play, null);
 
-            TextView heading = (TextView) edit_cpt_list_layout.findViewById(R.id.tvAlertHeading);
+            TextView download = (TextView) edit_cpt_list_layout.findViewById(R.id.download);
             final ImageView play_btn = (ImageView) edit_cpt_list_layout.findViewById(R.id.play_btn);
             final LinearLayout close_pop = (LinearLayout) edit_cpt_list_layout.findViewById(R.id.close_pop);
             final ImageView stop_btn = (ImageView) edit_cpt_list_layout.findViewById(R.id.stop_btn);
@@ -1696,6 +1710,12 @@ public class Utils {
             add_cpts_search_alert.show();
             add_cpts_search_alert.setCanceledOnTouchOutside(true);
 
+            download.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ActivityScreen.getInstance().callDownloadMethod(document,"AUDIO");
+                }
+            });
             close_pop.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -1745,7 +1765,7 @@ public class Utils {
                         byte[] decodedString = new byte[0];
                         try {
                             //byte[] name = java.util.Base64.getEncoder().encode(fileString.getBytes());
-                            decodedString = Base64.decode(url, Base64.DEFAULT);
+                            decodedString = Base64.decode(document, Base64.DEFAULT);
                         } catch (Exception e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();

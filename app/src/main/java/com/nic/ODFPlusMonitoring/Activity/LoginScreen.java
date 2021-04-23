@@ -252,8 +252,10 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
        /* userName.setText("9751995897"); //prod
         passwordEditText.setText("odf65#$");*/
 
-        userName.setText("9843476693"); //loc
-        passwordEditText.setText("odf64#$");
+       /* userName.setText("9843476693"); //loc
+        passwordEditText.setText("odf64#$");*/
+        userName.setText("9597562793"); //loc
+        passwordEditText.setText("odf24#$");
 
         final String username = userName.getText().toString().trim();
         final String password = passwordEditText.getText().toString().trim();
@@ -833,7 +835,6 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         Intent intent = new Intent(LoginScreen.this,AddParticipantsActivity.class);
         intent.putExtra("Home", "Login");
         startActivity(intent);
-        finish();
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 

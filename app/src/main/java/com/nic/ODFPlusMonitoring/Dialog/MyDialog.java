@@ -66,10 +66,6 @@ public class MyDialog {
                     dbData.deleteAll();
                     prefManager.clearSession();
                 }
-                if(type.equals("Audio")) {
-
-                }
-
 
             }
         });

@@ -228,7 +228,29 @@
             </RelativeLayout>
 
         </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/add_participants"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:visibility="visible">
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/participants"
+                android:layout_marginStart="@dimen/_17sdp"
+                android:layout_centerInParent="true"
+                android:layout_margin="10dp">
+                <ImageView
+                    android:src="@drawable/ic_group"
+                    android:tint="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
 
+        </RelativeLayout>
+
+<!--
         <RelativeLayout
             android:id="@+id/notify"
             android:layout_width="0dp"
@@ -254,7 +276,7 @@
                     android:layout_height="18dp"
                     android:layout_alignTop="@id/myButton"
                     android:layout_alignRight="@id/myButton"
-                    android:text="0"
+                    android:text="7"
                     android:gravity="center"
                     android:textColor="#FFF"
                     android:textSize="9sp"
@@ -278,6 +300,67 @@
                 android:textSize="@dimen/menu_title_size" />
 
         </RelativeLayout>
+-->
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/profile_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginEnd="@dimen/_17sdp"
+        android:layout_marginBottom="@dimen/_50sdp"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:id="@+id/notify"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible">
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/notification"
+                android:layout_marginStart="@dimen/_17sdp"
+                android:layout_centerInParent="true"
+                android:layout_margin="10dp">
+                <ImageView
+                    android:id="@+id/myButton"
+                    android:src="@drawable/ic_notifications_white_24dp"
+                    android:layout_width="35dip"
+                    android:layout_height="35dip"/>
+                <TextView
+                    android:id="@+id/notificationCount"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_alignTop="@id/myButton"
+                    android:layout_alignRight="@id/myButton"
+                    android:text="9"
+                    android:gravity="center"
+                    android:textColor="#FFF"
+                    android:textSize="9sp"
+                    android:textStyle="bold"
+                    android:background="@drawable/badge_circle"/>
+            </RelativeLayout>
+
+
+            <com.nic.ODFPlusMonitoring.Support.MyCustomTextView
+                android:id="@+id/notify_tv"
+                style="@style/font_circular_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:visibility="gone"
+                android:layout_below="@+id/notification"
+                android:layout_centerHorizontal="true"
+                android:text="Notification"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/menu_title_size" />
+
+        </RelativeLayout>
+
     </LinearLayout>
 
 <!--
@@ -416,7 +499,7 @@ android:layout_height="match_parent"
 android:clipToPadding="true"
     android:visibility="gone"
 android:layout_marginTop="30dp"
-android:background="@drawable/cornered_rect_lite_bg"
+android:background="@color/white"
 app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
     >
 
