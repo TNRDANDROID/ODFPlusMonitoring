@@ -249,7 +249,10 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     }
 
     private void checkLoginScreen() {
-
+        /*userName.setText("9751995897"); //prod
+        passwordEditText.setText("odf65#$");*/
+        /* userName.setText("9843476693"); //loc
+        passwordEditText.setText("odf64#$");*/
         final String username = userName.getText().toString().trim();
         final String password = passwordEditText.getText().toString().trim();
         prefManager.setUserPassword(password);
@@ -466,7 +469,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             String urlType = serverResponse.getApi();
             String status = null;
             String response = null;
-         //   String message = responseObj.getString(AppConstant.KEY_MESSAGE);
+            //   String message = responseObj.getString(AppConstant.KEY_MESSAGE);
            /* if (!"MotivatorSchedule".equals(urlType)){
                 status  = responseObj.getString(AppConstant.KEY_STATUS);
                 response = responseObj.getString(AppConstant.KEY_RESPONSE);
@@ -493,10 +496,8 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                         if(result.equals("N")){
                             Utils.showAlertResult(LoginScreen.this,"Attend The ODF Plus Qualifying Test");
                         }else if(result.equals("Y")){
-                            showHomeScreen();
+                            getParticipationList();
                         }
-
-
 
                     } else {
                         if (response.equals("LOGIN_FAILED")) {
@@ -520,7 +521,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                 status  = responseObj.getString(AppConstant.KEY_STATUS);
                 response = responseObj.getString(AppConstant.KEY_RESPONSE);
                 if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
-                   new  InsertDistrictTask().execute(responseObj.getJSONArray(AppConstant.JSON_DATA));
+                    new  InsertDistrictTask().execute(responseObj.getJSONArray(AppConstant.JSON_DATA));
                 } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("NO_RECORD")) {
                     Log.d("Record", responseObj.getString(AppConstant.KEY_MESSAGE));
                 }
@@ -571,8 +572,6 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                 Log.d("BankBranchList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
             }
             if ("Gender".equals(urlType) && responseObj != null) {
-               /* String s="{\"STATUS\":\"SUCCESS\",\"JSON_DATA\":[{\"gender_code\":\"F\",\"gender_name_en\":\"Female\",\"gender_name_ta\":\"Female\"},{\"gender_code\":\"M\",\"gender_name_en\":\"Male\",\"gender_name_ta\":\"Male\"},{\"gender_code\":\"T\",\"gender_name_en\":\"Transgender\",\"gender_name_ta\":\"Transgender\"}]}";
-                responseObj=new JSONObject();*/
                 status  = responseObj.getString(AppConstant.KEY_STATUS);
                 response = responseObj.getString(AppConstant.KEY_RESPONSE);
                 if (status.equalsIgnoreCase("OK")&& response.equalsIgnoreCase("OK")){
@@ -583,10 +582,8 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
             }
             if ("EducationalQualification".equals(urlType) && responseObj != null) {
-                /*String s="{\"STATUS\":\"SUCCESS\",\"JSON_DATA\":[{\"education_code\":\"1\",\"education_name\":\"09th Pass\"},{\"education_code\":\"2\",\"education_name\":\"10th Pass\"},{\"education_code\":\"3\",\"education_name\":\"12th Pass\"},{\"education_code\":\"4\",\"education_name\":\"Degree Holder\"}]}";
-                responseObj=new JSONObject();*/
                 status  = responseObj.getString(AppConstant.KEY_STATUS);
-               response = responseObj.getString(AppConstant.KEY_RESPONSE);
+                response = responseObj.getString(AppConstant.KEY_RESPONSE);
                 if (status.equalsIgnoreCase("OK")&& response.equalsIgnoreCase("OK")) {
                     JSONArray jsonarray = responseObj.getJSONArray(AppConstant.JSON_DATA);
                     prefManager.setEducationalQualification(jsonarray.toString());
@@ -594,14 +591,33 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                 }
             }
             if ("DesignationList".equals(urlType) && responseObj != null) {
-                /*String s="{\"STATUS\":\"SUCCESS\",\"JSON_DATA\":[{\"designation_code\":\"1\",\"designation_name\":\"Anganwadi Worker\"},{\"designation_code\":\"2\",\"designation_name\":\"VHN\"},{\"designation_code\":\"3\",\"designation_name\":\"School Teacher\"},{\"designation_code\":\"4\",\"designation_name\":\"Village Pt. Sec\"}]}";
-                responseObj=new JSONObject();*/
                 status  = responseObj.getString(AppConstant.KEY_STATUS);
                 response = responseObj.getString(AppConstant.KEY_RESPONSE);
                 if (status.equalsIgnoreCase("OK")&& response.equalsIgnoreCase("OK")) {
                     JSONArray jsonarray = responseObj.getJSONArray(AppConstant.JSON_DATA);
                     prefManager.setDesignationList(jsonarray.toString());
                     Log.d("DesignationList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
+                }
+            }
+            if ("ParticipatesList".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK")&& jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    Log.d("ParticipatesList", "" + jsonObject);
+                    if(jsonObject.getJSONArray(AppConstant.JSON_DATA) != null && jsonObject.getJSONArray(AppConstant.JSON_DATA).length()>0){
+                        JSONArray jsonarray = jsonObject.getJSONArray(AppConstant.JSON_DATA);
+                        prefManager.setParticipatesList(jsonarray.toString());
+                        showHomeScreen();
+                        Log.d("ParticipatesList", "" + responseObj);
+                    }else {
+                        showAddParticipantsScreen();
+                    }
+                }
+                else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD") && jsonObject.getString("MESSAGE").equalsIgnoreCase("NO_RECORD")) {
+//                        Utils.showAlert(this, "No Record Found!");
+                    showAddParticipantsScreen();
+
                 }
             }
 
@@ -824,8 +840,14 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 //        showHomeScreen();
 //    }
 
-    public void showHomeScreen() {
+    public void showAddParticipantsScreen() {
         Intent intent = new Intent(LoginScreen.this,AddParticipantsActivity.class);
+        intent.putExtra("Home", "Login");
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+    }
+    public void showHomeScreen() {
+        Intent intent = new Intent(LoginScreen.this,HomePage.class);
         intent.putExtra("Home", "Login");
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
@@ -835,10 +857,44 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         String userName = prefManager.getUserName();
         String password = prefManager.getUserPassword();
         if (name.equals(userName) && pass.equals(password)) {
-            showHomeScreen();
+            JSONArray jsonarray= null;
+            try {
+                jsonarray = new JSONArray(prefManager.getParticipatesList());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            if(jsonarray != null && jsonarray.length() >0) {
+                showHomeScreen();
+            }else {
+                Utils.showAlert(this, "Please Turn On Your Network.And Login again to add Participants");
+            }
+
         } else {
             Utils.showAlert(this, "No data available for offline. Please Turn On Your Network");
         }
     }
+    public void getParticipationList() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("ParticipatesList", Api.Method.POST, UrlGenerator.getMotivatorSchedule(), participationParams(), "not cache", this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    public JSONObject participationParams() throws JSONException {
+
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), participatesNormalJson().toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("Participates", "" + dataSet);
+        return dataSet;
+
+    }
+    public  JSONObject participatesNormalJson() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID,"view_contact_persons");
+        Log.d("object", "" + dataSet);
+        return dataSet;
+    }
 }

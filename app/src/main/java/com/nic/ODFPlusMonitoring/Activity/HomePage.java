@@ -344,6 +344,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                 String key = responseObj.getString(AppConstant.ENCODE_DATA);
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                Log.d("NotificationList>>", jsonObject.toString());
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     try {
                     if(jsonObject.getJSONArray(AppConstant.JSON_DATA) != null && jsonObject.getJSONArray(AppConstant.JSON_DATA).length()>0) {
@@ -424,6 +425,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                     String scheduleId = jsonArray.getJSONObject(i).getString(AppConstant.KEY_SCHEDULE_ID);
 
                     JSONArray activityArray = jsonArray.getJSONObject(i).getJSONArray(AppConstant.KEY_T_SCHEDULE_ACTIVITY);
+                    Log.d("MotSchHistoryList>>", "" + activityArray);
                     new InsertActivityCompletedTask().execute(activityArray);
 
                 } catch (JSONException e) {

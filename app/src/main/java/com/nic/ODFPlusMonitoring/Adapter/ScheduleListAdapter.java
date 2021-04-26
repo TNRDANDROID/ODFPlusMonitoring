@@ -1,15 +1,19 @@
 package com.nic.ODFPlusMonitoring.Adapter;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.provider.Settings;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.nic.ODFPlusMonitoring.Activity.ActivityScreen;
@@ -114,20 +118,35 @@ public class ScheduleListAdapter extends RecyclerView.Adapter<ScheduleListAdapte
             @Override
             public void onClick(View v) {
                 try {
-                    Date from =  new SimpleDateFormat("yyyy-MM-dd").parse(scheduleListValues.get(position).getScheduleFromDate());
-                    Date to =  new SimpleDateFormat("yyyy-MM-dd").parse(scheduleListValues.get(position).getScheduletoDate());
-                    Date current =  new SimpleDateFormat("yyyy-MM-dd").parse(Utils.getCurrentDate());
+                    if (android.os.Build.VERSION.SDK_INT >= 17) {
+                        // only for OS 4.2 and newer versions
+                        try {
+                            if(Settings.Global.getInt(context.getContentResolver(), Settings.Global.AUTO_TIME) == 1)
+                            {// Enabled
+                                // Utils.showAlert(this,"OKAY SUccess");
+                                Date from =  new SimpleDateFormat("yyyy-MM-dd").parse(scheduleListValues.get(position).getScheduleFromDate());
+                                Date to =  new SimpleDateFormat("yyyy-MM-dd").parse(scheduleListValues.get(position).getScheduletoDate());
+                                Date current =  new SimpleDateFormat("yyyy-MM-dd").parse(Utils.getCurrentDate());
 // Date current = new SimpleDateFormat("yyyy-MM-dd").parse("2019-06-23");
 
-                    if(from.after(current)){
-                        Utils.showAlert((Activity) context,"Your Schedule is not Started");
+                                if(from.after(current)){
+                                    Utils.showAlert((Activity) context,"Your Schedule is not Started");
+                                }
+                                else if (from.compareTo(current) * current.compareTo(to) >= 0) {
+                                    openActivity(position);
+                                }
+                                else {
+                                    Utils.showAlert((Activity) context,"Your Schedule is Expired");
+                                }
+                            } else { showAlert("Enable Automatic time in your device settings!");
+                                // Disabed
+                            }
+                        } catch (Settings.SettingNotFoundException e) {
+                            e.printStackTrace();
+                        }
+
                     }
-                    else if (from.compareTo(current) * current.compareTo(to) >= 0) {
-                        openActivity(position);
-                    }
-                    else {
-                        Utils.showAlert((Activity) context,"Your Schedule is Expired");
-                    }
+
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -135,6 +154,30 @@ public class ScheduleListAdapter extends RecyclerView.Adapter<ScheduleListAdapte
             }
         });
     }
+    public void showAlert( String msg){
+        try {
+            final Dialog dialog = new Dialog(context);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setCancelable(false);
+            dialog.setContentView(R.layout.alert_dialog);
+
+            MyCustomTextView text = (MyCustomTextView) dialog.findViewById(R.id.tv_message);
+            text.setText(msg);
+
+            Button dialogButton = (Button) dialog.findViewById(R.id.btn_ok);
+            dialogButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+
+            dialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public void openActivity(int pos){
         prefManager.setScheduleMasterId(scheduleListValues.get(pos).getScheduleMasterId());

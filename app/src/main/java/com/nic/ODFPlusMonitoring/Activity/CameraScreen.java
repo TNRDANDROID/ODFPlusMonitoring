@@ -184,7 +184,22 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                 homePage();
                 break;
             case R.id.btn_save:
-                saveActivityImage();
+                if (android.os.Build.VERSION.SDK_INT >= 17) {
+                    // only for OS 4.2 and newer versions
+                    try {
+                        if(Settings.Global.getInt(getContentResolver(), Settings.Global.AUTO_TIME) == 1)
+                        {// Enabled
+                            saveActivityImage();
+                            // Utils.showAlert(this,"OKAY SUccess");
+                        } else { showAlert(this,"Enable Automatic time in your device settings!");
+                            // Disabed
+                        }
+                    } catch (Settings.SettingNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
                 break;
 
         }

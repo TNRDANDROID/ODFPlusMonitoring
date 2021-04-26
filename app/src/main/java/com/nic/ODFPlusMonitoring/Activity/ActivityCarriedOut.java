@@ -419,7 +419,7 @@ public class ActivityCarriedOut extends AppCompatActivity implements Api.ServerR
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("MotivatorSchHistory", "" + authKey);
+        Log.d("MotivatorSchHistory", "" + dataSet);
         return dataSet;
 
     }
@@ -460,6 +460,9 @@ public class ActivityCarriedOut extends AppCompatActivity implements Api.ServerR
                     HomePage.getInstance().clearAnimations();
                     getInCompleteActivityList();
                 } else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD") && jsonObject.getString("MESSAGE").equalsIgnoreCase("NO_RECORD")) {
+                    searchLayout.setVisibility(View.VISIBLE);
+                    tabSelection.setVisibility(View.GONE);
+                    scroll_view.setVisibility(View.GONE);
                     HomePage.getInstance().clearAnimations();
                     Utils.showAlert(ActivityCarriedOut.this,jsonObject.getString("RESPONSE"));
                 }
