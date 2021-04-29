@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -1035,7 +1036,13 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
     private void captureImage() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        File file = CameraUtils.getOutputMediaFile(MEDIA_TYPE_IMAGE);
+        File file=null;
+        PackageManager it = getPackageManager();
+        if(intent.resolveActivity(it)!=null){
+            file = CameraUtils.getOutputMediaFile(MEDIA_TYPE_IMAGE);
+        }
+
+//        File file = CameraUtils.getOutputMediaFile(MEDIA_TYPE_IMAGE);
         if (file != null) {
             imageStoragePath = file.getAbsolutePath();
         }

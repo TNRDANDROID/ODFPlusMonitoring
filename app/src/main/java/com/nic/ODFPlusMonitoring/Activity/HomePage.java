@@ -175,7 +175,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         sheetBehavior = BottomSheetBehavior.from(bottomSheet);
         sheetBehavior.setPeekHeight(0);
         sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-
+        bottomSheet.setNestedScrollingEnabled(false);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recycler_view_notifications.setLayoutManager(mLayoutManager);
 

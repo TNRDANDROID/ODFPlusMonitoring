@@ -76,6 +76,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     public dbData dbData = new dbData(this);
     private String isLogin;
     private static LoginScreen instance;
+    boolean flag=false;
 
 
     public static LoginScreen getInstance() {
@@ -221,7 +222,9 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
                 break;
             case R.id.sign_up:
-                ClickSignUp();
+                if(flag){
+                    ClickSignUp();
+                }
                 break;
             case R.id.red_eye:
                 showPassword();
@@ -251,8 +254,8 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     private void checkLoginScreen() {
         /*userName.setText("9751995897"); //prod
         passwordEditText.setText("odf65#$");*/
-        /* userName.setText("9843476693"); //loc
-        passwordEditText.setText("odf64#$");*/
+        userName.setText("9843476693"); //loc
+        passwordEditText.setText("odf64#$");
         final String username = userName.getText().toString().trim();
         final String password = passwordEditText.getText().toString().trim();
         prefManager.setUserPassword(password);
@@ -658,6 +661,11 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     }
 
     public class InsertBlockTask extends AsyncTask<JSONArray ,Void ,Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressHUD = ProgressHUD.show(LoginScreen.this, "Downloading", true, false, null);
+        }
 
         @Override
         protected Void doInBackground(JSONArray... params) {
@@ -686,6 +694,15 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             return null;
         }
 
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if(progressHUD!=null){
+                progressHUD.cancel();
+            }
+
+            flag=true;
+        }
     }
 
     public class InsertVillageTask extends AsyncTask<JSONArray ,Void ,Void> {
